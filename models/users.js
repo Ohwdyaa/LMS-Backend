@@ -1,8 +1,9 @@
-const db = require('../config/db/db')
-const{hashPassword} = require('../utils/crypto');
+const db = require('../config/db/db');
 
-class Users{
-    constructor (id, username, email, password, profile_image, fullName, phone_Number, address, institute, date_of_birth, roleId, genderId, religionId, salt,){
+class Users {
+    constructor (
+        id, username, email, password, profile_image, fullName, phone_Number, address, institute, date_of_birth, roleId, genderId, religionId
+    ) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -15,33 +16,19 @@ class Users{
         this.date_of_birth = date_of_birth;
         this.roleId = roleId;
         this.genderId = genderId;
-        this.religionId = religionId;
-        this.hashed_password = hashed_password;
-        this.salt = salt;
+        this.religionId = religionId; 
     }
-    
-    static async createUser({ username, email, password, profile_image, fullName, phone_Number, address, institute, date_of_birth, roleId, genderId, religionId}) {
+
+    static async createUser({
+        id, username, email, password, profile_image, fullName, phone_Number, address, institute, date_of_birth, roleId, genderId, religionId
+    }) {
         try {
-            const { hash, salt } = await hashPassword(password);
-            console.log('Creating user with data:', {
-                username,
-                email,
-                profile_image,
-                fullName,
-                phone_Number,
-                address,
-                institute,
-                date_of_birth,
-                roleId,
-                genderId,
-                religionId,
-                hashed_password: hash, 
-                salt
-            });
             const [result] = await db.query(`
                 INSERT INTO users (
+                    id,
                     username, 
                     email,
+                    password,                
                     profile_image, 
                     fullName, 
                     phone_Number, 
@@ -50,24 +37,23 @@ class Users{
                     date_of_birth, 
                     role_id, 
                     gender_id, 
-                    religion_id,
-                    hashed_password,
-                    salt
+                    religion_id
                 ) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `, [username,
+            `, [
+                id,
+                username,
                 email, 
+                password,             
                 profile_image, 
                 fullName, 
                 phone_Number, 
                 address, 
                 institute, 
-                date_of_birth, 
+                date_of_birth,
                 roleId, 
                 genderId, 
-                religionId, 
-                hash,
-                salt
+                religionId
             ]);
             return result.insertId; 
         } catch (error) {
@@ -75,6 +61,7 @@ class Users{
             throw new Error('Database error');
         }
     }
+
 
     static async getUserById(id) {
         try {

@@ -1,13 +1,13 @@
 const express = require('express');
 const userRoutes = require('./controllers/users/route');
-const db = require('./config/db/db'); // ganti dengan path yang sesuai
+const db = require('./config/db/db');
 
 const app = express();
 
-app.use(express.json()); // Untuk parsing JSON request body
-app.use('/', userRoutes); // Menggunakan routes dengan prefix /api
+app.use(express.json()); 
+app.use('/', userRoutes); 
 
-// Setelah semua route didaftarkan
+
 app._router.stack.forEach(function(r){
     if (r.route && r.route.path){
         console.log(r.route.path)

@@ -1,16 +1,13 @@
-const {createUser, loginUser} = require('./service');
+const { createUser, loginUser } = require('./service');
 const { errorMessages } = require('../../utils/customError');
-const Roles = require('../../models/roles')
-const Genders = require('../../models/genders')
-const Religions = require('../../models/religions')
-const { comparePassword, hashPassword } = require('../../utils/crypto');
-const { validateEmail } = require('../../middlewares/validate');
+const Roles = require('../../models/roles');
+const Genders = require('../../models/genders');
+const Religions = require('../../models/religions');
+const {validateEmail} = require('../../middlewares/validate')
 
 async function createUserHandler(req, res) {
     try {
         const userData = req.body;
-
-        // Pastikan semua field yang diperlukan tersedia
         const requiredFields = ['username', 'email', 'password', 'profile_image', 'fullName', 'phone_Number', 'address', 'institute', 'date_of_birth', 'roleId', 'genderId', 'religionId'];
         for (const field of requiredFields) {
             if (!userData[field]) {
@@ -21,7 +18,13 @@ async function createUserHandler(req, res) {
             }
         }
 
-        // Validasi role, gender, dan religion
+        if (!validateEmail(userData.email)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Email is not valid.',
+            });
+        }
+
         const validRole = await Roles.getRoleById(userData.roleId);
         if (!validRole) {
             return res.status(400).json({
@@ -50,101 +53,57 @@ async function createUserHandler(req, res) {
         return res.status(201).json({
             status: 'success',
             message: 'User created successfully',
-            data: { userId }
+            data: { userId },
         });
+
     } catch (error) {
         console.error('Error in createUserHandler:', error.message);
         return res.status(500).json({
             status: 'error',
-            message: 'Failed to create user', // Pesan yang lebih aman
+            message: 'Failed to create user', 
         });
     }
 }
 
-
 async function loginHandler(req, res) {
     const { email, password } = req.body;
 
-    if (!email || !password || !validateEmail(email)) {
+    if (!email || !password) {
         return res.status(400).json({
             status: 'error',
-            message: 'Email valid dan password diperlukan',
+            message: 'Email and password are required',
         });
     }
 
     try {
         console.log('Attempting to login user:', email);
-        const { accessToken, refreshToken } = await loginUser(email, password);
 
-        console.log('Login successful, setting refresh token cookie');
+        const { token, refreshToken, user } = await loginUser(email, password);
+
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
-            maxAge: 24 * 60 * 60 * 1000 // 1 hari
+            maxAge: 24 * 60 * 60 * 1000, 
         });
 
-        console.log('Sending response');
         return res.status(200).json({
             status: 'success',
             message: 'Login successful',
-            data: { accessToken }
+            data: { token, user },
         });
 
     } catch (error) {
-        console.error('Login Error:', error);
-        if (error.message === 'Pengguna tidak ditemukan' || error.message === 'Password salah') {
-            return res.status(401).json({
-                status: 'error',
-                message: 'Email atau password salah'
-            });
-        }
+        console.error('Login Error:', error.message);
         return res.status(500).json({
             status: 'error',
-            message: 'Internal Server Error'
+            message: 'Internal Server Error',
+            details: error.message, 
         });
     }
 }
 
-// async function refreshTokenHandler(req, res) {
-//     const { refreshToken } = req.body;
-
-//     if (!refreshToken) {
-//         return res.status(400).json({
-//             status: 'error',
-//             message: errorMessages.requiredTokenRefresh.message,
-//         });
-//     }
-
-//     try {
-//         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-//         const user = await Users.getUserById(decoded.id);
-
-//         if (!user || user.refresh_token !== refreshToken) {
-//             return res.status(403).json({
-//                 status: 'error',
-//                 message: errorMessages.invalidTokenRefresh.message,
-//             });
-//         }
-
-//         const newAccessToken = generateJWT(user);
-
-//         res.status(200).json({
-//             status: 'success',
-//             accessToken: newAccessToken,
-//         });
-//     } catch (error) {
-//         res.status(403).json({
-//             status: 'error',
-//             message: errorMessages.invalidTokenRefresh.message,
-//         });
-//     }
-// }
-
-
 module.exports = {
-    loginHandler,
     createUserHandler,
-    // updateExistingPasswords,
-    // refreshTokenHandler
+    loginHandler,
 };

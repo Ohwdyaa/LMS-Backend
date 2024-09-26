@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
+const {Strategy : JwtStrategy, ExtractJwt} = require('passport-jwt');
+const passport = require('passport');
+const Users = require('../models/users');
+const dotenv = require('dotenv')
+dotenv.config();
 
 
 function generateJWT(user) {
-    const payload = { id: user.id, email: user.email, role: user.roleId };
+    const payload = { id: user.id, email: user.email, role: user.roleId, username: user.username };
     const secret = process.env.JWT_SECRET;
     const options = { expiresIn: '1h' };
 
@@ -25,6 +30,7 @@ function verifyJWT(token) {
     }
 }
 
+
 function generateRefreshToken(user) {
     const payload = { id: user.id };
     const secret = process.env.REFRESH_TOKEN_SECRET;
@@ -37,8 +43,27 @@ function generateRefreshToken(user) {
     return jwt.sign(payload, secret, options);
 }
 
+const options = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET,
+};
+
+passport.use(
+    new JwtStrategy(options, async (jwt_payload, done) => {
+        try {
+            const user = await Users.getUserById(jwt_payload.id);
+            if (user) {
+                return done(null, user);
+            }
+            return done(null, false);
+        } catch (error) {
+            return done(error, false);
+        }
+    })
+);
+
 module.exports = {
     generateJWT, 
     verifyJWT, 
-    generateRefreshToken 
+    generateRefreshToken
 };

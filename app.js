@@ -1,12 +1,13 @@
 const express = require('express');
 const userRoutes = require('./controllers/users/route');
 const db = require('./config/db/db');
+const protectedRoutes = require('./middlewares/protected')
 
 const app = express();
 
 app.use(express.json()); 
+app.use('/', protectedRoutes);
 app.use('/', userRoutes); 
-
 
 app._router.stack.forEach(function(r){
     if (r.route && r.route.path){

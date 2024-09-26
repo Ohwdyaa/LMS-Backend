@@ -19,15 +19,15 @@ async function createUserHandler(req, res) {
         }
 
         if (!validateEmail(userData.email)) {
-            return res.status(400).json({
+            return res.status(errorMessages.invalidEmail.statusCode).json({
                 status: 'error',
-                message: 'Email is not valid.',
+                message: errorMessages.invalidEmail.message,
             });
         }
 
         const validRole = await Roles.getRoleById(userData.roleId);
         if (!validRole) {
-            return res.status(400).json({
+            return res.status(errorMessages.roleNotFound.statusCode).json({
                 status: 'error',
                 message: errorMessages.roleNotFound.message,
             });
@@ -35,7 +35,7 @@ async function createUserHandler(req, res) {
 
         const validGender = await Genders.getGenderById(userData.genderId);
         if (!validGender) {
-            return res.status(400).json({
+            return res.status(errorMessages.genderNotFound.statusCode).json({
                 status: 'error',
                 message: errorMessages.genderNotFound.message,
             });
@@ -43,7 +43,7 @@ async function createUserHandler(req, res) {
 
         const validReligion = await Religions.getReligionById(userData.religionId);
         if (!validReligion) {
-            return res.status(400).json({
+            return res.status(errorMessages.religionNotFound.statusCode).json({
                 status: 'error',
                 message: errorMessages.religionNotFound.message,
             });
@@ -58,9 +58,9 @@ async function createUserHandler(req, res) {
 
     } catch (error) {
         console.error('Error in createUserHandler:', error.message);
-        return res.status(500).json({
+        return res.status(errorMessages.internalServerError.statusCode).json({
             status: 'error',
-            message: 'Failed to create user', 
+            message: errorMessages.internalServerError.message, 
         });
     }
 }
@@ -69,9 +69,9 @@ async function loginHandler(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({
+        return res.status(errorMessages.requiredEmailPassword.statusCode).json({
             status: 'error',
-            message: 'Email and password are required',
+            message: errorMessages.requiredEmailPassword.message,
         });
     }
 
@@ -95,9 +95,9 @@ async function loginHandler(req, res) {
 
     } catch (error) {
         console.error('Login Error:', error.message);
-        return res.status(500).json({
+        return res.status(errorMessages.internalServerError.statusCode).json({
             status: 'error',
-            message: 'Internal Server Error',
+            message: errorMessages.internalServerError.message,
             details: error.message, 
         });
     }

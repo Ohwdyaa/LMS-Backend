@@ -79,6 +79,9 @@ class Users {
                 return null;
             }
             return result[0];
+
+            const role = await Roles.getRoleById(user.role_id);
+            user.role = role ? role.name : null;
         } catch (error) {
             console.error(`Error fetching user by ID ${id}:`, error.message); 
             throw new Error('Database error occurred while fetching user'); 

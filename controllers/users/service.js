@@ -7,31 +7,33 @@ const { verifyPassword, hashPassword } = require('../../utils/crypto');
 async function createUser(data) {
     try {
         const { email, password } = data;
-
         if (!email || !validateEmail(email)) {
-            throw new Error('Email is required and must be valid.');
+            throw new Error(
+                errorMessages.invalidEmail.message, 
+                errorMessages.invalidEmail.statusCode
+            );
         }
         const existingUser = await Users.getUserByEmail(email);
         if (existingUser) {
-            throw new Error('Email is already registered. Please use another email.');
+            throw new Error(
+                errorMessages.emailAlready.message,
+                errorMessages.emailAlready.statusCode
+            );
         }
 
         const hash = await hashPassword(password); 
-        console.log('Hashed Password:', hash);
-
         const userData = {
             ...data,
             password: hash, 
         };
-
-        console.log('User Data to Create:', userData);
         const userId = await Users.createUser(userData);
-        console.log('User created with ID:', userId);
 
         return userId;
     } catch (error) {
-        console.error('Error in UsersService.createUser:', error.message);
-        throw new Error(error.message || 'Failed to create user');
+        throw new Error(
+            errorMessages.failedCreate.message, 
+            errorMessages.failedCreate.statusCode
+        );
     }
 }
 
@@ -39,16 +41,25 @@ async function loginUser(email, password) {
     try {
         const user = await Users.getUserByEmail(email);
         if (!user) {
-            throw new Error('Pengguna tidak ditemukan');
+            throw new Error(
+                errorMessages.userNotFound.message, 
+                errorMessages.userNotFound.statusCode
+            );
         }
         if (!user.password) {
-            throw new Error('Password perlu diperbarui. Silakan hubungi administrator.');
+            throw new Error(
+                errorMessages.updatePass.message,
+                errorMessages.updatePass.statusCode
+            );
         }
 
 
         const isValid = await verifyPassword(password, user.password);
         if (!isValid) {
-            throw new Error('Password salah');
+            throw new Error(
+                errorMessages.incorrectPass.message,
+                errorMessages.incorrectPass.statusCode
+            );
         }
         const token = generateJWT(user);
         const refreshToken = generateRefreshToken(user);
@@ -64,14 +75,16 @@ async function loginUser(email, password) {
                 roleId: user.roleId,
             }};
     } catch (error) {
-        console.error('Login service error:', error.message);
         throw error;
     }
 }
 
 async function verifyUser(email, password) {
     if (!validateEmail(email)) {
-        throw new CustomError(errorMessages.invalidEmail.message, errorMessages.invalidEmail.statusCode);
+        throw new CustomError(
+            errorMessages.invalidEmail.message, 
+            errorMessages.invalidEmail.statusCode
+        );
     }
     try {
         const user = await Users.getUserByEmail(email);

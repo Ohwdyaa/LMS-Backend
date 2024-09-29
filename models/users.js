@@ -59,10 +59,10 @@ const Users = {
             `,
         [id]
       );
-      if (result.length === 0) {
-        return null;
+      if (result) {
+        return result;
       }
-      return result[0];
+      return null;
     } catch (error) {
       throw new Error("Database error occurred while fetching user");
     }
@@ -79,6 +79,18 @@ const Users = {
     } catch (error) {
       console.error("Database error:", error);
       throw new Error("Database error: " + error.message);
+    }
+  },
+  updateUserRole: async (userId, newRoleId) => {
+    try {
+      const result = await query("UPDATE users SET role_id= ? WHERE id = ? ", [
+        newRoleId,
+        userId,
+      ]);
+  
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw new Error("Database error while updating user role");
     }
   },
   updateRefreshToken: async (userId, refreshToken) => {

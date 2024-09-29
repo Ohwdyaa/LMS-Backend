@@ -86,8 +86,22 @@ async function verifyUser(email, password) {
   }
 }
 
+const changeUserRole = async(userId, newRoleId) => {
+  try {
+    const user = await Users.getUserById(userId);
+    if(!user){
+      throw new errors.userNotFound.message, errors.userNotFound.statusCode;
+    }
+    
+    await Users.updateUserRole(userId, newRoleId);
+    return{message : 'User role updated successfully'};
+  } catch (error) {
+    throw new CustomError('Failed to change user role', 500);
+  }
+}
 module.exports = {
   createUser,
   loginUser,
   verifyUser,
+  changeUserRole,
 };

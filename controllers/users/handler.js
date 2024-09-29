@@ -1,4 +1,4 @@
-const { createUser, loginUser } = require("./service");
+const { createUser, loginUser, changeUserRole } = require("./service");
 const { errors } = require("../../utils/customError");
 const Roles = require("../../models/roles");
 const Genders = require("../../models/genders");
@@ -113,11 +113,29 @@ async function loginHandler(req, res) {
         status: "error",
         message: error.message || errors.internalServerError.message,
         details: error.details || null,
-      });
+    });
   }
 }
+
+const changeUserRoleHandler = async (req, res) => {
+  const { userId, newRoleId } = req.body;
+  try {
+    const result = await changeUserRole(userId, newRoleId);
+
+    return res.status(200).json({
+      status: 'success',
+      message: result.message,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      status: 'error',
+      message: error.message || 'Failed to change role',
+    });
+  }
+};
 
 module.exports = {
   createUserHandler,
   loginHandler,
+  changeUserRoleHandler,
 };

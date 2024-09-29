@@ -1,21 +1,19 @@
-const db = require('../config/db/db')
+const { query } = require("../config/db/db");
 
-class Genders{
-    constructor(id, name){
-        this.id = id;
-        this.name = name;
+const Genders = {
+  getGenderById: async (genderId) => {
+    try {
+      const [result] = await query("SELECT * FROM genders WHERE id = ?", [
+        genderId,
+      ]);
+      if (result.length === 0) {
+        return null;
+      }
+      return result;
+    } catch (error) {
+      throw new Error("Database error");
     }
-    static async getGenderById(genderId) {
-        try {
-            const [result] = await db.query('SELECT * FROM genders WHERE id = ?', [genderId]);
-            if (result.length === 0) {
-                return null;
-            }
-            return result[0];
-        } catch (error) {
-            throw new Error('Database error');
-        }
-    }
-}
+  },
+};
 
 module.exports = Genders;

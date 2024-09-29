@@ -1,5 +1,5 @@
-const mysql = require('mysql2/promise');
-const config = require('../config');
+const mysql = require("mysql2/promise");
+const config = require("../config");
 
 const pool = mysql.createPool({
   host: config.db.host,
@@ -7,21 +7,21 @@ const pool = mysql.createPool({
   user: config.db.user,
   password: config.db.password,
   database: config.db.name,
-  bigNumberStrings:true,
+  bigNumberStrings: true,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
 });
 
-async function testConnection() {
+async function query(query, value) {
   try {
-    const connection = await pool.getConnection();
-    connection.release();
+    const [result] = await pool.query(query, value === undefined ? [] : value);
+    console.log(`Executed query: ${query} with values: ${JSON.stringify(value)}`);
+    return result;
   } catch (error) {
-    console.error('Gagal terhubung ke database:', error);
+    console.error("Failed to connect to database:", error);
+    throw error;
   }
 }
 
 testConnection();
 
-module.exports = pool;
+module.exports = { query };

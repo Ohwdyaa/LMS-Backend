@@ -10,6 +10,6 @@ module.exports = {
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    name: process.env.DB_NAME || 'lms_db'
+    name: process.env.DB_NAME || 'lms_db2'
   }
 };

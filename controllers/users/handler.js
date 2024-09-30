@@ -8,8 +8,6 @@ const { validateEmail } = require("../../middlewares/validate");
 async function createUserHandler(req, res) {
   try {
     const userData = req.body;
-    console.log("User Data received:", userData);
-
     const requiredFields = [
       "username",
       "email",
@@ -50,17 +48,17 @@ async function createUserHandler(req, res) {
 
     const validGender = await Genders.getGenderById(userData.genderId);
     if (!validGender) {
-      return res.status(errors.genderNotFound.statusCode).json({
+      return res.status(errors.genderInvalid.statusCode).json({
         status: "error",
-        message: errors.genderNotFound.message,
+        message: errors.genderInvalid.message,
       });
     }
 
     const validReligion = await Religions.getReligionById(userData.religionId);
     if (!validReligion) {
-      return res.status(errors.religionNotFound.statusCode).json({
+      return res.status(errors.religionInvalid.statusCode).json({
         status: "error",
-        message: errors.religionNotFound.message,
+        message: errors.religionInvalid.message,
       });
     }
 
@@ -113,7 +111,7 @@ async function loginHandler(req, res) {
         status: "error",
         message: error.message || errors.internalServerError.message,
         details: error.details || null,
-    });
+      });
   }
 }
 
@@ -123,13 +121,13 @@ const changeUserRoleHandler = async (req, res) => {
     const result = await changeUserRole(userId, newRoleId);
 
     return res.status(200).json({
-      status: 'success',
+      status: "success",
       message: result.message,
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
-      status: 'error',
-      message: error.message || 'Failed to change role',
+      status: "error",
+      message: error.message || "Failed to change role",
     });
   }
 };

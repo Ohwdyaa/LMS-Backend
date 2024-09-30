@@ -8,28 +8,6 @@ const { validateEmail } = require("../../middlewares/validate");
 async function createUserHandler(req, res) {
   try {
     const userData = req.body;
-    const requiredFields = [
-      "username",
-      "email",
-      "password",
-      "profile_image",
-      "fullName",
-      "phone_Number",
-      "address",
-      "institute",
-      "date_of_birth",
-      "roleId",
-      "genderId",
-      "religionId",
-    ];
-    for (const field of requiredFields) {
-      if (!userData[field]) {
-        return res.status(400).json({
-          status: "error",
-          message: `Field ${field} is required.`,
-        });
-      }
-    }
 
     if (!validateEmail(userData.email)) {
       return res.status(errors.invalidEmail.statusCode).json({
@@ -46,21 +24,21 @@ async function createUserHandler(req, res) {
       });
     }
 
-    const validGender = await Genders.getGenderById(userData.genderId);
-    if (!validGender) {
-      return res.status(errors.genderInvalid.statusCode).json({
-        status: "error",
-        message: errors.genderInvalid.message,
-      });
-    }
+    // const validGender = await Genders.getGenderById(userData.genderId);
+    // if (!validGender) {
+    //   return res.status(errors.genderInvalid.statusCode).json({
+    //     status: "error",
+    //     message: errors.genderInvalid.message,
+    //   });
+    // }
 
-    const validReligion = await Religions.getReligionById(userData.religionId);
-    if (!validReligion) {
-      return res.status(errors.religionInvalid.statusCode).json({
-        status: "error",
-        message: errors.religionInvalid.message,
-      });
-    }
+    // const validReligion = await Religions.getReligionById(userData.religionId);
+    // if (!validReligion) {
+    //   return res.status(errors.religionInvalid.statusCode).json({
+    //     status: "error",
+    //     message: errors.religionInvalid.message,
+    //   });
+    // }
 
     const userId = await createUser(userData);
     return res.status(201).json({

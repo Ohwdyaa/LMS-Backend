@@ -6,20 +6,7 @@ const { verifyPassword, hashPassword } = require("../../utils/bcrypt");
 
 async function createUser(data) {
   try {
-    const {
-      username,
-      email,
-      password,
-      profile_image,
-      fullName,
-      phone_Number,
-      address,
-      institute,
-      date_of_birth,
-      roleId,
-      genderId,
-      religionId,
-    } = data;
+    const { password } = data;
 
     const hash = await hashPassword(password);
     const userData = {
@@ -99,6 +86,7 @@ const changeUserRole = async (userId, newRoleId) => {
     throw new CustomError("Failed to change user role", 500);
   }
 };
+
 module.exports = {
   createUser,
   loginUser,

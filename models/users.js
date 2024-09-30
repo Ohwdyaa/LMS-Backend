@@ -42,7 +42,6 @@ const Users = {
       );
       return result.insertId;
     } catch (error) {
-      console.error("Database Error:", error);
       throw new Error("Database error");
     }
   },

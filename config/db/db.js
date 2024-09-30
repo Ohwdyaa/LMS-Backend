@@ -22,6 +22,4 @@ async function query(query, value) {
   }
 }
 
-testConnection();
-
 module.exports = { query };

@@ -1,6 +1,7 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
+
 const Genders = {
   createGender: async (genderData) => {
     console.log("Creating role with data:", genderData);

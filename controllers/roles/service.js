@@ -3,7 +3,6 @@ const { CustomError, errors } = require("../../utils/customError");
 
 async function createRole(roleData) {
     try {
-        const{name} = roleData;
         const roleId = await Roles.createRole(roleData);
         return roleId;
     } catch (error) {

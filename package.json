@@ -10,5 +10,17 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "passport-oauth": "^1.0.0"
-  }
+  },
+  "name": "lms-backend",
+  "version": "1.0.0",
+  "description": "Note.\r 1. Model dan Repo gabung di package models.",
+  "main": "app.js",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC"
 }

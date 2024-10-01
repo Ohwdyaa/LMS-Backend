@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  loginHandler,
+  loginHandler,  
   createUserHandler,
   changeUserRoleHandler,
   // refreshTokenHandler,
@@ -12,17 +12,16 @@ const {
 const router = express.Router();
 const passport = require("../middlewares/auth");
 
-// router.get("/token", refreshTokenHandler);
-router.post("/user", createUserHandler);
-router.put("/user/:id", updateUserHandler);
-router.delete("/user/:id", deleteUserHandler);
-router.get("/user", getAllUserHandler);
 router.post("/login", loginHandler);
-router.put(
-  "/role/:id",
-  passport.authenticate("jwt", { session: false }),
-  changeUserRoleHandler
-);
+router.post("/user", createUserHandler);
+router.put("/user/:id", passport.authenticate("jwt", { session: false }), updateUserHandler);
+router.delete("/user/:id", passport.authenticate("jwt", { session: false }), deleteUserHandler);
+router.get("/user", getAllUserHandler);
+router.put("/role/:id", passport.authenticate("jwt", { session: false }), changeUserRoleHandler);
 // router.delete("/logout", logoutHandler);
+// router.get("/token", refreshTokenHandler);
+
+
+
 
 module.exports = router;

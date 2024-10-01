@@ -18,7 +18,7 @@ async function createUser(data) {
     return userId;
   } catch (error) {
     throw err.failedCreate;
-  }
+  }  
 }
 
 async function loginUser(email, password) {
@@ -40,8 +40,9 @@ async function loginUser(email, password) {
         email: user.email,
         roleId: user.roleId,
       },
-    };
+    };  
   } catch (error) {
+    console.error("Error during loginUser:", error);
     throw err.errLog;
   }
 }
@@ -56,9 +57,13 @@ async function verifyUser(email, password) {
       return null;
     }
 
+    console.log("User found:", user); // Log user untuk debugging
+    console.log("User password:", user.password); // Log password untuk debugging
+
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : null;
   } catch (error) {
+    console.error("Error during verify user:", error);
     throw err.authErr;
   }
 }

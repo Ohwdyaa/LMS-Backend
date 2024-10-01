@@ -14,6 +14,37 @@ const Genders = require("../models/genders");
 const Religions = require("../models/religions");
 const { validateEmail } = require("../middlewares/validate");
 
+async function loginHandler(req, res) { 
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(errors.requiredEmailPassword.statusCode).json({
+      message: errors.requiredEmailPassword.message,
+    });
+  }
+  try {
+    const { token, user } = await loginUser(email, password);
+
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "None",
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // });
+    return res.status(200).json({
+      message: "Login successful",
+      data: { token, user },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res
+      .status(error.statusCode || errors.internalServerError.statusCode)
+      .json({
+        message: error.message || errors.internalServerError.message,
+        details: error.details || null,
+      });
+  }
+}
+
 async function createUserHandler(req, res) {
   try {
     const userData = req.body;
@@ -54,39 +85,6 @@ async function createUserHandler(req, res) {
     return res.status(errors.religionInvalid.statusCode).json({
       message: errors.internalServerError.message,
     });
-  }
-}
-
-async function loginHandler(req, res) {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(errors.requiredEmailPassword.statusCode).json({
-      message: errors.requiredEmailPassword.message,
-    });
-  }
-
-  try {
-    const { token, user } = await loginUser(email, password);
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "None",
-    //   maxAge: 24 * 60 * 60 * 1000,
-    // });
-
-    return res.status(200).json({
-      message: "Login successful",
-      data: { token, user },
-    });
-  } catch (error) {
-    return res
-      .status(error.statusCode || errors.internalServerError.statusCode)
-      .json({
-        message: error.message || errors.internalServerError.message,
-        details: error.details || null,
-      });
   }
 }
 
@@ -146,6 +144,35 @@ async function changeUserRoleHandler(req, res) {
   }
 }
 
+module.exports = {
+  createUserHandler,
+  updateUserHandler,
+  deleteUserHandler,
+  getAllUserHandler,
+  loginHandler,
+  changeUserRoleHandler,
+  // refreshTokenHandler,
+  // logoutHandler,
+};
+
+// const loginHandler = (req, res, next) => {
+//   passport.authenticate('local', { session: false }, (err, user, info) => {
+//     if (err || !user) {
+//       return res.status(400).json({
+//         message: 'Something is not right',
+//         user: user
+//       });
+//     }
+//     req.login(user, { session: false }, (err) => {
+//       if (err) {
+//         return res.send(err);
+//       }
+//       const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+//       return res.json({ user, token });
+//     });
+//   })(req, res, next);
+// };
+
 // async function refreshTokenHandler(req, res) {
 //   try {
 //     const refreshToken = req.cookies.refreshToken;
@@ -178,13 +205,4 @@ async function changeUserRoleHandler(req, res) {
 //   }
 // };
 
-module.exports = {
-  createUserHandler,
-  updateUserHandler,
-  deleteUserHandler,
-  getAllUserHandler,
-  loginHandler,
-  changeUserRoleHandler,
-  // refreshTokenHandler,
-  // logoutHandler,
-};
+

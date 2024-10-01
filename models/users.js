@@ -100,7 +100,7 @@ const Users = {
   },
   getUserByEmail: async (email) => {
     try {
-      const result = await query("SELECT * FROM users WHERE email = ?", [
+      const [result] = await query("SELECT * FROM users WHERE email = ?", [
         email,
       ]);
       if (result.length === 0) {

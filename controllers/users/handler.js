@@ -1,4 +1,9 @@
-const { createUser, loginUser, changeUserRole } = require("./service");
+const {
+  createUser,
+  loginUser,
+  changeUserRole,
+  getAccessToken,
+} = require("./service");
 const { errors } = require("../../utils/customError");
 const Roles = require("../../models/roles");
 const Genders = require("../../models/genders");
@@ -72,7 +77,7 @@ async function loginHandler(req, res) {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -93,10 +98,11 @@ async function loginHandler(req, res) {
   }
 }
 
-const changeUserRoleHandler = async (req, res) => {
-  const { userId, newRoleId } = req.body;
+async function changeUserRoleHandler(req, res) {
+  const userId = req.params.id;
+  const { roleId } = req.body;
   try {
-    const result = await changeUserRole(userId, newRoleId);
+    const result = await changeUserRole(userId, roleId);
 
     return res.status(200).json({
       status: "success",
@@ -108,10 +114,26 @@ const changeUserRoleHandler = async (req, res) => {
       message: error.message || "Failed to change role",
     });
   }
-};
+}
+
+async function refreshTokenHandler(req, res) {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken)
+      return res.status(401).send({ message: "Akses Tidak Sah" });
+
+    const token = await getAccessToken(refreshToken);
+
+    res.status(200).send(token);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}
 
 module.exports = {
   createUserHandler,
   loginHandler,
   changeUserRoleHandler,
+  refreshTokenHandler
 };

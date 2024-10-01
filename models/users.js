@@ -52,8 +52,8 @@ const Users = {
           SELECT users.*, roles.name as roleName, genders.name as genderName, religions.name as religionName
           FROM users
           JOIN roles ON users.role_id = roles.id
-          JOIN genders ON users.gender_id = genders.id
-          JOIN religions ON users.religion_id = religions.id
+          LEFT JOIN genders ON users.gender_id = genders.id
+          LEFT JOIN religions ON users.religion_id = religions.id
           WHERE users.id = ?
             `,
         [id]
@@ -86,7 +86,7 @@ const Users = {
         newRoleId,
         userId,
       ]);
-  
+
       return result.affectedRows > 0;
     } catch (error) {
       throw new Error("Database error while updating user role");
@@ -100,6 +100,23 @@ const Users = {
       );
 
       return result.affectedRows > 0;
+    } catch (error) {
+      throw new Error("Database error");
+    }
+  },
+  getUserByRefreshToken: async (refreshToken) => {
+    try {
+      const result = await query(
+        `
+        SELECT users.id, users.username, users.email, roles.name as role 
+        FROM users
+        JOIN roles ON users.role_id = roles.id
+        WHERE users.refresh_token = ?
+        `,
+        [refreshToken]
+      );
+
+      return result;
     } catch (error) {
       throw new Error("Database error");
     }

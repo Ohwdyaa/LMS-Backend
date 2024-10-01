@@ -3,6 +3,7 @@ const { generateJWT, generateRefreshToken } = require("../../utils/jwt");
 const { CustomError, errors } = require("../../utils/customError");
 const { validateEmail } = require("../../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../../utils/bcrypt");
+const jwt = require("jsonwebtoken");
 
 async function createUser(data) {
   try {
@@ -87,9 +88,48 @@ const changeUserRole = async (userId, newRoleId) => {
   }
 };
 
+async function getAccessToken(refreshToken) {
+  try {
+    const user = await Users.getUserByRefreshToken(refreshToken);
+
+    if (user.length === 0) {
+      throw new Error("Token kadaluarsa");
+    }
+
+    const access_token = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err) => {
+        if (err) throw new Error("Token Kedaluwarsa");
+        const { id, username, email, role } = user[0];
+
+        const accessToken = jwt.sign(
+          { id, email, role, username },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1h",
+          }
+        );
+
+        return {
+          message: "Refresh Token Berhasil",
+          data: {
+            access_token: accessToken,
+          },
+        };
+      }
+    );
+
+    return access_token;
+  } catch (error) {
+    throw new Error("Error Get access token");
+  }
+}
+
 module.exports = {
   createUser,
   loginUser,
   verifyUser,
   changeUserRole,
+  getAccessToken,
 };

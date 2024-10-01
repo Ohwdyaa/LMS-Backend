@@ -3,6 +3,9 @@ const {
   loginUser,
   changeUserRole,
   getAccessToken,
+  updateUser,
+  deleteUser,
+  getAllUser,
 } = require("./service");
 const { errors } = require("../../utils/customError");
 const Roles = require("../../models/roles");
@@ -29,21 +32,21 @@ async function createUserHandler(req, res) {
       });
     }
 
-    // const validGender = await Genders.getGenderById(userData.genderId);
-    // if (!validGender) {
-    //   return res.status(errors.genderInvalid.statusCode).json({
-    //     status: "error",
-    //     message: errors.genderInvalid.message,
-    //   });
-    // }
+    const validGender = await Genders.getGenderById(userData.genderId);
+    if (!validGender) {
+      return res.status(errors.genderInvalid.statusCode).json({
+        status: "error",
+        message: errors.genderInvalid.message,
+      });
+    }
 
-    // const validReligion = await Religions.getReligionById(userData.religionId);
-    // if (!validReligion) {
-    //   return res.status(errors.religionInvalid.statusCode).json({
-    //     status: "error",
-    //     message: errors.religionInvalid.message,
-    //   });
-    // }
+    const validReligion = await Religions.getReligionById(userData.religionId);
+    if (!validReligion) {
+      return res.status(errors.religionInvalid.statusCode).json({
+        status: "error",
+        message: errors.religionInvalid.message,
+      });
+    }
 
     const userId = await createUser(userData);
     return res.status(201).json({
@@ -98,8 +101,53 @@ async function loginHandler(req, res) {
   }
 }
 
-async function changeUserRoleHandler(req, res) {
+async function updateUserHandler(req, res) {
+  const { id: userId } = req.params;
+  const userUpdate = req.body;
+  try {
+    const result = await updateUser(userId, userUpdate);
+    res.status(200).json({
+      message: "User updated successfully",
+      result,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+}
+
+async function deleteUserHandler(req, res) {
   const userId = req.params.id;
+  try {
+    const userDelete = await deleteUser(userId);
+    return res.status(200).json({
+      status: "success",
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error in deleteUserHandler:", error.message);
+    res.status(400).json({ message: error.message });
+  }
+}
+
+async function getAllUserHandler(req, res) {
+  try {
+    const userAll = await getAllUser();
+    return res.status(200).json({
+      status: "success",
+      data: userAll,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+}
+async function changeUserRoleHandler (req, res) {
+  const { id: userId } = req.params;
   const { roleId } = req.body;
   try {
     const result = await changeUserRole(userId, roleId);
@@ -133,6 +181,9 @@ async function refreshTokenHandler(req, res) {
 
 module.exports = {
   createUserHandler,
+  updateUserHandler,
+  deleteUserHandler,
+  getAllUserHandler,
   loginHandler,
   changeUserRoleHandler,
   refreshTokenHandler

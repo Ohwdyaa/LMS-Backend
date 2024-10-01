@@ -10,7 +10,7 @@ function generateJWT(user) {
     username: user.username,
   };
   const secret = process.env.JWT_SECRET;
-  const options = { expiresIn: "1h" };
+  const options = { expiresIn: "1d" };
 
   if (!secret) {
     throw new Error("JWT_SECRET is not defined in environment variables");
@@ -31,22 +31,22 @@ function verifyJWT(token) {
   }
 }
 
-function generateRefreshToken(user) {
-  const payload = { id: user.id };
-  const secret = process.env.REFRESH_TOKEN_SECRET;
-  const options = { expiresIn: "1d" };
+// function generateRefreshToken(user) {
+//   const payload = { id: user.id };
+//   const secret = process.env.REFRESH_TOKEN_SECRET;
+//   const options = { expiresIn: "1d" };
 
-  if (!secret) {
-    throw new Error(
-      "REFRESH_TOKEN_SECRET is not defined in environment variables"
-    );
-  }
+//   if (!secret) {
+//     throw new Error(
+//       "REFRESH_TOKEN_SECRET is not defined in environment variables"
+//     );
+//   }
 
-  return jwt.sign(payload, secret, options);
-}
+//   return jwt.sign(payload, secret, options);
+// }
 
 module.exports = {
   generateJWT,
   verifyJWT,
-  generateRefreshToken,
+  // generateRefreshToken,
 };

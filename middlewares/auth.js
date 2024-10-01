@@ -1,28 +1,107 @@
 const passport = require("passport");
+// const LocalStrategy = require("passport-local").Strategy;
+const passportJWT = require("passport-jwt");
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 const Users = require("../models/users");
-const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
+const { err } = require("../utils/customError");
+// const bcrypt = require("../utils/bcrypt");
+
+
 
 passport.use(
-  new JwtStrategy(
+  new JWTStrategy(
     {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_SECRET,
     },
-    async (payload, done) => {
+    async function (jwtPayload, cb) {
       try {
-        const user = await Users.getUserById(payload.id);
-        if (user.length === 0) {
-          return done(null, false);
+        const user = await Users.getUserById(jwtPayload.id);
+        if(!user){
+          return cb(null, false, { message: 'User not found' });
         }
-        return done(null, user);
+        return cb(null, user);
       } catch (error) {
-        return done(error, false);
+        return cb(err);
       }
     }
   )
 );
 
+// const authorizeRole = (requiredRole) => {
+//   return (req, res, next) => {
+//     const user = req.user; 
 
+//     if (user.role !== requiredRole) {
+//       return res.status(403).json({
+//         message: "Forbidden: You don't have permission to perform this action",
+//       });
+//     }
+
+//     next();
+//   };
+// };
+
+module.exports = passport;
+
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "email",
+//       passwordField: "password",
+//     },
+//     async function (email, password, cb) {
+//       try {
+//         const user = await Users.getUserByEmail(email);
+//         if (!user) {
+//           return cb(null, false, { message: "Incorrect email or password." });
+//         }
+//         const isMatch = await bcrypt.verifyPassword(password, user.password);
+//         if (!isMatch) {
+//           return cb(null, false, { message: "Incorrect email or password." });
+//         }
+//         return cb(null, user, { message: "Logged In Successfully" });
+//       } catch (error) {
+//         return cb(err);
+//       }
+//     }
+//   )
+// );
+
+// const authorizeRole = (requiredRole) => { //validasi role
+//   return (req, res, next) => {
+//     const user = req.user; // User sudah diverifikasi oleh Passport JWT
+
+//     if (user.role !== requiredRole) {
+//       return res.status(403).json({
+//         message: "Forbidden: You don't have permission to perform this action",
+//       });
+//     }
+
+//     next();
+//   };
+// };
+
+// passport.use(
+//   new JwtStrategy(
+//     {
+//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+//       secretOrKey: process.env.JWT_SECRET,
+//     },
+//     async (payload, done) => {
+//       try {
+//         const user = await Users.getUserById(payload.id);
+//         if (user.length === 0) {
+//           return done(null, false);
+//         }
+//         return done(null, user);
+//       } catch (error) {
+//         return done(error, false);
+//       }
+//     }
+//   )
+// );
 
 // const authenticate = (req, res, next) => {
 //   const authHeader = req.headers["authorization"];
@@ -51,5 +130,3 @@ passport.use(
 //         return res.status(403).json({ message: 'Access forbidden: Role not allowed' });
 //     };
 // };
-
-module.exports = passport;

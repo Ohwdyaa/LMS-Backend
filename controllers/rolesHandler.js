@@ -1,5 +1,5 @@
-const { createRole } = require("./service");
-const { errors } = require("../../utils/customError");
+const { createRole } = require("../service/rolesService");
+const { errors } = require("../utils/customError");
 
 async function createRoleHandler(req, res) {
   try {
@@ -7,14 +7,12 @@ async function createRoleHandler(req, res) {
 
     const roleId = await createRole(roleData);
     return res.status(201).json({
-      status: "success",
       message: "Role created successfully",
       data: { roleId },
     });
   } catch (error) {
     console.error("Error in createRoleHandler:", error);
     return res.status(errors.internalServerError.statusCode).json({
-      status: "error",
       message: errors.internalServerError.message,
     });
   }

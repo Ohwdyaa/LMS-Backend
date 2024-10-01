@@ -1,5 +1,6 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const { err } = require("../utils/customError");
 
 const Religions = {
   createReligion: async (religionData) => {
@@ -14,10 +15,13 @@ const Religions = {
         ) VALUES (?,?)`,
         [id, religionData.name]
       );
+      if (result.length === 0) {
+        return null;
+      }
+
       return result;
     } catch (error) {
-      console.error("Error creating role:", error);
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
   getReligionById: async (religionId) => {
@@ -30,7 +34,7 @@ const Religions = {
       }
       return result;
     } catch (error) {
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
 };

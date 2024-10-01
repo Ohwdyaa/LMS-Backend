@@ -1,5 +1,5 @@
-const Religions = require("../../models/religions");
-const { CustomError, errors } = require("../../utils/customError");
+const Religions = require("../models/religions");
+const { CustomError, errors } = require("../utils/customError");
 
 async function createReligion(religionData) {
     try {

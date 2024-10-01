@@ -1,5 +1,5 @@
-const Genders = require("../../models/genders");
-const { CustomError, errors } = require("../../utils/customError");
+const Genders = require("../models/genders");
+const { CustomError, errors } = require("../utils/customError");
 
 async function createGender(genderData) {
     try {

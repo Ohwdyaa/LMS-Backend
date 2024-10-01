@@ -1,5 +1,5 @@
-const Roles = require("../../models/roles");
-const { CustomError, errors } = require("../../utils/customError");
+const Roles = require("../models/roles");
+const { CustomError, errors } = require("../utils/customError");
 
 async function createRole(roleData) {
     try {

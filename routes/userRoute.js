@@ -3,15 +3,16 @@ const {
   loginHandler,
   createUserHandler,
   changeUserRoleHandler,
-  refreshTokenHandler,
+  // refreshTokenHandler,
   updateUserHandler,
   deleteUserHandler,
-  getAllUserHandler
-} = require("./handler");
+  getAllUserHandler,
+  // logoutHandler
+} = require("../controllers/userHandler");
 const router = express.Router();
-const passport = require("../../middlewares/auth");
+const passport = require("../middlewares/auth");
 
-router.get("/token", refreshTokenHandler);
+// router.get("/token", refreshTokenHandler);
 router.post("/user", createUserHandler);
 router.put("/user/:id", updateUserHandler);
 router.delete("/user/:id", deleteUserHandler);
@@ -22,5 +23,6 @@ router.put(
   passport.authenticate("jwt", { session: false }),
   changeUserRoleHandler
 );
+// router.delete("/logout", logoutHandler);
 
 module.exports = router;

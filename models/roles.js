@@ -1,5 +1,6 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const { err } = require("../utils/customError");
 
 const Roles = {
   createRole: async (roleData) => {
@@ -13,10 +14,13 @@ const Roles = {
         ) VALUES (?,?)`,
         [id, roleData.name]
       );
+      if (result.length === 0) {
+        return null;
+      }
+
       return result;
     } catch (error) {
-      console.error("Error creating role:", error);
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
   getRoleById: async (roleId) => {
@@ -24,17 +28,26 @@ const Roles = {
       const [result] = await query("SELECT * FROM roles WHERE id = ?", [
         roleId,
       ]);
-      if (result) {
-        return result;
+      if (result.length === 0) {
+        return null;
       }
-      return null;
+
+      return result;
     } catch (error) {
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
   getAllRoles: async () => {
-    const [result] = await query("SELECT * FROM roles");
-    return result;
+    try {
+      const [result] = await query("SELECT * FROM roles");
+      if (result.length === 0) {
+        return null;
+      }
+
+      return result;
+    } catch (error) {
+      throw err.dataErr;
+    }
   },
 };
 

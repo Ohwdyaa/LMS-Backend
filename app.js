@@ -1,12 +1,27 @@
 const express = require("express");
-const userRoutes = require("./controllers/users/route");
-const roleRoutes = require("./controllers/roles/route");
-const religionRoutes = require("./controllers/religion/route");
-const genderRoutes = require("./controllers/gender/route");
+const userRoutes = require("./routes/userRoute");
+const roleRoutes = require("./routes/rolesRoute");
+const religionRoutes = require("./routes/religionRoute");
+const genderRoutes = require("./routes/genderRoute");
 const db = require("./config/db/db");
 const cookieParser = require("cookie-parser");
-
 const app = express();
+const cors = require("cors");
+
+//buat cors
+const allowedOrigins = ["http://localhost:5173"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

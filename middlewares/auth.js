@@ -1,4 +1,3 @@
-// const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const Users = require("../models/users");
 const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
@@ -54,8 +53,3 @@ passport.use(
 // };
 
 module.exports = passport;
-
-// module.exports = {
-//   checkRoles,
-//   authenticate,
-// };

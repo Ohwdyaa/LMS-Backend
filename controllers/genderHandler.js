@@ -1,5 +1,5 @@
-const { createGender } = require("./service");
-const { errors } = require("../../utils/customError");
+const { createGender } = require("../service/genderService");
+const { errors } = require("../utils/customError");
 
 async function createGenderHandler(req, res) {
   try {
@@ -7,14 +7,12 @@ async function createGenderHandler(req, res) {
 
     const genderId = await createGender(genderData);
     return res.status(201).json({
-      status: "success",
       message: "Gender created successfully",
       data: { genderId },
     });
   } catch (error) {
     console.error("Error in createGenderHandler:", error);
     return res.status(errors.internalServerError.statusCode).json({
-      status: "error",
       message: errors.internalServerError.message,
     });
   }

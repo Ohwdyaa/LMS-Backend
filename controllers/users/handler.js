@@ -2,6 +2,7 @@ const {
   createUser,
   loginUser,
   changeUserRole,
+  getAccessToken,
   updateUser,
   deleteUser,
   getAllUser,
@@ -79,7 +80,7 @@ async function loginHandler(req, res) {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -161,7 +162,22 @@ async function changeUserRoleHandler (req, res) {
       message: error.message || "Failed to change role",
     });
   }
-};
+}
+
+async function refreshTokenHandler(req, res) {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken)
+      return res.status(401).send({ message: "Akses Tidak Sah" });
+
+    const token = await getAccessToken(refreshToken);
+
+    res.status(200).send(token);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}
 
 module.exports = {
   createUserHandler,
@@ -170,4 +186,5 @@ module.exports = {
   getAllUserHandler,
   loginHandler,
   changeUserRoleHandler,
+  refreshTokenHandler
 };

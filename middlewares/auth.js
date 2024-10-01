@@ -1,4 +1,29 @@
 // const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const Users = require("../models/users");
+const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
+
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    async (payload, done) => {
+      try {
+        const user = await Users.getUserById(payload.id);
+        if (user.length === 0) {
+          return done(null, false);
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error, false);
+      }
+    }
+  )
+);
+
+
 
 // const authenticate = (req, res, next) => {
 //   const authHeader = req.headers["authorization"];
@@ -27,6 +52,8 @@
 //         return res.status(403).json({ message: 'Access forbidden: Role not allowed' });
 //     };
 // };
+
+module.exports = passport;
 
 // module.exports = {
 //   checkRoles,

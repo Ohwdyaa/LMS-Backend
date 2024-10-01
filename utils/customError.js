@@ -5,7 +5,7 @@ class CustomError extends Error {
   }
 }
 
-const errors = {
+const err = {
   invalidEmail: {
     message: "Invalid email format",
     statusCode: 400,
@@ -66,6 +66,14 @@ const errors = {
     message: "Failed to create user",
     statusCode: 500,
   },
+  failedUpdate: {
+    message: "Failed to update user",
+    statusCode: 500,
+  },
+  failedDelete: {
+    message: "Failed to delete user",
+    statusCode: 500,
+  },
   failedRoles: {
     message: "Failed to create role",
     statusCode: 500,
@@ -78,6 +86,18 @@ const errors = {
     message: "Failed to create gender",
     statusCode: 500,
   },
+  changeRole: {
+    message: "Failed to change user role",
+    statusCode: 500,
+  },
+  errGet: {
+    message: "Failed to fetch users",
+    statusCode: 500,
+  },
+  errLog: {
+    message: "An error occurred during login",
+    statusCode: 500,
+  },
   incorrectPass: {
     message: "Incorrect password",
     statusCode: 401,
@@ -86,9 +106,17 @@ const errors = {
     message: "Password needs to be updated. Please contact administrator",
     statusCode: 400,
   },
+  dataErr: {
+    message: "Database Error",
+    statusCode: 500,
+  },
+  authErr: {
+    message: "Authentication error",
+    statusCode: 500,
+  },
 };
 
 module.exports = {
   CustomError,
-  errors,
+  err,
 };

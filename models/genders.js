@@ -1,6 +1,6 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-
+const { err } = require("../utils/customError");
 
 const Genders = {
   createGender: async (genderData) => {
@@ -15,10 +15,13 @@ const Genders = {
         ) VALUES (?,?)`,
         [id, genderData.name]
       );
+      if (result.length === 0) {
+        return null;
+      }
+
       return result;
     } catch (error) {
-      console.error("Error creating role:", error);
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
   getGenderById: async (genderId) => {
@@ -29,9 +32,10 @@ const Genders = {
       if (result.length === 0) {
         return null;
       }
+
       return result;
     } catch (error) {
-      throw new Error("Database error");
+      throw err.dataErr;
     }
   },
 };

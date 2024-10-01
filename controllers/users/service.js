@@ -72,8 +72,58 @@ async function verifyUser(email, password) {
     throw new Error("Authentication error", 500);
   }
 }
+async function updateUser(userId, userData) {
+  try {
+    const userid = await Users.getUserById(userId);
+    if (userid.affectedRows === 0) {
+      throw new Error("User not found or no changes made");
+    }
+    await Users.updateUser(userId, userData);
+  } catch (error) {
+    throw new CustomError(
+      errorMessages.failedDelete.message,
+      errorMessages.failedDelete.statusCode
+    );
+  }
+}
 
-const changeUserRole = async (userId, newRoleId) => {
+async function deleteUser(userId) {
+  try {
+    const user = await Users.getUserById(userId);
+    if (!user) {
+      throw new CustomError(
+        errorMessages.userNotFound.message,
+        errorMessages.userNotFound.statusCode
+      );
+    }
+    await Users.deleteUser(userId);
+  } catch (error) {
+    throw new CustomError(
+      errorMessages.failedDelete.message,
+      errorMessages.failedDelete.statusCode
+    );
+  }
+}
+
+ async function getAllUser () {
+  try {
+    const users = await Users.getAllUser();
+    if (!users || users.length === 0) {
+      throw new CustomError("No users found", 404);
+    }
+    return users.map((user) => ({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      roleId: user.roleId,
+    }));
+  } catch (error) {
+    console.error("Error in getAllUsers:", error);
+    throw new CustomError("Failed to fetch users", 500);
+  }
+};
+
+async function changeUserRole(userId, newRoleId) {
   try {
     const user = await Users.getUserById(userId);
     if (!user) {
@@ -89,6 +139,9 @@ const changeUserRole = async (userId, newRoleId) => {
 
 module.exports = {
   createUser,
+  updateUser,
+  deleteUser,
+  getAllUser,
   loginUser,
   verifyUser,
   changeUserRole,

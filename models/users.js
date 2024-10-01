@@ -45,9 +45,36 @@ const Users = {
       throw new Error("Database error");
     }
   },
+  updateUser: async (userId, userData) => {
+    try {
+      const result = await query(`UPDATE users SET ? WHERE id = ?`, [
+        userData,
+        userId,
+      ]);
+      return result;
+    } catch (error) {
+      throw new Error("Database error");
+    }
+  },
+  deleteUser: async (userId) => {
+    try {
+      const result = await query(`DELETE FROM users WHERE id = ?`, [userId]);
+      return result;
+    } catch (error) {
+      throw new Error("Database error");
+    }
+  },
+  getAllUser: async () => {
+    try {
+      const result = await query(`SELECT * FROM users`);
+      return result;
+    } catch (error) {
+      throw new Error("Database error");
+    }
+  },
   getUserById: async (id) => {
     try {
-      const [result] = await query(
+      const result = await query(
         `
           SELECT users.*, roles.name as roleName, genders.name as genderName, religions.name as religionName
           FROM users
@@ -63,12 +90,12 @@ const Users = {
       }
       return null;
     } catch (error) {
-      throw new Error("Database error occurred while fetching user");
+      throw new Error("Database error");
     }
   },
   getUserByEmail: async (email) => {
     try {
-      const [result] = await query("SELECT * FROM users WHERE email = ?", [
+      const result = await query("SELECT * FROM users WHERE email = ?", [
         email,
       ]);
       if (result.length === 0) {
@@ -76,20 +103,19 @@ const Users = {
       }
       return result;
     } catch (error) {
-      console.error("Database error:", error);
-      throw new Error("Database error: " + error.message);
+      throw new Error("Database error");
     }
   },
-  updateUserRole: async (userId, newRoleId) => {
+  updateUserRole: async (userId, roleId) => {
     try {
       const result = await query("UPDATE users SET role_id= ? WHERE id = ? ", [
-        newRoleId,
+        roleId,
         userId,
       ]);
-  
+
       return result.affectedRows > 0;
     } catch (error) {
-      throw new Error("Database error while updating user role");
+      throw new Error("Database error");
     }
   },
   updateRefreshToken: async (userId, refreshToken) => {

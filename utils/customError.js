@@ -114,6 +114,14 @@ const err = {
     message: "Authentication error",
     statusCode: 500,
   },
+  logoutErr: {
+    message: "Failed to logout",
+    statusCode: 400,
+  },
+  cannotLogout: {
+    message: "An error occurred during logout",
+    statusCode: 500,
+  },
 };
 
 module.exports = {

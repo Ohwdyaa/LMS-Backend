@@ -123,6 +123,20 @@ const Users = {
       throw err.dataError;
     }
   },
+  logoutUser : async (token)=> {
+    try {
+      const result = await query(
+        `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
+        [token] 
+      );
+  
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw new Error('Failed to update user');
+    }
+  }
+  
+
   // updateRefreshToken: async (userId, refreshToken) => {
   //   try {
   //     const result = await query(

@@ -1,5 +1,5 @@
 const { createRole, getRoleById, getAllRoles} = require("../service/rolesService");
-const { errors } = require("../utils/customError");
+const { err } = require("../utils/customError");
 
 async function createRoleHandler(req, res) {
   try {
@@ -12,8 +12,8 @@ async function createRoleHandler(req, res) {
     });
   } catch (error) {
     console.error("Error in createRoleHandler:", error);
-    return res.status(errors.internalServerError.statusCode).json({
-      message: errors.internalServerError.message,
+    return res.status(err.internalServerError.statusCode).json({
+      message: err.internalServerError.message,
     });
   }
 }

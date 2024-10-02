@@ -20,7 +20,10 @@ const Roles = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getRoleById: async (roleId) => {
@@ -34,7 +37,10 @@ const Roles = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getAllRoles: async () => {
@@ -46,7 +52,10 @@ const Roles = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
 };

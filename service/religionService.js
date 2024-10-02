@@ -1,5 +1,5 @@
 const Religions = require("../models/religions");
-const { CustomError, errors } = require("../utils/customError");
+const { CustomError, err } = require("../utils/customError");
 
 async function createReligion(religionData) {
     try {
@@ -7,8 +7,8 @@ async function createReligion(religionData) {
         return religionId;
     } catch (error) {
         throw new CustomError(
-            errors.failedReligion.message,
-            errors.failedReligion.statusCode
+            err.failedReligion.message,
+            err.failedReligion.statusCode
         );
     }
 }

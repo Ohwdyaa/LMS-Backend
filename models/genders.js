@@ -21,7 +21,10 @@ const Genders = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getGenderById: async (genderId) => {
@@ -35,7 +38,10 @@ const Genders = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
 };

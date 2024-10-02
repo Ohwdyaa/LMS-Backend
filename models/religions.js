@@ -21,7 +21,10 @@ const Religions = {
 
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getReligionById: async (religionId) => {
@@ -34,7 +37,10 @@ const Religions = {
       }
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
 };

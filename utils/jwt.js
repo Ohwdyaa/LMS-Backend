@@ -6,7 +6,7 @@ function generateJWT(user) {
   const payload = {
     id: user.id,
     email: user.email,
-    role: user.roleId,
+    role: user.role_id,
     username: user.username,
   };
   const secret = process.env.JWT_SECRET;

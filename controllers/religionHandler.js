@@ -1,5 +1,5 @@
 const { createReligion } = require("../service/religionService");
-const { errors } = require("../utils/customError");
+const { err } = require("../utils/customError");
 
 async function createReligionHandler(req, res) {
   try {
@@ -12,8 +12,8 @@ async function createReligionHandler(req, res) {
     });
   } catch (error) {
     console.error("Error in createReligionHandler:", error);
-    return res.status(errors.internalServerError.statusCode).json({
-      message: errors.internalServerError.message,
+    return res.status(err.internalServerError.statusCode).json({
+      message: err.internalServerError.message,
     });
   }
 }

@@ -6,7 +6,7 @@ const {
   updateUser,
   deleteUser,
   getAllUser,
-  // logoutUser,
+  logoutUser,
 } = require("../service/userService");
 const { errors } = require("../utils/customError");
 const Roles = require("../models/roles");
@@ -143,7 +143,26 @@ async function changeUserRoleHandler(req, res) {
     });
   }
 }
+async function logoutUserHandler(req, res) {
+  try {
+    const token = req.headers.authorization?.split(' ')[1]; // Mendapatkan token dari header
 
+    if (!token) {
+      return res.status(400).json({ message: 'No token provided' });
+    }
+
+    // Memanggil service untuk menghapus refresh token dari database
+    const result = await logoutUserService(token);
+
+    if (!result) {
+      return res.status(400).json({ message: 'Failed to logout' });
+    }
+
+    return res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    return res.status(500).json({ message: 'An error occurred during logout', error: error.message });
+  }
+}
 module.exports = {
   createUserHandler,
   updateUserHandler,
@@ -152,7 +171,7 @@ module.exports = {
   loginHandler,
   changeUserRoleHandler,
   // refreshTokenHandler,
-  // logoutHandler,
+  logoutUserHandler,
 };
 
 // const loginHandler = (req, res, next) => {

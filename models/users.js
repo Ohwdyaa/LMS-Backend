@@ -123,6 +123,21 @@ const Users = {
       throw err.dataErr;
     }
   },
+  logoutUser : async (token)=> {
+    try {
+      // Hapus refresh_token dari user berdasarkan token yang dikirim
+      const result = await query(
+        `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
+        [token] // Token yang diterima digunakan untuk menghapus refresh_token
+      );
+  
+      return result.affectedRows > 0; // Jika affectedRows lebih dari 0, logout berhasil
+    } catch (error) {
+      throw new Error('Failed to update user');
+    }
+  }
+  
+
   // updateRefreshToken: async (userId, refreshToken) => {
   //   try {
   //     const result = await query(

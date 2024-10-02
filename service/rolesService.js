@@ -12,7 +12,30 @@ async function createRole(roleData) {
         );
     }
 }
+async function getRoleById(roleId) {
+    try {
+        const role = await Roles.getRoleById(roleId);
+        if (!role) {
+            throw new CustomError('Role not found', 404);
+        }
+        return role;
+    } catch (error) {
+        throw new CustomError('Failed to get role', 400);
+    }
+}
+async function getAllRoles() {
+    try {
+        const roles = await Roles.getAllRoles();
+        return roles;
+    } catch (error) {
+        throw new CustomError('Failed to get all roles', 400);
+    }
+}
+
+
 
 module.exports = {
     createRole,
+    getRoleById,
+    getAllRoles
 }

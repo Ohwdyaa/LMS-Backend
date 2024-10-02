@@ -39,7 +39,7 @@ const Roles = {
   },
   getAllRoles: async () => {
     try {
-      const [result] = await query("SELECT * FROM roles");
+      const result = await query("SELECT * FROM roles");
       if (result.length === 0) {
         return null;
       }

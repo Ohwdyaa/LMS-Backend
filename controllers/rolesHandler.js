@@ -1,4 +1,4 @@
-const { createRole } = require("../service/rolesService");
+const { createRole, getRoleById, getAllRoles} = require("../service/rolesService");
 const { errors } = require("../utils/customError");
 
 async function createRoleHandler(req, res) {
@@ -17,7 +17,26 @@ async function createRoleHandler(req, res) {
     });
   }
 }
+async function getRoleByIdHandler(req, res) {
+  const { id } = req.params;
+  try {
+      const role = await getRoleById(id);
+      return res.status(200).json(role);
+  } catch (error) {
+      return res.status(404).json({ message: error.message });
+  }
+}
+async function getAllRolesHandler(req, res) {
+  try {
+      const roles = await getAllRoles();
+      return res.status(200).json(roles);
+  } catch (error) {
+      return res.status(500).json({ message: error.message });
+  }
+}
 
 module.exports = {
   createRoleHandler,
+  getRoleByIdHandler,
+  getAllRolesHandler
 };

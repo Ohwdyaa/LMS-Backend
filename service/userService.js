@@ -38,7 +38,7 @@ async function loginUser(email, password) {
         id: user.id,
         username: user.username,
         email: user.email,
-        roleId: user.roleId,
+        roleId: user.role_id,
       },
     };  
   } catch (error) {

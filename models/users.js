@@ -1,6 +1,6 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const { err} = require("../utils/customError");
+const { err, CustomError} = require("../utils/customError");
 
 const Users = {
   createUser: async (userData) => {
@@ -43,7 +43,10 @@ const Users = {
       );
       return result.insertId;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   updateUser: async (userId, userData) => {
@@ -54,7 +57,10 @@ const Users = {
       ]);
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   deleteUser: async (userId) => {
@@ -62,7 +68,10 @@ const Users = {
       const result = await query(`DELETE FROM users WHERE id = ?`, [userId]);
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getAllUser: async () => {
@@ -74,7 +83,10 @@ const Users = {
           LEFT JOIN religions ON users.religion_id = religions.id `);
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getUserById: async (id) => {
@@ -95,7 +107,10 @@ const Users = {
       }
       return null;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   getUserByEmail: async (email) => {
@@ -108,7 +123,10 @@ const Users = {
       }
       return result;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   updateUserRole: async (userId, roleId) => {
@@ -120,7 +138,10 @@ const Users = {
 
       return result.affectedRows > 0;
     } catch (error) {
-      throw err.dataErr;
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
     }
   },
   logoutUser : async (token)=> {
@@ -131,8 +152,11 @@ const Users = {
       );
   
       return result.affectedRows > 0;
-    } catch (error) {
-      throw new Error('Failed to update user');
+    } catch (error) { 
+      throw new CustomError(
+        err.failedUpdate.message,
+        err.failedUpdate.statusCode
+      );
     }
   }
   

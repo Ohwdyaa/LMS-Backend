@@ -1,5 +1,5 @@
 const Roles = require("../models/roles");
-const { CustomError, errors } = require("../utils/customError");
+const { CustomError, err } = require("../utils/customError");
 
 async function createRole(roleData) {
     try {
@@ -7,8 +7,8 @@ async function createRole(roleData) {
         return roleId;
     } catch (error) {
         throw new CustomError(
-            errors.failedRoles.message,
-            errors.failedRoles.statusCode
+            err.failedRoles.message,
+            err.failedRoles.statusCode
         );
     }
 }

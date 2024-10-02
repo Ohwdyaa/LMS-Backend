@@ -1,4 +1,4 @@
-const { createRole, getRoleById, getAllRoles} = require("../service/rolesService");
+const { createRole, getRoleById, getAllRoles, deleteRole} = require("../service/rolesService");
 const { err } = require("../utils/customError");
 
 async function createRoleHandler(req, res) {
@@ -35,8 +35,21 @@ async function getAllRolesHandler(req, res) {
   }
 }
 
+async function deleteRoleHandler(req, res) {
+  const roleId = req.params.id;
+  try {
+    await deleteRole(roleId);
+    return res.status(200).json({
+      message: "Role deleted successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({ message:error.message });
+  }
+}
+
 module.exports = {
   createRoleHandler,
   getRoleByIdHandler,
-  getAllRolesHandler
+  getAllRolesHandler,
+  deleteRoleHandler
 };

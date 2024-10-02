@@ -1,6 +1,6 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const { err } = require("../utils/customError");
+const { err, CustomError } = require("../utils/customError");
 
 const Roles = {
   createRole: async (roleData) => {
@@ -58,6 +58,16 @@ const Roles = {
       );
     }
   },
+  deleteRole : async(roleId)=>{
+    try {
+    const hapus = await query ("DELETE FROM roles where id = ? ", [roleId]);
+      return hapus;
+    } catch (error){
+      throw new CustomError(
+        err.dataError.message,
+        err.dataError.statusCode
+      );
+    }
+  }
 };
-
 module.exports = Roles;

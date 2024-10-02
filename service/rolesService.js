@@ -31,11 +31,20 @@ async function getAllRoles() {
         throw new CustomError('Failed to get all roles', 400);
     }
 }
+async function deleteRole(roleId){
+    try {
+        const hapus = await Roles.deleteRole(roleId);
+        return hapus;
+    }catch (error){
+     throw new CustomError ('Failed to delete role', 400);
+    }
+}
 
 
 
 module.exports = {
     createRole,
     getRoleById,
-    getAllRoles
+    getAllRoles,
+    deleteRole,
 }

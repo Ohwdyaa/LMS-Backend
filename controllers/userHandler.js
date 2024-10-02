@@ -8,7 +8,7 @@ const {
   getAllUser,
   logoutUser,
 } = require("../service/userService");
-const { errors, CustomError } = require("../utils/customError");
+const { errors, err } = require("../utils/customError");
 const Roles = require("../models/roles");
 const Genders = require("../models/genders");
 const Religions = require("../models/religions");
@@ -82,7 +82,7 @@ async function createUserHandler(req, res) {
       data: { userId },
     });
   } catch (error) {
-    return res.status(errors.religionInvalid.statusCode).json({
+    return res.status(errors.internalServerError.statusCode).json({
       message: errors.internalServerError.message,
     });
   }
@@ -123,7 +123,7 @@ async function getAllUserHandler(req, res) {
       data: userAll,
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
+    return res.status(400).json({
       message: error.message,
     });
   }
@@ -138,21 +138,20 @@ async function changeUserRoleHandler(req, res) {
       message: result.message,
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
+    return res.status(400).json({
       message: error.message || "Failed to change role",
     });
   }
 }
 async function logoutUserHandler(req, res) {
-  try { 
+  try {
     const token = req.headers.authorization?.split(" ")[1];
-    console.log("Token received:", token); 
-
+    console.log("Token received:", token);
 
     if (!token) {
       return res.status(400).json({ message: "No token provided" });
     }
-    const result = await logoutUser(token); 
+    const result = await logoutUser(token);
     if (result) {
       return res.status(400).json({
         message: "logout successfully",
@@ -160,15 +159,13 @@ async function logoutUserHandler(req, res) {
     }
     return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    console.error("Error during logout:", error); 
-    return res.status(500).json({
-      message: "An error occurred during logout", 
-      error: error.message, 
+    console.error("Error during logout:", error);
+    return res.status(400).json({
+      message: err.cannotLogout,
+      error: error.message,
     });
   }
 }
-
-
 
 module.exports = {
   createUserHandler,

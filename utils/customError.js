@@ -18,10 +18,10 @@ const err = {
     message: "Refresh token is required",
     statusCode: 400,
   },
-  invalidTokenRefresh: {
-    message: "Invalid refresh token",
-    statusCode: 400,
-  },
+  // invalidTokenRefresh: {
+  //   message: "Invalid refresh token",
+  //   statusCode: 401,  
+  // },
   invalidPassword: {
     message: "Invalid password",
     statusCode: 400,
@@ -36,7 +36,7 @@ const err = {
   },
   internalServerError: {
     message: "Internal Server Error",
-    statusCode: 500,
+    statusCode: 500,  
   },
   notFound: {
     message: "Resource not found",
@@ -47,60 +47,60 @@ const err = {
     statusCode: 404,
   },
   roleInvalid: {
-    message: "invalid role",
+    message: "Invalid role",
     statusCode: 400,
   },
   genderInvalid: {
-    message: "invalid gender",
+    message: "Invalid gender",
     statusCode: 400,
   },
   religionInvalid: {
-    message: "invalid religion",
+    message: "Invalid religion",
     statusCode: 400,
   },
   emailAlready: {
     message: "Email is already registered. Please use another email",
-    statusCode: 409,
+    statusCode: 409,  
   },
   failedCreate: {
     message: "Failed to create user",
-    statusCode: 500,
+    statusCode: 400,  
   },
   failedUpdate: {
     message: "Failed to update user",
-    statusCode: 500,
+    statusCode: 400,  
   },
   failedDelete: {
     message: "Failed to delete user",
-    statusCode: 500,
+    statusCode: 400,  
   },
   failedRoles: {
     message: "Failed to create role",
-    statusCode: 500,
+    statusCode: 400,  
   },
   failedReligion: {
     message: "Failed to create religion",
-    statusCode: 500,
+    statusCode: 400,
   },
   failedGender: {
     message: "Failed to create gender",
-    statusCode: 500,
+    statusCode: 400,
   },
   changeRole: {
     message: "Failed to change user role",
-    statusCode: 500,
+    statusCode: 400,
   },
   errGet: {
     message: "Failed to fetch users",
-    statusCode: 500,
+    statusCode: 400,  
   },
   errLogin: {
     message: "An error occurred during login",
-    statusCode: 500,
+    statusCode: 400,  
   },
   incorrectPass: {
     message: "Incorrect password",
-    statusCode: 401,
+    statusCode: 401,  
   },
   updatePass: {
     message: "Password needs to be updated. Please contact administrator",
@@ -108,11 +108,11 @@ const err = {
   },
   dataError: {
     message: "Database Error",
-    statusCode: 500,
+    statusCode: 500,  
   },
   authError: {
     message: "Authentication error",
-    statusCode: 500,
+    statusCode: 401,  
   },
   logoutErr: {
     message: "Failed to logout",
@@ -120,7 +120,7 @@ const err = {
   },
   cannotLogout: {
     message: "An error occurred during logout",
-    statusCode: 500,
+    statusCode: 400,
   },
 };
 

@@ -1,5 +1,5 @@
 const Genders = require("../models/genders");
-const { CustomError, errors } = require("../utils/customError");
+const { CustomError, err } = require("../utils/customError");
 
 async function createGender(genderData) {
     try {
@@ -7,8 +7,8 @@ async function createGender(genderData) {
         return genderId;
     } catch (error) {
         throw new CustomError(
-            errors.failedGender.message,
-            errors.failedGender.statusCode
+            err.failedGender.message,
+            err.failedGender.statusCode
         );
     }
 }

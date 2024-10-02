@@ -16,7 +16,10 @@ async function createUser(data) {
     const userId = await Users.createUser(userData);
     return userId;
   } catch (error) {
-    throw err.failedCreate;
+    throw new CustomError(
+      err.failedCreate.message,
+      err.failedCreate.statusCode
+    );
   }  
 }
 
@@ -39,8 +42,10 @@ async function loginUser(email, password) {
       },
     };  
   } catch (error) {
-    console.error("Error during loginUser:", error);
-    throw err.errLogin;
+    throw new CustomError(
+      err.errLogin.message,
+      err.errLogin.statusCode
+    );
   }
 }
 
@@ -57,8 +62,10 @@ async function verifyUser(email, password) {
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : null;
   } catch (error) {
-    console.error("Error during verify user:", error);
-    throw err.authError;
+    throw new CustomError(
+      err.authError.message,
+      err.authError.statusCode
+    );
   }
 }
 
@@ -70,7 +77,10 @@ async function updateUser(userId, userData) {
     }
     await Users.updateUser(userId, userData);
   } catch (error) {
-    throw new err.failedUpdate();
+    throw new CustomError(
+      err.failedUpdate.message,
+      err.failedUpdate.statusCode
+    );
   }
 }
 
@@ -100,7 +110,10 @@ async function getAllUser() {
       role: user.role,
     }));
   } catch (error) {
-    throw new err.errGet();
+    throw new CustomError(
+      err.errGet.message,
+      err.errGet.statusCode
+    );
   }
 }
 
@@ -114,7 +127,10 @@ async function changeUserRole(userId, newRoleId) {
     await Users.updateUserRole(userId, newRoleId);
     return { message: "User role updated successfully" };
   } catch (error) {
-    throw err.changeRole;
+    throw new CustomError(
+      err.changeRole.message,
+      err.changeRole.statusCode
+    );
   }
 }
 async function logoutUser(token) {
@@ -122,7 +138,10 @@ async function logoutUser(token) {
     const result = await Users.logoutUser(token);
     return result; 
   } catch (error) {
-    throw new Error('Failed to logout');
+    throw new CustomError(
+      err.logoutErr.message,
+      err.logoutErr.statusCode
+    );
   }
 }
 

@@ -35,7 +35,8 @@ const authorizeRole = (requiredRoleId) => {
     const user = req.user; 
     console.log("User data:", user);
 
-    if (user.roleName !== requiredRoleId) {
+    if (user.role_id !== requiredRoleId) {
+      console.log("User data:", user);
       return res.status(403).json({
         message: "Forbidden: You don't have permission to perform this action",
       });

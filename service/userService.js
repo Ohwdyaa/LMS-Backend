@@ -125,9 +125,8 @@ async function changeUserRole(userId, newRoleId) {
 }
 async function logoutUser(token) {
   try {
-    // Hapus refresh token di database menggunakan token yang diterima
-    const result = await logoutUser(token);
-    return result; // Kembalikan true jika logout berhasil
+    const result = await Users.logoutUser(token);
+    return result; 
   } catch (error) {
     throw new Error('Failed to logout');
   }

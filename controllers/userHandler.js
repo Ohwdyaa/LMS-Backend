@@ -8,13 +8,13 @@ const {
   getAllUser,
   logoutUser,
 } = require("../service/userService");
-const { errors } = require("../utils/customError");
+const { errors, CustomError } = require("../utils/customError");
 const Roles = require("../models/roles");
 const Genders = require("../models/genders");
 const Religions = require("../models/religions");
 const { validateEmail } = require("../middlewares/validate");
 
-async function loginHandler(req, res) { 
+async function loginHandler(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(errors.requiredEmailPassword.statusCode).json({
@@ -144,25 +144,32 @@ async function changeUserRoleHandler(req, res) {
   }
 }
 async function logoutUserHandler(req, res) {
-  try {
-    const token = req.headers.authorization?.split(' ')[1]; // Mendapatkan token dari header
+  try { 
+    const token = req.headers.authorization?.split(" ")[1];
+    console.log("Token received:", token); 
+
 
     if (!token) {
-      return res.status(400).json({ message: 'No token provided' });
+      return res.status(400).json({ message: "No token provided" });
     }
-
-    // Memanggil service untuk menghapus refresh token dari database
-    const result = await logoutUserService(token);
-
-    if (!result) {
-      return res.status(400).json({ message: 'Failed to logout' });
+    const result = await logoutUser(token); 
+    if (result) {
+      return res.status(400).json({
+        message: "logout successfully",
+      });
     }
-
-    return res.status(200).json({ message: 'Logout successful' });
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    return res.status(500).json({ message: 'An error occurred during logout', error: error.message });
+    console.error("Error during logout:", error); 
+    return res.status(500).json({
+      message: "An error occurred during logout", 
+      error: error.message, 
+    });
   }
 }
+
+
+
 module.exports = {
   createUserHandler,
   updateUserHandler,
@@ -223,5 +230,3 @@ module.exports = {
 //     });
 //   }
 // };
-
-

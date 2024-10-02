@@ -29,21 +29,26 @@ passport.use(
   )
 );
 
-// const authorizeRole = (requiredRole) => {
-//   return (req, res, next) => {
-//     const user = req.user; 
+const authorizeRole = (requiredRoleId) => {
+  return (req, res, next) => {
+    console.log("User from request:", req.user);
+    const user = req.user; 
+    console.log("User data:", user);
 
-//     if (user.role !== requiredRole) {
-//       return res.status(403).json({
-//         message: "Forbidden: You don't have permission to perform this action",
-//       });
-//     }
+    if (user.roleName !== requiredRoleId) {
+      return res.status(403).json({
+        message: "Forbidden: You don't have permission to perform this action",
+      });
+    }
 
-//     next();
-//   };
-// };
+    next();
+  };
+};
 
-module.exports = passport;
+module.exports = {
+  passport,
+  authorizeRole
+};
 
 // passport.use(
 //   new LocalStrategy(

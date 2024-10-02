@@ -94,7 +94,7 @@ const err = {
     message: "Failed to fetch users",
     statusCode: 500,
   },
-  errLog: {
+  errLogin: {
     message: "An error occurred during login",
     statusCode: 500,
   },
@@ -106,11 +106,11 @@ const err = {
     message: "Password needs to be updated. Please contact administrator",
     statusCode: 400,
   },
-  dataErr: {
+  dataError: {
     message: "Database Error",
     statusCode: 500,
   },
-  authErr: {
+  authError: {
     message: "Authentication error",
     statusCode: 500,
   },

@@ -10,18 +10,15 @@ const {
   // logoutHandler
 } = require("../controllers/userHandler");
 const router = express.Router();
-const passport = require("../middlewares/auth");
+const { passport, authorizeRole} = require("../middlewares/auth");
 
 router.post("/login", loginHandler);
-router.post("/user", createUserHandler);
+router.post("/user",  createUserHandler);
 router.put("/user/:id", passport.authenticate("jwt", { session: false }), updateUserHandler);
 router.delete("/user/:id", passport.authenticate("jwt", { session: false }), deleteUserHandler);
 router.get("/user", getAllUserHandler);
-router.put("/role/:id", passport.authenticate("jwt", { session: false }), changeUserRoleHandler);
+router.put("/role/:id", passport.authenticate("jwt", { session: false }), authorizeRole (['Admin']), changeUserRoleHandler);
 // router.delete("/logout", logoutHandler);
 // router.get("/token", refreshTokenHandler);
-
-
-
 
 module.exports = router;

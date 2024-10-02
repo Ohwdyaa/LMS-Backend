@@ -1,8 +1,9 @@
 const express = require('express');
+const morgan = require  ('morgan');
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const passport = require('./middlewares/auth');
+const {passport} = require('./middlewares/auth');
 const db = require("./config/db/db");
 const userRoutes = require("./routes/userRoute");
 const roleRoutes = require("./routes/rolesRoute");
@@ -23,8 +24,8 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(morgan('tiny'));
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -7,7 +7,6 @@ const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 async function createUser(data) {
   try {
     const { password } = data;
-
     const hash = await hashPassword(password);
     const userData = {
       ...data,
@@ -27,23 +26,21 @@ async function loginUser(email, password) {
     if (!user) {
       throw err.userNotFound();
     }
-
     const token = generateJWT(user);
     // const refreshToken = generateRefreshToken(user);
     // await Users.updateRefreshToken(user.id, refreshToken);
-
     return {
       token,
       user: {
         id: user.id,
         username: user.username,
         email: user.email,
-        roleId: user.roleId,
+        roleId: user.role_id,
       },
     };  
   } catch (error) {
     console.error("Error during loginUser:", error);
-    throw err.errLog;
+    throw err.errLogin;
   }
 }
 
@@ -57,14 +54,11 @@ async function verifyUser(email, password) {
       return null;
     }
 
-    console.log("User found:", user); // Log user untuk debugging
-    console.log("User password:", user.password); // Log password untuk debugging
-
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : null;
   } catch (error) {
     console.error("Error during verify user:", error);
-    throw err.authErr;
+    throw err.authError;
   }
 }
 

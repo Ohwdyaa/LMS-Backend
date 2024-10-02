@@ -155,7 +155,7 @@ module.exports = {
   // logoutHandler,
 };
 
-// const loginHandler = (req, res, next) => {
+// const loginHandler = (req, res, next) => { //loginAuthPassport
 //   passport.authenticate('local', { session: false }, (err, user, info) => {
 //     if (err || !user) {
 //       return res.status(400).json({

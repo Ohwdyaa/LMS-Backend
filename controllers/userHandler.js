@@ -8,7 +8,7 @@ const {
   getAllUser,
   logoutUser,
 } = require("../service/userService");
-const { errors, err } = require("../utils/customError");
+const { err } = require("../utils/customError");
 const Roles = require("../models/roles");
 const Genders = require("../models/genders");
 const Religions = require("../models/religions");
@@ -17,8 +17,8 @@ const { validateEmail } = require("../middlewares/validate");
 async function loginHandler(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(errors.requiredEmailPassword.statusCode).json({
-      message: errors.requiredEmailPassword.message,
+    return res.status(err.requiredEmailPassword.statusCode).json({
+      message: err.requiredEmailPassword.message,
     });
   }
   try {
@@ -37,9 +37,9 @@ async function loginHandler(req, res) {
   } catch (error) {
     console.error("Login error:", error);
     return res
-      .status(error.statusCode || errors.internalServerError.statusCode)
+      .status(error.statusCode || err.internalServerError.statusCode)
       .json({
-        message: error.message || errors.internalServerError.message,
+        message: error.message || err.internalServerError.message,
         details: error.details || null,
       });
   }

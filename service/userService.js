@@ -123,6 +123,14 @@ async function changeUserRole(userId, newRoleId) {
     throw err.changeRole;
   }
 }
+async function logoutUser(token) {
+  try {
+    const result = await Users.logoutUser(token);
+    return result; 
+  } catch (error) {
+    throw new Error('Failed to logout');
+  }
+}
 
 // async function getAccessToken(refreshToken) {
 //   try {
@@ -191,5 +199,5 @@ module.exports = {
   verifyUser,
   changeUserRole,
   // getAccessToken,
-  // logoutUser
+  logoutUser
 };

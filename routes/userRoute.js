@@ -7,6 +7,7 @@ const {
   updateUserHandler,
   deleteUserHandler,
   getAllUserHandler,
+  logoutUserHandler,
   // logoutHandler
 } = require("../controllers/userHandler");
 const router = express.Router();
@@ -18,7 +19,8 @@ router.put("/user/:id", passport.authenticate("jwt", { session: false }), update
 router.delete("/user/:id", passport.authenticate("jwt", { session: false }), deleteUserHandler);
 router.get("/user", getAllUserHandler);
 router.put("/role/:id", passport.authenticate("jwt", { session: false }), changeUserRoleHandler);
-// router.delete("/logout", logoutHandler);
+router.delete("/logout", logoutUserHandler);
+// router.delete("/logout", logoutUserHandler);
 // router.get("/token", refreshTokenHandler);
 
 

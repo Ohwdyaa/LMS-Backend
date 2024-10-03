@@ -1,6 +1,5 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const { err, CustomError } = require("../utils/customError");
 
 const Roles = {
   createRole: async (roleData) => {
@@ -14,47 +13,34 @@ const Roles = {
         ) VALUES (?,?)`,
         [id, roleData.name]
       );
-      if (result.length === 0) {
-        return null;
-      }
-
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
   getRoleById: async (roleId) => {
     try {
-      const [result] = await query("SELECT * FROM roles WHERE id = ?", [
-        roleId,
-      ]);
-      if (result.length === 0) {
-        return null;
-      }
-
+      const [result] = await query("SELECT * FROM roles WHERE id = ?", 
+        roleId);
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
   getAllRoles: async () => {
     try {
       const result = await query("SELECT * FROM roles");
-      if (result.length === 0) {
-        return null;
-      }
-
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
   deleteRole: async (roleId) => {
     try {
-      const hapus = await query("DELETE FROM roles where id = ? ", [roleId]);
-      return hapus;
+      const result = await query("DELETE FROM roles where id = ? ", roleId);
+      return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
 };

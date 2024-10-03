@@ -14,7 +14,7 @@ const Users = {
             password,                
             profile_image, 
             fullName, 
-            phone_Number, 
+            phone_number, 
             address, 
             institute, 
             date_of_birth, 
@@ -31,7 +31,7 @@ const Users = {
           userData.password,
           userData.profile_image,
           userData.fullName,
-          userData.phone_Number,
+          userData.phone_number,
           userData.address,
           userData.institute,
           userData.date_of_birth,
@@ -42,27 +42,57 @@ const Users = {
       );
       return result.insertId;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
-  updateUser: async (userId, userData) => {
+  forgetUserPassword: async (userId, hashedPassword) => {
+    //belum sempurna
     try {
-      //query disini ? diubah secara spesifik
-      const result = await query(`UPDATE users SET ? WHERE id = ?`, [
-        userData,
+      const result = await query(`UPDATE users SET password = ? where id = ?`, [
+        hashedPassword,
         userId,
       ]);
       return result;
     } catch (error) {
-      throw new error;
+      throw new error();
+    }
+  },
+  updateUser: async (userId, userData) => {
+    try {
+      const result = await query(
+        `UPDATE users
+          SET 
+          profile_image = ?,
+          phone_number = ?,
+          address = ?,
+          institute = ?,
+          date_of_birth = ?,
+          gender_id = ?,
+          religion_id = ?,
+          updated_at = NOW() 
+          WHERE id = ?;`,
+        [
+          userData.profile_image,
+          userData.phone_number,
+          userData.address,
+          userData.institute,
+          userData.date_of_birth,
+          userData.genderId,
+          userData.religionId,
+          userId,
+        ]
+      );
+      return result;
+    } catch (error) {
+      throw new error();
     }
   },
   deleteUser: async (userId) => {
     try {
-      const result = await query(`DELETE FROM users WHERE id = ?`, [userId]);
+      const result = await query(`DELETE FROM users WHERE id = ?`, userId);
       return result;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
   getAllUser: async () => {
@@ -75,7 +105,7 @@ const Users = {
           LEFT JOIN religions ON users.religion_id = religions.id `);
       return result;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
   getUserById: async (id) => {
@@ -89,21 +119,22 @@ const Users = {
           LEFT JOIN religions ON users.religion_id = religions.id
           WHERE users.id = ?
             `,
-        [id]
+        id
       );
       return result;
     } catch (error) {
-      throw new  error;
+      throw new error();
     }
   },
   getUserByEmail: async (email) => {
     try {
-      const [result] = await query("SELECT * FROM users WHERE email = ?", [
-        email,
-      ]);
+      const [result] = await query(
+        "SELECT * FROM users WHERE email = ?",
+        email
+      );
       return result;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
   changeUserRole: async (userId, roleId) => {
@@ -112,58 +143,59 @@ const Users = {
         roleId,
         userId,
       ]);
-      return result.affectedRows > 0;
+      return result;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
   logoutUser: async (token) => {
     try {
       const result = await query(
         `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
-        [token]
+        token
       );
-      return result.affectedRows > 0;
+      return result;
     } catch (error) {
-      throw new error;
+      throw new error();
     }
   },
 };
 module.exports = Users;
-  // updateRefreshToken: async (userId, refreshToken) => {
-  //   try {
-  //     const result = await query(
-  //       "UPDATE users SET refresh_token = ? WHERE id = ?",
-  //       [refreshToken, userId]
-  //     );
 
-  //     return result.affectedRows > 0;
-  //   } catch (error) {
-  //     throw err.dataErr;
-  //   }
-  // },
-  // getUserByRefreshToken: async (refreshToken) => {
-  //   try {
-  //     const result = await query(
-  //       `
-  //       SELECT users.id, users.username, users.email, roles.name as role
-  //       FROM users
-  //       JOIN roles ON users.role_id = roles.id
-  //       WHERE users.refresh_token = ?
-  //       `,
-  //       [refreshToken]
-  //     );
+// updateRefreshToken: async (userId, refreshToken) => {
+//   try {
+//     const result = await query(
+//       "UPDATE users SET refresh_token = ? WHERE id = ?",
+//       [refreshToken, userId]
+//     );
 
-  //     return result;
-  //   } catch (error) {
-  //     throw err.dataErr;
-  //   }
-  // },
-  // logoutUser: async(refreshToken) => {
-  //   try {
-  //     const result = await query(`UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`, [refreshToken]);
-  //     return result.affectedRows > 0;
-  //   } catch (error) {
-  //     throw err.dataErr;
-  //   }
-  // }
+//     return result.affectedRows > 0;
+//   } catch (error) {
+//     throw err.dataErr;
+//   }
+// },
+// getUserByRefreshToken: async (refreshToken) => {
+//   try {
+//     const result = await query(
+//       `
+//       SELECT users.id, users.username, users.email, roles.name as role
+//       FROM users
+//       JOIN roles ON users.role_id = roles.id
+//       WHERE users.refresh_token = ?
+//       `,
+//       [refreshToken]
+//     );
+
+//     return result;
+//   } catch (error) {
+//     throw err.dataErr;
+//   }
+// },
+// logoutUser: async(refreshToken) => {
+//   try {
+//     const result = await query(`UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`, [refreshToken]);
+//     return result.affectedRows > 0;
+//   } catch (error) {
+//     throw err.dataErr;
+//   }
+// }

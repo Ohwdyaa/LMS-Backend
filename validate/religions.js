@@ -6,10 +6,7 @@ async function createReligion(religionData) {
     const religionId = await Religions.createReligion(religionData);
     return religionId;
   } catch (error) {
-    throw new CustomError(
-      err.failedReligion.message,
-      err.failedReligion.statusCode
-    );
+    throw new error;
   }
 }
 async function getReligionById(religionId) {
@@ -20,37 +17,35 @@ async function getReligionById(religionId) {
     }
     return religion;
   } catch (error) {
-    throw new CustomError("Failed to get religion", 400);
+    throw new error;
   }
 }
 async function getAllReligions() {
   try {
-    const reli = await Religions.getAllReligions();
-    return reli;
+    const religion = await Religions.getAllReligions();
+    return religion;
   } catch (error) {
-    throw new CustomError("Failed to get all religions", 400);
+    throw new error;
   }
 }
 async function updateReligion(religionId, religionData) {
   try {
-    const relig = await Religions.getReligionById(religionId, religionData);
+    const religion = await Religions.getReligionById(religionId, religionData);
     if (relig.affectedRows === 0) {
       throw Error(" Religion not found or no changes made");
     }
     await Religions.updateReligion(religionId, religionData);
+    return religion;
   } catch (error) {
-    throw new CustomError(
-      err.failedUpdateReligion.message,
-      err.failedUpdateReligion.statusCode
-    );
+    throw new error;
   }
 }
 async function deleteReligion(religionId) {
   try {
-    const hapus = await Religions.deleteReligion(religionId);
-    return hapus;
+    const deleteReligions = await Religions.deleteReligion(religionId);
+    return deleteReligions;
   } catch (error) {
-    throw new CustomError("Failed to delete religion", 400);
+    throw new error;
   }
 }
 

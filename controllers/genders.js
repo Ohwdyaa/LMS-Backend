@@ -1,4 +1,4 @@
-const { createGender } = require("../service/genders");
+const { createGender } = require("../validate/genders");
 const { err } = require("../utils/customError");
 
 async function createGenderHandler(req, res) {

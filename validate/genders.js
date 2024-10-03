@@ -1,15 +1,11 @@
 const Genders = require("../models/genders");
-const { CustomError, err } = require("../utils/customError");
 
 async function createGender(genderData) {
   try {
     const genderId = await Genders.createGender(genderData);
     return genderId;
   } catch (error) {
-    throw new CustomError(
-      err.failedGender.message,
-      err.failedGender.statusCode
-    );
+    throw new error;
   }
 }
 
@@ -18,15 +14,15 @@ async function getGenderById(genderId) {
     const gender = await Genders.getGenderById(genderId);
     return gender;
   } catch (error) {
-    throw new CustomError(err.dataError.message, err.dataError.statusCode);
+    throw new error;
   }
 }
 async function getAllGenders() {
   try {
-    const allgen = await Genders.getAllGenders();
-    return allgen;
+    const gender = await Genders.getAllGenders();
+    return gender;
   } catch (error) {
-    throw new CustomError("Failed to get All Genders", 400);
+    throw new error;
   }
 }
 

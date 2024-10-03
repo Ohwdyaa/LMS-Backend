@@ -1,4 +1,10 @@
-const { createReligion, getAllReligions, getReligionById, updateReligion, deleteReligion } = require("../service/religions");
+const {
+  createReligion,
+  updateReligion,
+  deleteReligion,
+  getAllReligions,
+  getReligionById,
+} = require("../validate/religions");
 const { err } = require("../utils/customError");
 
 async function createReligionHandler(req, res) {
@@ -20,10 +26,10 @@ async function createReligionHandler(req, res) {
 async function getReligionByIdHandler(req, res) {
   const { id } = req.params;
   try {
-      const religion = await getReligionById(id);
-      return res.status(200).json(religion);
+    const religion = await getReligionById(id);
+    return res.status(200).json(religion);
   } catch (error) {
-      return res.status(404).json({ message: error.message });
+    return res.status(404).json({ message: error.message });
   }
 }
 async function getAllReligionsHandler(req, res) {
@@ -39,7 +45,7 @@ async function getAllReligionsHandler(req, res) {
   }
 }
 async function updateReligionHandler(req, res) {
-  const { id: religionId} = req.params;
+  const { id: religionId } = req.params;
   const religionUpdate = req.body;
   try {
     const result = await updateReligion(religionId, religionUpdate);
@@ -66,13 +72,10 @@ async function deleteReligionHandler(req, res) {
   }
 }
 
-
-
 module.exports = {
   createReligionHandler,
   getReligionByIdHandler,
   getAllReligionsHandler,
   updateReligionHandler,
-  deleteReligionHandler
-  
+  deleteReligionHandler,
 };

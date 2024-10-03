@@ -1,10 +1,8 @@
 const { query } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const { err, CustomError } = require("../utils/customError");
 
 const Religions = {
   createReligion: async (religionData) => {
-    console.log("Creating role with data:", religionData);
     try {
       const id = uuid();
       const result = await query(
@@ -15,60 +13,47 @@ const Religions = {
         ) VALUES (?,?)`,
         [id, religionData.name]
       );
-      if (result.length === 0) {
-        return null;
-      }
-
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
   getReligionById: async (religionId) => {
     try {
-      const [result] = await query("SELECT * FROM religions WHERE id = ?", [
-        religionId,
-      ]);
-      if (result.length === 0) {
-        return null;
-      }
+      const [result] = await query("SELECT * FROM religions WHERE id = ?", 
+        religionId);
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
   getAllReligions: async () => {
-    const result = await query("SELECT * FROM religions");
-    if (result.length === 0) {
-      return null;
+    try {
+      const result = await query("SELECT * FROM religions");
+      return result;
+    } catch (error) {
+      throw new error;
     }
-    return result;
   },
-  catch(error) {
-    throw new CustomError(err.dataError.message, err.dataError.statusCode);
-  },
+
   updateReligion: async (religionId, religionData) => {
     try {
       const result = await query("UPDATE religions SET ? WHERE id = ?", [
         religionData,
         religionId,
       ]);
-      return result.affectedRows > 0;
+      return result;
     } catch (error) {
-      throw new CustomError(
-        err.failedUpdateReligion.message,
-        err.failedUpdateReligion.statusCode
-      );
+      throw new error;
     }
   },
   deleteReligion: async (religionId) => {
     try {
-      const result = await query(" DELETE FROM religions where id = ? ", [
-        religionId,
-      ]);
+      const result = await query(" DELETE FROM religions where id = ? ", 
+        religionId);
       return result;
     } catch (error) {
-      throw new CustomError(err.dataError.message, err.dataError.statusCode);
+      throw new error;
     }
   },
 };

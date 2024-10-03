@@ -1,31 +1,19 @@
 const {
-  createUser,
   loginUser,
-  changeUserRole,
-  // getAccessToken,
+  createUser,
   updateUser,
   deleteUser,
   getAllUser,
+  changeUserRole,
   logoutUser,
-} = require("../service/users");
+  forgetPassword,
+} = require("../validate/users");
 const { err } = require("../utils/customError");
-const Roles = require("../models/roles");
-// const Genders = require("../models/genders");
-// const Religions = require("../models/religions");
-const { validateEmail } = require("../middlewares/validate");
-
-// semua vaidate di pindah ke service
 
 async function loginHandler(req, res) {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(err.requiredEmailPassword.statusCode).json({
-      message: err.requiredEmailPassword.message,
-    });
-  }
   try {
+    const { email, password } = req.body;
     const { token, user } = await loginUser(email, password);
-
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
     //   secure: process.env.NODE_ENV === "production",
@@ -38,9 +26,9 @@ async function loginHandler(req, res) {
     });
   } catch (error) {
     return res
-      .status(error.statusCode || err.internalServerError.statusCode)
+      .status(error.statusCode || err.errorLogin.statusCode)
       .json({
-        message: error.message || err.internalServerError.message,
+        message: error.message || err.errorLogin.message,
         details: error.details || null,
       });
   }
@@ -49,34 +37,6 @@ async function loginHandler(req, res) {
 async function createUserHandler(req, res) {
   try {
     const userData = req.body;
-
-    if (!validateEmail(userData.email)) {
-      return res.status(errors.invalidEmail.statusCode).json({
-        message: errors.invalidEmail.message,
-      });
-    }
-
-    const validRole = await Roles.getRoleById(userData.roleId);
-    if (!validRole) {
-      return res.status(errors.roleInvalid.statusCode).json({
-        message: errors.roleInvalid.message,
-      });
-    }
-
-    // const validGender = await Genders.getGenderById(userData.genderId);
-    // if (!validGender) {
-    //   return res.status(errors.genderInvalid.statusCode).json({
-    //     message: errors.genderInvalid.message,
-    //   });
-    // }
-
-    // const validReligion = await Religions.getReligionById(userData.religionId);
-    // if (!validReligion) {
-    //   return res.status(errors.religionInvalid.statusCode).json({
-    //     message: errors.religionInvalid.message,
-    //   });
-    // }
-
     const userId = await createUser(userData);
     return res.status(201).json({
       message: "User created successfully",
@@ -84,45 +44,47 @@ async function createUserHandler(req, res) {
     });
   } catch (error) {
     return res
-      .status(error.statusCode || err.internalServerError.statusCode)
+      .status(error.statusCode || err.errorCreate.statusCode)
       .json({
-        message: error.message || err.internalServerError.message,
+        message: error.message || err.errorCreate.message,
         details: error.details || null,
       });
   }
 }
 
 async function updateUserHandler(req, res) {
-  const { id: userId } = req.params;
-  const userUpdate = req.body;
   try {
+    const { id: userId } = req.params;
+    const userUpdate = req.body;
     const result = await updateUser(userId, userUpdate);
     return res.status(200).json({
       message: "User updated successfully",
       result,
     });
   } catch (error) {
-    // return res
-    //   .status(error.statusCode || err.internalServerError.statusCode)
-    //   .json({
-    //     message: error.message || err.internalServerError.message,
-    //     details: error.details || null,
-    //   }); buatkan dulu custom service buat update user
-    return res.status(400).json({
-      message: error.message,
-    });
+    return res
+      .status(error.statusCode || err.errorUpdate.statusCode)
+      .json({
+        message: error.message || err.errorUpdate.message,
+        details: error.details || null,
+      }); 
   }
 }
 
 async function deleteUserHandler(req, res) {
-  const userId = req.params.id;
   try {
+    const userId = req.params.id;
     await deleteUser(userId);
     return res.status(200).json({
       message: "User deleted successfully",
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res
+      .status(error.statusCode || err.errorDelete.statusCode)
+      .json({
+        message: error.message || err.errorDelete.message,
+        details: error.details || null,
+      });
   }
 }
 
@@ -133,58 +95,83 @@ async function getAllUserHandler(req, res) {
       data: userAll,
     });
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return res
+      .status(error.statusCode || err.errorSelect.statusCode)
+      .json({
+        message: error.message || err.errorSelect.message,
+        details: error.details || null,
+      });
   }
 }
-async function changeUserRoleHandler(req, res) {
-  const { id: userId } = req.params;
-  const { roleId } = req.body;
-  try {
-    const result = await changeUserRole(userId, roleId);
 
+async function forgetPasswordHandler(req, res) {
+  try {
+    const {id: userId} = req.params;
+    const newPassword = req.body;
+    const result = await forgetPassword(newPassword, userId);
     return res.status(200).json({
-      message: result.message,
+      message: "Password updated successfully",
+      result,
     });
   } catch (error) {
-    return res.status(400).json({
-      message: error.message || "Failed to change role",
+    return res
+      .status(error.statusCode || err.errorChangePassword.statusCode)
+      .json({
+        message: error.message || err.errorChangePassword.message,
+        details: error.details || null,
+      });
+  }
+}
+
+async function changeUserRoleHandler(req, res) {
+  try {
+    const { id: userId } = req.params;
+    const { roleId } = req.body;
+    const result = await changeUserRole(userId, roleId);
+    return res.status(200).json({
+      result,
+      message: "User role updated successfully",
     });
+  } catch (error) {
+    return res
+      .status(error.statusCode || err.errorChangeRole.statusCode)
+      .json({
+        message: error.message || err.errorChangeRole.message,
+        details: error.details || null,
+      });
   }
 }
 async function logoutUserHandler(req, res) {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    console.log("Token received:", token);
-
     if (!token) {
       return res.status(400).json({ message: "No token provided" });
     }
     const result = await logoutUser(token);
     if (result) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "logout successfully",
       });
     }
-    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error("Error during logout:", error);
-    return res.status(400).json({
-      message: err.cannotLogout,
-      error: error.message,
-    });
+    return res
+      .status(error.statusCode || err.errorLogout.statusCode)
+      .json({
+        message: error.message || err.errorLogout.message,
+        details: error.details || null,
+      });
   }
 }
 
 module.exports = {
+  loginHandler,
   createUserHandler,
   updateUserHandler,
   deleteUserHandler,
   getAllUserHandler,
-  loginHandler,
+  forgetPasswordHandler,
   changeUserRoleHandler,
-  // refreshTokenHandler,
   logoutUserHandler,
 };
 

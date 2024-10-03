@@ -122,6 +122,10 @@ const err = {
     message: "An error occurred during logout",
     statusCode: 400,
   },
+  failedUpdateReligion: {
+    message: "Failed to update religion",
+    statusCode: 400,  
+  },
 };
 
 module.exports = {

@@ -1,15 +1,14 @@
-const express = require('express');
-const morgan = require  ('morgan');
+const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const {passport} = require('./middlewares/auth');
+const { passport } = require("./middlewares/auth");
 const db = require("./config/db/db");
-const userRoutes = require("./routes/userRoute");
-const roleRoutes = require("./routes/rolesRoute");
-const religionRoutes = require("./routes/religionRoute");
-const genderRoutes = require("./routes/genderRoute");
-
+const userRoutes = require("./routes/users");
+const roleRoutes = require("./routes/roles");
+const religionRoutes = require("./routes/religions");
+const genderRoutes = require("./routes/genders");
 
 //buat cors
 const allowedOrigins = ["http://localhost:5173"];
@@ -24,13 +23,13 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(morgan('tiny'));
+app.use(morgan("tiny"));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
-app.use("/",  userRoutes);
+app.use("/", userRoutes);
 app.use("/", roleRoutes);
 app.use("/", religionRoutes);
 app.use("/", genderRoutes);

@@ -9,7 +9,7 @@ const {
   getAllUserHandler,
   logoutUserHandler,
   // logoutHandler
-} = require("../controllers/userHandler");
+} = require("../controllers/users");
 const router = express.Router();
 const { passport, authorizeRole} = require("../middlewares/auth");
 

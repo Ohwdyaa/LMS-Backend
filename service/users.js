@@ -1,6 +1,5 @@
 const Users = require("../models/users");
 const { generateJWT } = require("../utils/jwt");
-const { CustomError, err } = require("../utils/customError");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 
@@ -16,10 +15,7 @@ async function createUser(data) {
     const userId = await Users.createUser(userData);
     return userId;
   } catch (error) {
-    throw new CustomError(
-      err.failedCreate.message,
-      err.failedCreate.statusCode
-    );
+    throw new error;
   }  
 }
 
@@ -42,10 +38,7 @@ async function loginUser(email, password) {
       },
     };  
   } catch (error) {
-    throw new CustomError(
-      err.errLogin.message,
-      err.errLogin.statusCode
-    );
+    throw new error;
   }
 }
 
@@ -62,10 +55,7 @@ async function verifyUser(email, password) {
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : null;
   } catch (error) {
-    throw new CustomError(
-      err.authError.message,
-      err.authError.statusCode
-    );
+    throw new error;
   }
 }
 
@@ -77,10 +67,7 @@ async function updateUser(userId, userData) {
     }
     await Users.updateUser(userId, userData);
   } catch (error) {
-    throw new CustomError(
-      err.failedUpdate.message,
-      err.failedUpdate.statusCode
-    );
+    throw new error;
   }
 }
 
@@ -92,7 +79,7 @@ async function deleteUser(userId) {
     }
     await Users.deleteUser(userId);
   } catch (error) {
-    throw { message: err.failedDelete.message, originalError: error };
+    throw new error;
   }
 }
 
@@ -102,6 +89,7 @@ async function getAllUser() {
     if (!users || users.length === 0) {
       throw new CustomError("No users found", 404);
     }
+    // pakai cara lama jangan modern sintax
     return users.map((user) => ({
       id: user.id,
       email: user.email,
@@ -110,10 +98,7 @@ async function getAllUser() {
       role: user.role,
     }));
   } catch (error) {
-    throw new CustomError(
-      err.errGet.message,
-      err.errGet.statusCode
-    );
+    throw new error;
   }
 }
 
@@ -124,13 +109,10 @@ async function changeUserRole(userId, newRoleId) {
       throw err.userNotFound;
     }
 
-    await Users.updateUserRole(userId, newRoleId);
+    await Users.changeUserRole(userId, newRoleId);
     return { message: "User role updated successfully" };
   } catch (error) {
-    throw new CustomError(
-      err.changeRole.message,
-      err.changeRole.statusCode
-    );
+    throw new error;
   }
 }
 async function logoutUser(token) {
@@ -138,10 +120,7 @@ async function logoutUser(token) {
     const result = await Users.logoutUser(token);
     return result; 
   } catch (error) {
-    throw new CustomError(
-      err.logoutErr.message,
-      err.logoutErr.statusCode
-    );
+    throw new error;
   }
 }
 

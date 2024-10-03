@@ -1,4 +1,4 @@
-const { createRole, getRoleById, getAllRoles, deleteRole} = require("../service/rolesService");
+const { createRole, getRoleById, getAllRoles, deleteRole} = require("../service/roles");
 const { err } = require("../utils/customError");
 
 async function createRoleHandler(req, res) {

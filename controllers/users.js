@@ -7,12 +7,14 @@ const {
   deleteUser,
   getAllUser,
   logoutUser,
-} = require("../service/userService");
+} = require("../service/users");
 const { err } = require("../utils/customError");
 const Roles = require("../models/roles");
-const Genders = require("../models/genders");
-const Religions = require("../models/religions");
+// const Genders = require("../models/genders");
+// const Religions = require("../models/religions");
 const { validateEmail } = require("../middlewares/validate");
+
+// semua vaidate di pindah ke service
 
 async function loginHandler(req, res) {
   const { email, password } = req.body;
@@ -35,7 +37,6 @@ async function loginHandler(req, res) {
       data: { token, user },
     });
   } catch (error) {
-    console.error("Login error:", error);
     return res
       .status(error.statusCode || err.internalServerError.statusCode)
       .json({
@@ -62,19 +63,19 @@ async function createUserHandler(req, res) {
       });
     }
 
-    const validGender = await Genders.getGenderById(userData.genderId);
-    if (!validGender) {
-      return res.status(errors.genderInvalid.statusCode).json({
-        message: errors.genderInvalid.message,
-      });
-    }
+    // const validGender = await Genders.getGenderById(userData.genderId);
+    // if (!validGender) {
+    //   return res.status(errors.genderInvalid.statusCode).json({
+    //     message: errors.genderInvalid.message,
+    //   });
+    // }
 
-    const validReligion = await Religions.getReligionById(userData.religionId);
-    if (!validReligion) {
-      return res.status(errors.religionInvalid.statusCode).json({
-        message: errors.religionInvalid.message,
-      });
-    }
+    // const validReligion = await Religions.getReligionById(userData.religionId);
+    // if (!validReligion) {
+    //   return res.status(errors.religionInvalid.statusCode).json({
+    //     message: errors.religionInvalid.message,
+    //   });
+    // }
 
     const userId = await createUser(userData);
     return res.status(201).json({
@@ -82,9 +83,12 @@ async function createUserHandler(req, res) {
       data: { userId },
     });
   } catch (error) {
-    return res.status(errors.internalServerError.statusCode).json({
-      message: errors.internalServerError.message,
-    });
+    return res
+      .status(error.statusCode || err.internalServerError.statusCode)
+      .json({
+        message: error.message || err.internalServerError.message,
+        details: error.details || null,
+      });
   }
 }
 
@@ -98,6 +102,12 @@ async function updateUserHandler(req, res) {
       result,
     });
   } catch (error) {
+    // return res
+    //   .status(error.statusCode || err.internalServerError.statusCode)
+    //   .json({
+    //     message: error.message || err.internalServerError.message,
+    //     details: error.details || null,
+    //   }); buatkan dulu custom service buat update user
     return res.status(400).json({
       message: error.message,
     });

@@ -1,5 +1,11 @@
 const express = require("express");
-const { createReligionHandler, getReligionByIdHandler, getAllReligionsHandler, updateReligionHandler, deleteReligionHandler } = require("../controllers/religionHandler");
+const {
+  createReligionHandler,
+  getReligionByIdHandler,
+  getAllReligionsHandler,
+  updateReligionHandler,
+  deleteReligionHandler,
+} = require("../controllers/religions");
 const router = express.Router();
 
 router.post("/religion", createReligionHandler);

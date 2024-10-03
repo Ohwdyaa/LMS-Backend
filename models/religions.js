@@ -21,10 +21,7 @@ const Religions = {
 
       return result;
     } catch (error) {
-      throw new CustomError(
-        err.dataError.message,
-        err.dataError.statusCode
-      );
+      throw new CustomError(err.dataError.message, err.dataError.statusCode);
     }
   },
   getReligionById: async (religionId) => {
@@ -37,26 +34,22 @@ const Religions = {
       }
       return result;
     } catch (error) {
-      throw new CustomError(
-        err.dataError.message,
-        err.dataError.statusCode
-      );
+      throw new CustomError(err.dataError.message, err.dataError.statusCode);
     }
   },
   getAllReligions: async () => {
-      const result = await query("SELECT * FROM religions");
-      if (result.length === 0) {
-        return null;
-    }  return result 
-  }, catch (error) {
-    throw new CustomError(
-      err.dataError.message,
-      err.dataError.statusCode
-    );
+    const result = await query("SELECT * FROM religions");
+    if (result.length === 0) {
+      return null;
+    }
+    return result;
+  },
+  catch(error) {
+    throw new CustomError(err.dataError.message, err.dataError.statusCode);
   },
   updateReligion: async (religionId, religionData) => {
     try {
-      const result = await query ("UPDATE religions SET ? WHERE id = ?", [
+      const result = await query("UPDATE religions SET ? WHERE id = ?", [
         religionData,
         religionId,
       ]);
@@ -68,16 +61,15 @@ const Religions = {
       );
     }
   },
-  deleteReligion : async(religionId)=>{
+  deleteReligion: async (religionId) => {
     try {
-    const result = await query (" DELETE FROM religions where id = ? ", [religionId]);
+      const result = await query(" DELETE FROM religions where id = ? ", [
+        religionId,
+      ]);
       return result;
-    } catch (error){
-      throw new CustomError(
-        err.dataError.message,
-        err.dataError.statusCode
-      );
+    } catch (error) {
+      throw new CustomError(err.dataError.message, err.dataError.statusCode);
     }
-  }
+  },
 };
 module.exports = Religions;

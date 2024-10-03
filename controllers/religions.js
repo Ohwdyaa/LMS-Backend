@@ -1,4 +1,4 @@
-const { createReligion, getAllReligions, getReligionById, updateReligion, deleteReligion } = require("../service/religionService");
+const { createReligion, getAllReligions, getReligionById, updateReligion, deleteReligion } = require("../service/religions");
 const { err } = require("../utils/customError");
 
 async function createReligionHandler(req, res) {

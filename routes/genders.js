@@ -1,5 +1,5 @@
 const express = require("express");
-const { createGenderHandler } = require("../controllers/genderHandler");
+const { createGenderHandler } = require("../controllers/genders");
 const router = express.Router();
 
 router.post("/gender", createGenderHandler);

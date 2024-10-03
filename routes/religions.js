@@ -1,10 +1,10 @@
 const express = require("express");
 const {
   createReligionHandler,
-  getReligionByIdHandler,
-  getAllReligionsHandler,
   updateReligionHandler,
   deleteReligionHandler,
+  getReligionByIdHandler,
+  getAllReligionsHandler,
 } = require("../controllers/religions");
 const router = express.Router();
 

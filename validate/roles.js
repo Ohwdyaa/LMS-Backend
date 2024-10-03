@@ -6,7 +6,7 @@ async function createRole(roleData) {
     const roleId = await Roles.createRole(roleData);
     return roleId;
   } catch (error) {
-    throw new CustomError(err.failedRoles.message, err.failedRoles.statusCode);
+    throw new error;
   }
 }
 async function getRoleById(roleId) {
@@ -17,7 +17,7 @@ async function getRoleById(roleId) {
     }
     return role;
   } catch (error) {
-    throw new CustomError("Failed to get role", 400);
+    throw new error;
   }
 }
 async function getAllRoles() {
@@ -25,15 +25,15 @@ async function getAllRoles() {
     const roles = await Roles.getAllRoles();
     return roles;
   } catch (error) {
-    throw new CustomError("Failed to get all roles", 400);
+    throw new error;
   }
 }
 async function deleteRole(roleId) {
   try {
-    const hapus = await Roles.deleteRole(roleId);
-    return hapus;
+    const deleteRoles = await Roles.deleteRole(roleId);
+    return deleteRoles;
   } catch (error) {
-    throw new CustomError("Failed to delete role", 400);
+    throw new error;
   }
 }
 

@@ -2,28 +2,16 @@ const Users = require("../models/users");
 const { generateJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
-
-async function createUser(data) {
-  try {
-    const { password } = data;
-    const hash = await hashPassword(password);
-    const userData = {
-      ...data,
-      password: hash,
-    };
-
-    const userId = await Users.createUser(userData);
-    return userId;
-  } catch (error) {
-    throw new error;
-  }  
-}
+const Roles = require("../models/roles");
 
 async function loginUser(email, password) {
   try {
+    if (!email || !password) {
+      return error;
+    }
     const user = await verifyUser(email, password);
     if (!user) {
-      throw err.userNotFound();
+      throw error;
     }
     const token = generateJWT(user);
     // const refreshToken = generateRefreshToken(user);
@@ -31,55 +19,57 @@ async function loginUser(email, password) {
     return {
       token,
       user: {
-        id: user.id,
         username: user.username,
-        email: user.email,
-        roleId: user.role_id,
       },
-    };  
+    };
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
 
-async function verifyUser(email, password) {
-  if (!validateEmail(email)) {
-    throw err.invalidEmail();
-  }
+async function createUser(data) {
   try {
-    const user = await Users.getUserByEmail(email);
-    if (!user) {
-      return null;
+    if (!validateEmail(data.email)) {
+      return error;
     }
-
-    const isValid = await verifyPassword(password, user.password);
-    return isValid ? user : null;
+    const validRole = await Roles.getRoleById(data.roleId);
+    if (!validRole) {
+      return error;
+    }
+    const password = "admin12345";
+    const hash = await hashPassword(password);
+    const userData = {
+      ...data,
+      password: hash,
+    };
+    const userId = await Users.createUser(userData);
+    return userId;
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
 
 async function updateUser(userId, userData) {
   try {
-    const userid = await Users.getUserById(userId);
-    if (userid.affectedRows === 0) {
-      throw Error("User not found or no changes made");
+    const user = await Users.getUserById(userId);
+    if (user.affectedRows === 0) {
+      throw error;
     }
     await Users.updateUser(userId, userData);
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
 
 async function deleteUser(userId) {
   try {
     const user = await Users.getUserById(userId);
-    if (!user) {
-      throw err.userNotFound;
+    if (user.affectedRows === 0) {
+      throw error;
     }
     await Users.deleteUser(userId);
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
 
@@ -87,18 +77,44 @@ async function getAllUser() {
   try {
     const users = await Users.getAllUser();
     if (!users || users.length === 0) {
-      throw new CustomError("No users found", 404);
+      throw error;
     }
-    // pakai cara lama jangan modern sintax
-    return users.map((user) => ({
-      id: user.id,
-      email: user.email,
-      fullname: user.fullname,
-      gender: user.gender,
-      role: user.role,
-    }));
+    const userList = [];
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      userList.push({
+        id: user.id,
+        email: user.email,
+        fullname: user.fullname,
+        gender: user.gender,
+        role: user.role,
+      });
+    }
+    return userList;
   } catch (error) {
-    throw new error;
+    throw new error();
+  }
+}
+
+async function verifyUser(email, password) {
+  try {
+    const user = await Users.getUserByEmail(email);
+    if (!user) {
+      return null;
+    }
+    const isValid = await verifyPassword(password, user.password);
+    return isValid ? user : null;
+  } catch (error) {
+    throw new error();
+  }
+}
+
+async function forgetPassword(newPassword, userId) {
+  try {
+    const hashedPassword = await hashPassword(newPassword);
+    await Users.forgetUserPassword(hashedPassword, userId);
+  } catch (error) {
+    throw new error();
   }
 }
 
@@ -106,23 +122,35 @@ async function changeUserRole(userId, newRoleId) {
   try {
     const user = await Users.getUserById(userId);
     if (!user) {
-      throw err.userNotFound;
+      throw new error;
     }
 
     await Users.changeUserRole(userId, newRoleId);
-    return { message: "User role updated successfully" };
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
 async function logoutUser(token) {
   try {
     const result = await Users.logoutUser(token);
-    return result; 
+    return result;
   } catch (error) {
-    throw new error;
+    throw new error();
   }
 }
+
+module.exports = {
+  loginUser,
+  createUser,
+  updateUser,
+  deleteUser,
+  getAllUser,
+  verifyUser,
+  forgetPassword,
+  changeUserRole,
+  logoutUser,
+  // getAccessToken,
+};
 
 // async function getAccessToken(refreshToken) {
 //   try {
@@ -181,15 +209,3 @@ async function logoutUser(token) {
 //       });
 //   }
 //   }
-
-module.exports = {
-  createUser,
-  updateUser,
-  deleteUser,
-  getAllUser,
-  loginUser,
-  verifyUser,
-  changeUserRole,
-  // getAccessToken,
-  logoutUser
-};

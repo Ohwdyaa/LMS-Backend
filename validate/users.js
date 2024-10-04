@@ -1,5 +1,5 @@
 const Users = require("../models/users");
-const { generateJWT } = require("../utils/jwt");
+const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
@@ -14,6 +14,7 @@ async function loginUser(email, password) {
       throw error;
     }
     const token = generateJWT(user);
+    const decoded = verifyJWT(token);
     // const refreshToken = generateRefreshToken(user);
     // await Users.updateRefreshToken(user.id, refreshToken);
     return {
@@ -23,7 +24,7 @@ async function loginUser(email, password) {
       },
     };
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -45,7 +46,7 @@ async function createUser(data) {
     const userId = await Users.createUser(userData);
     return userId;
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -57,7 +58,7 @@ async function updateUser(userId, userData) {
     }
     await Users.updateUser(userId, userData);
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -69,7 +70,7 @@ async function deleteUser(userId) {
     }
     await Users.deleteUser(userId);
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -92,7 +93,7 @@ async function getAllUser() {
     }
     return userList;
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -105,7 +106,7 @@ async function verifyUser(email, password) {
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : null;
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -114,7 +115,7 @@ async function forgetPassword(newPassword, userId) {
     const hashedPassword = await hashPassword(newPassword);
     await Users.forgetUserPassword(hashedPassword, userId);
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 
@@ -122,12 +123,12 @@ async function changeUserRole(userId, newRoleId) {
   try {
     const user = await Users.getUserById(userId);
     if (!user) {
-      throw new error;
+      throw error;
     }
 
     await Users.changeUserRole(userId, newRoleId);
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 async function logoutUser(token) {
@@ -135,7 +136,7 @@ async function logoutUser(token) {
     const result = await Users.logoutUser(token);
     return result;
   } catch (error) {
-    throw new error();
+    throw error;
   }
 }
 

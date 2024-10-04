@@ -15,7 +15,7 @@ const Roles = {
       );
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   getRoleById: async (roleId) => {
@@ -24,7 +24,7 @@ const Roles = {
         roleId);
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   getAllRoles: async () => {
@@ -32,7 +32,7 @@ const Roles = {
       const result = await query("SELECT * FROM roles");
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   deleteRole: async (roleId) => {
@@ -40,7 +40,7 @@ const Roles = {
       const result = await query("DELETE FROM roles where id = ? ", roleId);
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
 };

@@ -1,19 +1,16 @@
 const passport = require("passport");
 // const LocalStrategy = require("passport-local").Strategy;
-const passportJWT = require("passport-jwt");
-const JWTStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
+const {Strategy, ExtractJwt} = require("passport-jwt");
 const Users = require("../models/users");
-const { err } = require("../utils/customError");
-// const bcrypt = require("../utils/bcrypt");
-
+const fs = require('fs');
+const publicKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem', 'utf8');
 
 
 passport.use(
-  new JWTStrategy(
+  new Strategy(
     {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: publicKey,
     },
     async function (jwtPayload, cb) {
       try {
@@ -23,7 +20,7 @@ passport.use(
         }
         return cb(null, user);
       } catch (error) {
-        return cb(err);
+        return error;
       }
     }
   )
@@ -41,7 +38,6 @@ const authorizeRole = (requiredRoleId) => {
         message: "Forbidden: You don't have permission to perform this action",
       });
     }
-
     next();
   };
 };

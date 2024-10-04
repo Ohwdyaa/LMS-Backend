@@ -15,7 +15,7 @@ const Religions = {
       );
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   getReligionById: async (religionId) => {
@@ -24,7 +24,7 @@ const Religions = {
         religionId);
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   getAllReligions: async () => {
@@ -32,7 +32,7 @@ const Religions = {
       const result = await query("SELECT * FROM religions");
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
 
@@ -44,7 +44,7 @@ const Religions = {
       ]);
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
   deleteReligion: async (religionId) => {
@@ -53,7 +53,7 @@ const Religions = {
         religionId);
       return result;
     } catch (error) {
-      throw new error;
+      throw error;
     }
   },
 };

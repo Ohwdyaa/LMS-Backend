@@ -13,6 +13,7 @@ const { err } = require("../utils/customError");
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
+    console.log  (req.body) 
     const { token, user } = await loginUser(email, password);
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
@@ -154,7 +155,6 @@ async function logoutUserHandler(req, res) {
       });
     }
   } catch (error) {
-    console.error("Error during logout:", error);
     return res
       .status(error.statusCode || err.errorLogout.statusCode)
       .json({

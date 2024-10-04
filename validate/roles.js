@@ -6,7 +6,7 @@ async function createRole(roleData) {
     const roleId = await Roles.createRole(roleData);
     return roleId;
   } catch (error) {
-    throw new error;
+    throw error;
   }
 }
 async function getRoleById(roleId) {
@@ -17,7 +17,7 @@ async function getRoleById(roleId) {
     }
     return role;
   } catch (error) {
-    throw new error;
+    throw error;
   }
 }
 async function getAllRoles() {
@@ -25,7 +25,7 @@ async function getAllRoles() {
     const roles = await Roles.getAllRoles();
     return roles;
   } catch (error) {
-    throw new error;
+    throw error;
   }
 }
 async function deleteRole(roleId) {
@@ -33,7 +33,7 @@ async function deleteRole(roleId) {
     const deleteRoles = await Roles.deleteRole(roleId);
     return deleteRoles;
   } catch (error) {
-    throw new error;
+    throw error;
   }
 }
 

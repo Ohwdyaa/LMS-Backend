@@ -42,7 +42,7 @@ const Users = {
       );
       return result.insertId;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   forgetUserPassword: async (userId, hashedPassword) => {
@@ -54,7 +54,7 @@ const Users = {
       ]);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   updateUser: async (userId, userData) => {
@@ -84,7 +84,7 @@ const Users = {
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   deleteUser: async (userId) => {
@@ -92,7 +92,7 @@ const Users = {
       const result = await query(`DELETE FROM users WHERE id = ?`, userId);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   getAllUser: async () => {
@@ -105,7 +105,7 @@ const Users = {
           LEFT JOIN religions ON users.religion_id = religions.id `);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   getUserById: async (id) => {
@@ -119,22 +119,22 @@ const Users = {
           LEFT JOIN religions ON users.religion_id = religions.id
           WHERE users.id = ?
             `,
-        id
+        [id]
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   getUserByEmail: async (email) => {
     try {
       const [result] = await query(
         "SELECT * FROM users WHERE email = ?",
-        email
+        [email]
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   changeUserRole: async (userId, roleId) => {
@@ -145,7 +145,7 @@ const Users = {
       ]);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   logoutUser: async (token) => {
@@ -156,7 +156,7 @@ const Users = {
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
 };

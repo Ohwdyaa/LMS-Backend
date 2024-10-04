@@ -16,7 +16,7 @@ const Genders = {
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   getGenderById: async (genderId) => {
@@ -27,7 +27,7 @@ const Genders = {
       );
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   getAllGenders: async () => {
@@ -35,7 +35,7 @@ const Genders = {
       const result = await query(" SELECT * FROM genders ");
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   updateGender: async (genderId, genderData) => {
@@ -46,7 +46,7 @@ const Genders = {
       ]);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
   deleteGender: async (genderId) => {
@@ -54,7 +54,7 @@ const Genders = {
       const result = await query("DELETE FROM genders WHERE id = ?", genderId);
       return result;
     } catch (error) {
-      throw new error();
+      throw error;
     }
   },
 };

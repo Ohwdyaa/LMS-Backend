@@ -4,7 +4,9 @@ dotenv.config();
 
 module.exports = {
   port: process.env.PORT || 3000,
-  jwtSecret: process.env.JWT_SECRET || 'infinite_le@rning',
+  issuer: process.env.JWT_ISSUER || 'APPLMS',
+  audience: process.env.JWT_AUDIENCE || 'http://localhost:3000',
+  // jwtSecret: process.env.JWT_SECRET || 'infinite_le@rning',
   db: {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,

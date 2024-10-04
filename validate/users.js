@@ -83,13 +83,13 @@ async function getAllUser() {
     const userList = [];
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
-      userList.push({
-        id: user.id,
-        email: user.email,
-        fullname: user.fullname,
-        gender: user.gender,
-        role: user.role,
-      });
+      const userObj = new Object(); 
+      userObj.id = user.id;
+      userObj.email = user.email;
+      userObj.fullname = user.fullname;
+      userObj.gender = user.gender;
+      userObj.role = user.role;
+      userList.push(userObj)
     }
     return userList;
   } catch (error) {

@@ -97,10 +97,10 @@ const Users = {
   },
   getAllUser: async () => {
     try {
-      const result =
-        await query(`SELECT users.*, roles.name as role, genders.name as gender, religions.name as religion
+      const result = await query(
+        `SELECT users.id, users.email, users.fullname, users.gender_id, users.role_id, users.religion_id, roles.name as role, genders.name as gender, religions.name as religion
           FROM users
-          JOIN roles ON users.role_id = roles.id
+          LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
           LEFT JOIN religions ON users.religion_id = religions.id `);
       return result;
@@ -111,25 +111,27 @@ const Users = {
   getUserById: async (id) => {
     try {
       const result = await query(
-        `
-          SELECT users.*, roles.name as roleName, genders.name as genderName, religions.name as religionName
+        `SELECT users.username, users.email, users.fullname, users.role_id, roles.name as role, genders.name as gender, religions.name as religion
           FROM users
-          JOIN roles ON users.role_id = roles.id
+          LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
           LEFT JOIN religions ON users.religion_id = religions.id
           WHERE users.id = ?
             `,
         [id]
       );
+      console.log("Query Result:", result);
       return result;
     } catch (error) {
+      console.error("Error in getUserById:", error.message);
       throw error;
     }
   },
   getUserByEmail: async (email) => {
     try {
       const [result] = await query(
-        "SELECT * FROM users WHERE email = ?",
+        `SELECT users.id, users.username, users.email, users.password, users.fullname, users.role_id, roles.name as role 
+        FROM users LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
         [email]
       );
       return result;
@@ -139,7 +141,7 @@ const Users = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await query("UPDATE users SET role_id= ? WHERE id = ? ", [
+      const result = await query(`UPDATE users SET role_id= ? WHERE id = ? `, [
         roleId,
         userId,
       ]);
@@ -160,6 +162,7 @@ const Users = {
     }
   },
 };
+
 module.exports = Users;
 
 // updateRefreshToken: async (userId, refreshToken) => {

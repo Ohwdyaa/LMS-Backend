@@ -1,5 +1,4 @@
 const express = require("express");
-const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -23,7 +22,7 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(morgan("tiny"));
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

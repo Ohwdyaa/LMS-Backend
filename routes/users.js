@@ -18,9 +18,9 @@ router.post("/login", loginHandler);
 router.post("/user",  createUserHandler);
 router.put("/user/:id", passport.authenticate("jwt", { session: false }), updateUserHandler);
 router.delete("/user/:id", passport.authenticate("jwt", { session: false }), deleteUserHandler);
-router.get("/user", getAllUserHandler);
+router.get("/user", passport.authenticate("jwt", { session: false }), getAllUserHandler);
 router.put("/role/:id", passport.authenticate("jwt", { session: false }), changeUserRoleHandler);
-router.delete("/logout", logoutUserHandler);
+router.delete("/logout", passport.authenticate("jwt", { session: false }), logoutUserHandler);
 // router.get("/token", refreshTokenHandler);
 
 module.exports = router;

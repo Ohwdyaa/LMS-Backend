@@ -14,7 +14,6 @@ const pool = mysql.createPool({
 async function query(query, value) {
   try {
     const [result] = await pool.query(query, value === undefined ? [] : value);
-    console.log(`Executed query: ${query} with values: ${JSON.stringify(value)}`);
     return result;
   } catch (error) {
     console.error("Failed to connect to database:", error);

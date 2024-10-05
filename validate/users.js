@@ -7,14 +7,14 @@ const Roles = require("../models/roles");
 async function loginUser(email, password) {
   try {
     if (!email || !password) {
-      return error;
+      throw new Error("Email and password are required");
     }
     const user = await verifyUser(email, password);
-    if (!user) {
-      throw error;
+    if (user === undefined) {
+      throw new Error("Invalid credentials");
     }
     const token = generateJWT(user);
-    const decoded = verifyJWT(token);
+    verifyJWT(token);
     // const refreshToken = generateRefreshToken(user);
     // await Users.updateRefreshToken(user.id, refreshToken);
     return {
@@ -24,6 +24,7 @@ async function loginUser(email, password) {
       },
     };
   } catch (error) {
+    console.error("Login Error:", error.message);
     throw error;
   }
 }
@@ -87,7 +88,6 @@ async function getAllUser() {
       userObj.id = user.id;
       userObj.email = user.email;
       userObj.fullname = user.fullname;
-      userObj.gender = user.gender;
       userObj.role = user.role;
       userList.push(userObj)
     }
@@ -100,7 +100,7 @@ async function getAllUser() {
 async function verifyUser(email, password) {
   try {
     const user = await Users.getUserByEmail(email);
-    if (!user) {
+    if (user === undefined) {
       return null;
     }
     const isValid = await verifyPassword(password, user.password);

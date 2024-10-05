@@ -13,7 +13,6 @@ const { err } = require("../utils/customError");
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
-    console.log  (req.body) 
     const { token, user } = await loginUser(email, password);
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
@@ -30,7 +29,7 @@ async function loginHandler(req, res) {
       .status(error.statusCode || err.errorLogin.statusCode)
       .json({
         message: error.message || err.errorLogin.message,
-        details: error.details || null,
+        details: error.stack || null,
       });
   }
 }

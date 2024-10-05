@@ -1,10 +1,12 @@
 const passport = require("passport");
 // const LocalStrategy = require("passport-local").Strategy;
-const {Strategy, ExtractJwt} = require("passport-jwt");
+const { Strategy, ExtractJwt } = require("passport-jwt");
 const Users = require("../models/users");
-const fs = require('fs');
-const publicKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem', 'utf8');
-
+const fs = require("fs");
+const publicKey = fs.readFileSync(
+  "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
+  "utf8"
+);
 
 passport.use(
   new Strategy(
@@ -15,8 +17,9 @@ passport.use(
     async function (jwtPayload, cb) {
       try {
         const user = await Users.getUserById(jwtPayload.id);
-        if(!user){
-          return cb(null, false, { message: 'User not found' });
+
+        if (user === undefined) {
+          return cb(null, false, { message: "User not found" });
         }
         return cb(null, user);
       } catch (error) {
@@ -24,12 +27,12 @@ passport.use(
       }
     }
   )
-);
+);  
 
 const authorizeRole = (requiredRoleId) => {
   return (req, res, next) => {
     console.log("User from request:", req.user);
-    const user = req.user; 
+    const user = req.user;
     console.log("User data:", user);
 
     if (user.role_id !== requiredRoleId) {
@@ -44,7 +47,7 @@ const authorizeRole = (requiredRoleId) => {
 
 module.exports = {
   passport,
-  authorizeRole
+  authorizeRole,
 };
 
 // passport.use(

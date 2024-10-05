@@ -7,29 +7,30 @@ const publicKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys
 dotenv.config();
 
 function generateJWT(user) {
+
   const payload = {
     email: user.email,
-    fulname: user.fulname,
+    fullname: user.fullname,
     roleId: user.role_id
   };
 
-  var signOpsions = {
+  var signOptions = {
     issuer:  config.issuer,
     subject:  user.email,
     audience:  config.audience,
     expiresIn: "1d",
-    algorithm:"RS256"
+    algorithm: "RS256"
   };
 
-  return jwt.sign(payload, privateKey, signOpsions);
+  return jwt.sign(payload, privateKey, signOptions);
 }
 
 function verifyJWT(token) {
   var verifyOptions = {
     issuer:  config.issuer,
     audience:  config.audience,
-    expiresIn:  "12h",
-    algorithm:  ["RS256"]
+    expiresIn:  "1d",
+    algorithm: ["RS256"]
    };
   try {
     return jwt.verify(token, publicKey, verifyOptions);

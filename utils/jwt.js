@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const fs = require('fs');
 const config = require('../config/config')
+const fs = require('fs');
 const privateKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/private.pem', 'utf8');
 const publicKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem', 'utf8');
 dotenv.config();

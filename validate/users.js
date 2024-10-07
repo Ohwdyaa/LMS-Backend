@@ -86,9 +86,11 @@ async function getAllUser() {
       const user = users[i];
       const userObj = new Object(); 
       userObj.id = user.id;
+      userObj.username = user.username
       userObj.email = user.email;
       userObj.fullname = user.fullname;
       userObj.role = user.role;
+      userObj.gender = user.gender;
       userList.push(userObj)
     }
     return userList;
@@ -101,10 +103,10 @@ async function verifyUser(email, password) {
   try {
     const user = await Users.getUserByEmail(email);
     if (user === undefined) {
-      return null;
+      return undefined;
     }
     const isValid = await verifyPassword(password, user.password);
-    return isValid ? user : null;
+    return isValid ? user : undefined;
   } catch (error) {
     throw error;
   }

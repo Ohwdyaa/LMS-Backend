@@ -45,7 +45,7 @@ const Users = {
       throw error;
     }
   },
-  forgetUserPassword: async (userId, hashedPassword) => {
+  updatePassword: async (userId, hashedPassword) => {
     //belum sempurna
     try {
       const result = await query(`UPDATE users SET password = ? where id = ?`, [

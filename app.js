@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const { passport } = require("./middlewares/auth");
 const db = require("./config/db/db");
 const userRoutes = require("./routes/users");
+const forgetPasswordRoutes = require("./routes/forgot_password")
 const roleRoutes = require("./routes/roles");
 const religionRoutes = require("./routes/religions");
 const genderRoutes = require("./routes/genders");
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use("/", userRoutes);
+app.use("/", forgetPasswordRoutes);
 app.use("/", roleRoutes);
 app.use("/", religionRoutes);
 app.use("/", genderRoutes);

@@ -39,9 +39,28 @@ function verifyJWT(token) {
   }
 }
 
+function generateResetToken(user) {
+  console.log('email:', user.email);
+  
+  const payload = {
+    user: user.email, 
+  };
+
+  const signOptions = {
+    issuer: config.issuer,
+    subject: user.email,
+    audience: config.audience,
+    expiresIn: "1h", 
+    algorithm: "RS256",
+  };
+
+  return jwt.sign(payload, privateKey, signOptions);
+}
+
 module.exports = {
   generateJWT,
   verifyJWT,
+  generateResetToken,
   // generateRefreshToken,
 };
 // function generateRefreshToken(user) {

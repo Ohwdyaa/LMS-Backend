@@ -9,6 +9,8 @@ const forgetPasswordRoutes = require("./routes/forgot_password")
 const roleRoutes = require("./routes/roles");
 const religionRoutes = require("./routes/religions");
 const genderRoutes = require("./routes/genders");
+const modulePermission = require("./routes/module_permission");
+const moduleCategory = require("./routes/module_category");
 
 //buat cors
 const allowedOrigins = ["http://localhost:5173"];
@@ -34,6 +36,8 @@ app.use("/", forgetPasswordRoutes);
 app.use("/", roleRoutes);
 app.use("/", religionRoutes);
 app.use("/", genderRoutes);
+app.use("/", modulePermission);
+app.use("/", moduleCategory);
 
 app._router.stack.forEach(function (r) {
   if (r.route && r.route.path) {
@@ -41,9 +45,10 @@ app._router.stack.forEach(function (r) {
   }
 });
 
-db.query("SELECT 1")
+db.query2("SELECT 1")
   .then(() => console.log("Database connection successful"))
   .catch((err) => console.error("Database connection error:", err));
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

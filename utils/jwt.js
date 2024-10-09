@@ -1,25 +1,31 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-const config = require('../config/config')
-const fs = require('fs');
-const privateKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/private.pem', 'utf8');
-const publicKey = fs.readFileSync('D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem', 'utf8');
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const config = require("../config/config");
+const fs = require("fs");
+const privateKey = fs.readFileSync(
+  "D:/DATA KELAS/magang infinte/lms-backend/keys/private.pem",
+  "utf8"
+);
+const publicKey = fs.readFileSync(
+  "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
+  "utf8"
+);
 dotenv.config();
 
-function generateJWT(user) {
-
+function generateJWT(user, permission) {
   const payload = {
     email: user.email,
     fullname: user.fullname,
-    roleId: user.role_id
+    roleId: user.role_id,
+    Permission: permission, // module id ganti name module
   };
 
   var signOptions = {
-    issuer:  config.issuer,
-    subject:  user.email,
-    audience:  config.audience,
+    issuer: config.issuer,
+    subject: user.email,
+    audience: config.audience,
     expiresIn: "1d",
-    algorithm: "RS256"
+    algorithm: "RS256",
   };
 
   return jwt.sign(payload, privateKey, signOptions);
@@ -27,11 +33,11 @@ function generateJWT(user) {
 
 function verifyJWT(token) {
   var verifyOptions = {
-    issuer:  config.issuer,
-    audience:  config.audience,
-    expiresIn:  "1d",
-    algorithm: ["RS256"]
-   };
+    issuer: config.issuer,
+    audience: config.audience,
+    expiresIn: "1d",
+    algorithm: ["RS256"],
+  };
   try {
     return jwt.verify(token, publicKey, verifyOptions);
   } catch (error) {
@@ -40,17 +46,17 @@ function verifyJWT(token) {
 }
 
 function generateResetToken(user) {
-  console.log('email:', user.email);
-  
+  console.log("email:", user.email);
+
   const payload = {
-    user: user.email, 
+    user: user.email,
   };
 
   const signOptions = {
     issuer: config.issuer,
     subject: user.email,
     audience: config.audience,
-    expiresIn: "1h", 
+    expiresIn: "1h",
     algorithm: "RS256",
   };
 
@@ -76,5 +82,3 @@ module.exports = {
 
 //   return jwt.sign(payload, secret, options);
 // }
-
-

@@ -3,6 +3,8 @@ const {
   deleteRole,
   getRoleById,
   getAllRoles,
+  createRolePermission,
+  
 } = require("../validate/roles");
 const { err } = require("../utils/customError");
 
@@ -51,9 +53,26 @@ async function getAllRolesHandler(req, res) {
   }
 }
 
+async function rolePermissionHandler(req, res) {
+  try {
+    const dataPermissions = req.body;
+    const rolePermission = await createRolePermission(dataPermissions);
+    return res.status(201).json({
+      message: "Role created successfully",
+      data: { rolePermission },
+    });
+  } catch (error) {
+    console.error("Error in createRolePermission:", error);
+    return res.status(err.internalServerError.statusCode).json({
+      message: err.internalServerError.message,
+    });
+  }
+}
+
 module.exports = {
   createRoleHandler,
   deleteRoleHandler,
   getRoleByIdHandler,
   getAllRolesHandler,
+  rolePermissionHandler
 };

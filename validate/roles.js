@@ -1,4 +1,5 @@
 const Roles = require("../models/roles");
+const Module = require('../models/module_permission')
 const { CustomError } = require("../utils/customError");
 
 async function createRole(roleData) {
@@ -36,10 +37,25 @@ async function deleteRole(roleId) {
     throw error;
   }
 }
+async function createRolePermission(dataPermissions) {
+  try {
+    const rolePermission = await Roles.createRolePermission(dataPermissions);
+    const modulePermission = await Module.getModuleById(dataPermissions.modulePermissionId);
+
+    return {
+      rolePermission: rolePermission,
+      modulePermission: modulePermission
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 module.exports = {
   createRole,
   getRoleById,
   getAllRoles,
   deleteRole,
+  createRolePermission
 };

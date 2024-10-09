@@ -10,17 +10,23 @@ async function loginUser(email, password) {
       throw new Error("Email and password are required");
     }
     const user = await verifyUser(email, password);
+    console.log("User data:", user); 
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-    const token = generateJWT(user);
+    const permission = await Roles.getPermissionsByRoleid(user.role_id)
+    console.log("permission data:", permission);
+    if (permission === undefined) {
+      throw new Error("Invalid credentials");
+    }
+    const token = generateJWT(user, permission);
     verifyJWT(token);
     // const refreshToken = generateRefreshToken(user);
     // await Users.updateRefreshToken(user.id, refreshToken);
     return {
       token,
       user: {
-        username: user.username,
+        username: user.username
       },
     };
   } catch (error) {

@@ -3,6 +3,7 @@ const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
+const Permissions = require("../models/permissions");
 
 async function loginUser(email, password) {
   try {
@@ -10,15 +11,19 @@ async function loginUser(email, password) {
       throw new Error("Email and password are required");
     }
     const user = await verifyUser(email, password);
-    console.log("User data:", user); 
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-    const permission = await Roles.getPermissionsByRoleid(user.role_id)
-    console.log("permission data:", permission);
+    const permission = await Permissions.getPermissionsByRoleid(user.role_id)
     if (permission === undefined) {
       throw new Error("Invalid credentials");
     }
+    console.log("User object before generating JWT:", {
+      email: user.email,
+      fullname: user.fullname,
+      roleId: user.role_id,
+      permission: permission 
+    });
     const token = generateJWT(user, permission);
     verifyJWT(token);
     // const refreshToken = generateRefreshToken(user);
@@ -198,23 +203,3 @@ module.exports = {
 //     throw new Error("Error Get access token");
 //   }
 // }
-
-// async function logoutUser(refreshToken) {
-//   try {
-//     if (!refreshToken) throw new Error("No refresh token provided");
-//     const isLogout = await Users.logoutUser(refreshToken);
-//     if (!isLogout) throw new Error("Logout failed");
-//     return;
-//   } catch (error) {
-//     if (error instanceof CustomError) {
-//       res.status(error.statusCode).json({
-//           message: error.message,
-//       });
-//   } else {
-//       console.error("Unexpected error:", error);
-//       res.status(500).json({
-//           message: "Internal Server Error",
-//           error: error.message,
-//       });
-//   }
-//   }

@@ -11,7 +11,7 @@ const pool1 = mysql.createPool(
     bigNumberStrings: true,
     waitForConnections: true,
   }
-);
+);  
 const pool2 = mysql.createPool(
   {
     host: config.db2.host,

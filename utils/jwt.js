@@ -17,7 +17,7 @@ function generateJWT(user, permission) {
     email: user.email,
     fullname: user.fullname,
     roleId: user.role_id,
-    Permission: permission, // module id ganti name module
+    permission: permission,
   };
 
   var signOptions = {

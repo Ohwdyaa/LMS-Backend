@@ -194,11 +194,3 @@ module.exports = Users;
 //     throw err.dataErr;
 //   }
 // },
-// logoutUser: async(refreshToken) => {
-//   try {
-//     const result = await query(`UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`, [refreshToken]);
-//     return result.affectedRows > 0;
-//   } catch (error) {
-//     throw err.dataErr;
-//   }
-// }

@@ -1,5 +1,5 @@
 const { query2 } = require("../config/db/db");
-const {  uuid } = require("../utils/tools");
+const { uuid } = require("../utils/tools");
 
 const moduleCategory = {
   createCategory: async (categoryData) => {

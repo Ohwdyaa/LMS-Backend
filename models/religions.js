@@ -20,8 +20,10 @@ const Religions = {
   },
   getReligionById: async (religionId) => {
     try {
-      const [result] = await query1("SELECT * FROM religions WHERE id = ?", 
-        religionId);
+      const [result] = await query1(
+        "SELECT * FROM religions WHERE id = ?",
+        religionId
+      );
       return result;
     } catch (error) {
       throw error;
@@ -49,8 +51,10 @@ const Religions = {
   },
   deleteReligion: async (religionId) => {
     try {
-      const result = await query1(" DELETE FROM religions where id = ? ", 
-        religionId);
+      const result = await query1(
+        " DELETE FROM religions where id = ? ",
+        religionId
+      );
       return result;
     } catch (error) {
       throw error;

@@ -48,10 +48,10 @@ const Users = {
   updatePassword: async (userId, hashedPassword) => {
     //belum sempurna
     try {
-      const result = await query1(`UPDATE users SET password = ? where id = ?`, [
-        hashedPassword,
-        userId,
-      ]);
+      const result = await query1(
+        `UPDATE users SET password = ? where id = ?`,
+        [hashedPassword, userId]
+      );
       return result;
     } catch (error) {
       throw error;
@@ -102,7 +102,8 @@ const Users = {
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
-          LEFT JOIN religions ON users.religion_id = religions.id `);
+          LEFT JOIN religions ON users.religion_id = religions.id `
+      );
       return result;
     } catch (error) {
       throw error;

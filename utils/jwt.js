@@ -67,7 +67,6 @@ module.exports = {
   generateJWT,
   verifyJWT,
   generateResetToken,
-  // generateRefreshToken,
 };
 // function generateRefreshToken(user) {
 //   const payload = { id: user.id };

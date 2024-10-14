@@ -38,6 +38,6 @@ async function resetPassHandler(req, res) {
   }
 }
 module.exports = {
-    requestResetPassHandler,
-    resetPassHandler,
-  };
+  requestResetPassHandler,
+  resetPassHandler,
+};

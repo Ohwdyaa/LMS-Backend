@@ -3,7 +3,7 @@ const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
-const Permissions = require("../models/permissions");
+const Permissions = require("../validate/permissions");
 
 async function loginUser(email, password) {
   try {
@@ -14,20 +14,12 @@ async function loginUser(email, password) {
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-    const permission = await Permissions.getPermissionsByRoleid(user.role_id)
-    if (permission === undefined) {
+    const permissions = await Permissions.getPermissions(user)
+    if (permissions === undefined) {
       throw new Error("Invalid credentials");
     }
-    console.log("User object before generating JWT:", {
-      email: user.email,
-      fullname: user.fullname,
-      roleId: user.role_id,
-      permission: permission 
-    });
-    const token = generateJWT(user, permission);
+    const token = generateJWT(user, permissions);
     verifyJWT(token);
-    // const refreshToken = generateRefreshToken(user);
-    // await Users.updateRefreshToken(user.id, refreshToken);
     return {
       token,
       user: {
@@ -35,7 +27,6 @@ async function loginUser(email, password) {
       },
     };
   } catch (error) {
-    console.error("Login Error:", error.message);
     throw error;
   }
 }

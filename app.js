@@ -11,6 +11,7 @@ const religionRoutes = require("./routes/religions");
 const genderRoutes = require("./routes/genders");
 const modulePermission = require("./routes/module_permission");
 const moduleCategory = require("./routes/module_category");
+const permissions = require("./routes/permissions");
 
 //buat cors
 const allowedOrigins = ["http://localhost:5173"];
@@ -38,16 +39,7 @@ app.use("/", religionRoutes);
 app.use("/", genderRoutes);
 app.use("/", modulePermission);
 app.use("/", moduleCategory);
-
-app._router.stack.forEach(function (r) {
-  if (r.route && r.route.path) {
-    console.log(r.route.path);
-  }
-});
-
-db.query2("SELECT 1")
-  .then(() => console.log("Database connection successful"))
-  .catch((err) => console.error("Database connection error:", err));
+app.use("/", permissions);
 
 
 const PORT = process.env.PORT || 3000;

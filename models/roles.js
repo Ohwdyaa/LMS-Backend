@@ -1,4 +1,4 @@
-const { query1, query2 } = require("../config/db/db");
+const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Roles = {

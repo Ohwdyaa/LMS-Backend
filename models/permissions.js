@@ -26,8 +26,17 @@ const Permissions = {
   },
   getPermissionsByRoleid: async (role_id) => {
     try {
-      const [result] = await query1(
-        `SELECT can_create, can_read, can_edit, can_delete, module_permission_id FROM role_permissions WHERE role_id = ?`,
+      const result = await query1(
+        `SELECT lms_db2.role_permissions.can_create AS 'create', 
+              lms_db2.role_permissions.can_read AS 'read', 
+              lms_db2.role_permissions.can_edit AS 'edit', 
+              lms_db2.role_permissions.can_delete AS 'delete', 
+              lms_module.module_permission.uuid AS  Permission,
+              lms_module.module_permission.name AS moduleName
+          FROM lms_db2.role_permissions 
+          LEFT JOIN lms_module.module_permission 
+            ON lms_db2.role_permissions.module_permission_id = module_permission.id
+        WHERE role_id = ?`,
         [role_id]
       );
       return result;
@@ -40,7 +49,7 @@ const Permissions = {
     try {
       console.error(" data: ", module_permission_id);
       const [result] = await query2(
-        `SELECT uuid, category_module_permissions_id FROM module_permission WHERE id = ?`,
+        `SELECT uuid, name, category_module_permissions_id FROM module_permission WHERE id = ?`,
         [module_permission_id]
       );
       console.error(" data: ", result);

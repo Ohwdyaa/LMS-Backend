@@ -18,7 +18,7 @@ passport.use(
           email: jwtPayload.email,
           fullname: jwtPayload.fullname,
           roleId: jwtPayload.roleId,
-          permission: jwtPayload.permission,  
+          permission: jwtPayload.permission,
         };
 
         if (user === undefined) {
@@ -30,22 +30,27 @@ passport.use(
       }
     }
   )
-);  
+);
 
-const checkPermission = (permission) => {
+const checkPermission = (moduleName, permission) => {
   return (req, res, next) => {
     console.log("User data in req.user:", req.user);
-    const userPermission = req.user.permission || {};
-
-    if (userPermission[permission] !== 1) {
-      return res.status(403).json({ message: "Permission denied", permission });
+    const userPermission = req.user.permission;
+    for (const i = 0; i < userPermission; i++) {
+      if (
+        userPermission[permission] !== 1 &&
+        permission.module_name !== moduleName
+      ) {
+        return res
+          .status(403)
+          .json({ message: "Permission denied", permission });
+      }
     }
-    
     next();
   };
 };
 
 module.exports = {
   passport,
-  checkPermission
+  checkPermission,
 };

@@ -10,17 +10,81 @@ async function loginUser(email, password) {
       throw new Error("Email and password are required");
     }
     const user = await verifyUser(email, password);
+
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-    const token = generateJWT(user);
+
+    let menu;
+
+    if (user.role_id === "b0453f80-31dd-41be-97e6-673fb1603483") {
+      menu = [
+        {
+          id: "1",
+          name: "Dashboard",
+          path: "/",
+          category: null,
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+        {
+          id: "2",
+          name: "Team",
+          path: "/team",
+          category: "Team Management",
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+        {
+          id: "3",
+          name: "Course",
+          path: "/course",
+          category: "Course Management",
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+      ];
+    } else {
+      menu = [
+        {
+          id: "1",
+          name: "Dashboard",
+          path: "/",
+          category: null,
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+        {
+          id: "3",
+          name: "Course",
+          path: "/course",
+          category: "Course Management",
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+      ];
+    }
+
+    const token = generateJWT(user, menu);
     verifyJWT(token);
     // const refreshToken = generateRefreshToken(user);
     // await Users.updateRefreshToken(user.id, refreshToken);
     return {
       token,
       user: {
+        email: user.email,
         username: user.username,
+        roleId: user.role_id,
       },
     };
   } catch (error) {
@@ -38,7 +102,7 @@ async function createUser(data) {
     if (!validRole) {
       return error;
     }
-    const password = "admin12345";
+    const password = "abc123";
     const hash = await hashPassword(password);
     const userData = {
       ...data,
@@ -84,12 +148,12 @@ async function getAllUser() {
     const userList = [];
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
-      const userObj = new Object(); 
+      const userObj = new Object();
       userObj.id = user.id;
       userObj.email = user.email;
       userObj.fullname = user.fullname;
       userObj.role = user.role;
-      userList.push(userObj)
+      userList.push(userObj);
     }
     return userList;
   } catch (error) {
@@ -101,10 +165,11 @@ async function verifyUser(email, password) {
   try {
     const user = await Users.getUserByEmail(email);
     if (user === undefined) {
-      return null;
+      return undefined;
     }
+
     const isValid = await verifyPassword(password, user.password);
-    return isValid ? user : null;
+    return isValid ? user : undefined;
   } catch (error) {
     throw error;
   }

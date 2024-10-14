@@ -4,7 +4,7 @@ const { Strategy, ExtractJwt } = require("passport-jwt");
 const Users = require("../models/users");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
-  "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
 
@@ -27,7 +27,7 @@ passport.use(
       }
     }
   )
-);  
+);
 
 const authorizeRole = (requiredRoleId) => {
   return (req, res, next) => {

@@ -1,11 +1,11 @@
-const { query } = require("../config/db/db");
+const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
   createUser: async (userData) => {
     try {
       const id = uuid();
-      const result = await query(
+      const result = await query1(
         `
         INSERT INTO users (
             id,
@@ -45,13 +45,13 @@ const Users = {
       throw error;
     }
   },
-  forgetUserPassword: async (userId, hashedPassword) => {
+  updatePassword: async (userId, hashedPassword) => {
     //belum sempurna
     try {
-      const result = await query(`UPDATE users SET password = ? where id = ?`, [
-        hashedPassword,
-        userId,
-      ]);
+      const result = await query1(
+        `UPDATE users SET password = ? where id = ?`,
+        [hashedPassword, userId]
+      );
       return result;
     } catch (error) {
       throw error;
@@ -59,7 +59,7 @@ const Users = {
   },
   updateUser: async (userId, userData) => {
     try {
-      const result = await query(
+      const result = await query1(
         `UPDATE users
           SET 
           profile_image = ?,
@@ -89,7 +89,7 @@ const Users = {
   },
   deleteUser: async (userId) => {
     try {
-      const result = await query(`DELETE FROM users WHERE id = ?`, userId);
+      const result = await query1(`DELETE FROM users WHERE id = ?`, userId);
       return result;
     } catch (error) {
       throw error;
@@ -97,12 +97,13 @@ const Users = {
   },
   getAllUser: async () => {
     try {
-      const result = await query(
+      const result = await query1(
         `SELECT users.id, users.email, users.fullname, users.gender_id, users.role_id, users.religion_id, roles.name as role, genders.name as gender, religions.name as religion
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
-          LEFT JOIN religions ON users.religion_id = religions.id `);
+          LEFT JOIN religions ON users.religion_id = religions.id `
+      );
       return result;
     } catch (error) {
       throw error;
@@ -110,7 +111,7 @@ const Users = {
   },
   getUserById: async (id) => {
     try {
-      const result = await query(
+      const result = await query1(
         `SELECT users.username, users.email, users.fullname, users.role_id, roles.name as role, genders.name as gender, religions.name as religion
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
@@ -129,7 +130,7 @@ const Users = {
   },
   getUserByEmail: async (email) => {
     try {
-      const [result] = await query(
+      const [result] = await query1(
         `SELECT users.id, users.username, users.email, users.password, users.fullname, users.role_id, roles.name as role 
         FROM users LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
         [email]
@@ -141,7 +142,7 @@ const Users = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await query(`UPDATE users SET role_id= ? WHERE id = ? `, [
+      const result = await query1(`UPDATE users SET role_id= ? WHERE id = ? `, [
         roleId,
         userId,
       ]);
@@ -152,7 +153,7 @@ const Users = {
   },
   logoutUser: async (token) => {
     try {
-      const result = await query(
+      const result = await query1(
         `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );
@@ -194,11 +195,3 @@ module.exports = Users;
 //     throw err.dataErr;
 //   }
 // },
-// logoutUser: async(refreshToken) => {
-//   try {
-//     const result = await query(`UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`, [refreshToken]);
-//     return result.affectedRows > 0;
-//   } catch (error) {
-//     throw err.dataErr;
-//   }
-// }

@@ -1,5 +1,5 @@
 const Roles = require("../models/roles");
-const { CustomError, err } = require("../utils/customError");
+const { CustomError } = require("../utils/customError");
 
 async function createRole(roleData) {
   try {
@@ -12,7 +12,7 @@ async function createRole(roleData) {
 async function getRoleById(roleId) {
   try {
     const role = await Roles.getRoleById(roleId);
-    if (!role) {
+    if (role === undefined) {
       throw new CustomError("Role not found", 404);
     }
     return role;

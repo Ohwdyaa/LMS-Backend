@@ -12,12 +12,12 @@ const publicKey = fs.readFileSync(
 );
 dotenv.config();
 
-function generateJWT(user, menus) {
+function generateJWT(user, permission) {
   const payload = {
     email: user.email,
     fullname: user.fullname,
     roleId: user.role_id,
-    menus,
+    permission: permission,
   };
 
   var signOptions = {
@@ -45,10 +45,28 @@ function verifyJWT(token) {
   }
 }
 
+function generateResetToken(user) {
+  console.log("email:", user.email);
+
+  const payload = {
+    user: user.email,
+  };
+
+  const signOptions = {
+    issuer: config.issuer,
+    subject: user.email,
+    audience: config.audience,
+    expiresIn: "1h",
+    algorithm: "RS256",
+  };
+
+  return jwt.sign(payload, privateKey, signOptions);
+}
+
 module.exports = {
   generateJWT,
   verifyJWT,
-  // generateRefreshToken,
+  generateResetToken,
 };
 // function generateRefreshToken(user) {
 //   const payload = { id: user.id };

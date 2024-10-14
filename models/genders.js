@@ -1,12 +1,11 @@
-const { query } = require("../config/db/db");
+const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Genders = {
   createGender: async (genderData) => {
-    console.log("Creating role with data:", genderData);
     try {
       const id = uuid();
-      const result = await query(
+      const result = await query1(
         `
         INSERT INTO genders (
         id,
@@ -32,7 +31,7 @@ const Genders = {
   },
   getAllGenders: async () => {
     try {
-      const result = await query(" SELECT * FROM genders ");
+      const result = await query1(" SELECT * FROM genders ");
       return result;
     } catch (error) {
       throw error;
@@ -40,7 +39,7 @@ const Genders = {
   },
   updateGender: async (genderId, genderData) => {
     try {
-      const result = await query("SELECT FROM genders WHERE id = ?", [
+      const result = await query1("SELECT FROM genders WHERE id = ?", [
         genderId,
         genderData,
       ]);
@@ -51,7 +50,7 @@ const Genders = {
   },
   deleteGender: async (genderId) => {
     try {
-      const result = await query("DELETE FROM genders WHERE id = ?", genderId);
+      const result = await query1("DELETE FROM genders WHERE id = ?", genderId);
       return result;
     } catch (error) {
       throw error;

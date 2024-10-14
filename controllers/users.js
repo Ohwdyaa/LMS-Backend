@@ -173,25 +173,6 @@ module.exports = {
   changeUserRoleHandler,
   logoutUserHandler,
 };
-
-// const loginHandler = (req, res, next) => { //loginAuthPassport
-//   passport.authenticate('local', { session: false }, (err, user, info) => {
-//     if (err || !user) {
-//       return res.status(400).json({
-//         message: 'Something is not right',
-//         user: user
-//       });
-//     }
-//     req.login(user, { session: false }, (err) => {
-//       if (err) {
-//         return res.send(err);
-//       }
-//       const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
-//       return res.json({ user, token });
-//     });
-//   })(req, res, next);
-// };
-
 // async function refreshTokenHandler(req, res) {
 //   try {
 //     const refreshToken = req.cookies.refreshToken;
@@ -206,20 +187,3 @@ module.exports = {
 //     return res.status(400).send(error.message);
 //   }
 // }
-// async function logoutHandler (req, res)  {
-//   try {
-//     const refreshToken = req.cookies.refreshToken;
-
-//     await logoutUser(refreshToken);
-
-//     res.clearCookie("refreshToken");
-
-//     return res.status(200).json({
-//       message: "Logout successful",
-//     });
-//   } catch (error) {
-//     return res.status(400).json({
-//       message: error.message,
-//     });
-//   }
-// };

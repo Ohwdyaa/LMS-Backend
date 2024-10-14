@@ -12,5 +12,4 @@ router.delete("/role/:id", deleteRoleHandler);
 router.get("/role/:id", getRoleByIdHandler);
 router.get("/role", getAllRolesHandler);
 
-
 module.exports = router;

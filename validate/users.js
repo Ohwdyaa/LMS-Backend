@@ -3,6 +3,7 @@ const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
+const Permissions = require("../validate/permissions");
 
 async function loginUser(email, password) {
   try {
@@ -14,7 +15,6 @@ async function loginUser(email, password) {
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-
     let menu;
 
     if (user.role_id === "b0453f80-31dd-41be-97e6-673fb1603483") {
@@ -75,20 +75,19 @@ async function loginUser(email, password) {
       ];
     }
 
-    const token = generateJWT(user, menu);
+    const permissions = await Permissions.getPermissions(user)
+    if (permissions === undefined) {
+      throw new Error("Invalid credentials");
+    }
+    const token = generateJWT(user, permissions);
     verifyJWT(token);
-    // const refreshToken = generateRefreshToken(user);
-    // await Users.updateRefreshToken(user.id, refreshToken);
     return {
       token,
       user: {
-        email: user.email,
-        username: user.username,
-        roleId: user.role_id,
+        username: user.username
       },
     };
   } catch (error) {
-    console.error("Login Error:", error.message);
     throw error;
   }
 }
@@ -150,10 +149,12 @@ async function getAllUser() {
       const user = users[i];
       const userObj = new Object();
       userObj.id = user.id;
+      userObj.username = user.username
       userObj.email = user.email;
       userObj.fullname = user.fullname;
       userObj.role = user.role;
-      userList.push(userObj);
+      userObj.gender = user.gender;
+      userList.push(userObj)
     }
     return userList;
   } catch (error) {
@@ -255,23 +256,3 @@ module.exports = {
 //     throw new Error("Error Get access token");
 //   }
 // }
-
-// async function logoutUser(refreshToken) {
-//   try {
-//     if (!refreshToken) throw new Error("No refresh token provided");
-//     const isLogout = await Users.logoutUser(refreshToken);
-//     if (!isLogout) throw new Error("Logout failed");
-//     return;
-//   } catch (error) {
-//     if (error instanceof CustomError) {
-//       res.status(error.statusCode).json({
-//           message: error.message,
-//       });
-//   } else {
-//       console.error("Unexpected error:", error);
-//       res.status(500).json({
-//           message: "Internal Server Error",
-//           error: error.message,
-//       });
-//   }
-//   }

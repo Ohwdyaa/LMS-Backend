@@ -16,7 +16,6 @@ async function createRoleHandler(req, res) {
       data: { roleId },
     });
   } catch (error) {
-    console.error("Error in createRoleHandler:", error);
     return res.status(err.internalServerError.statusCode).json({
       message: err.internalServerError.message,
     });

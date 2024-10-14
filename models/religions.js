@@ -1,11 +1,11 @@
-const { query } = require("../config/db/db");
+const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Religions = {
   createReligion: async (religionData) => {
     try {
       const id = uuid();
-      const result = await query(
+      const result = await query1(
         `
         INSERT INTO religions (
         id,
@@ -20,8 +20,10 @@ const Religions = {
   },
   getReligionById: async (religionId) => {
     try {
-      const [result] = await query("SELECT * FROM religions WHERE id = ?", 
-        religionId);
+      const [result] = await query1(
+        "SELECT * FROM religions WHERE id = ?",
+        religionId
+      );
       return result;
     } catch (error) {
       throw error;
@@ -29,7 +31,7 @@ const Religions = {
   },
   getAllReligions: async () => {
     try {
-      const result = await query("SELECT * FROM religions");
+      const result = await query1("SELECT * FROM religions");
       return result;
     } catch (error) {
       throw error;
@@ -38,7 +40,7 @@ const Religions = {
 
   updateReligion: async (religionId, religionData) => {
     try {
-      const result = await query("UPDATE religions SET ? WHERE id = ?", [
+      const result = await query1("UPDATE religions SET ? WHERE id = ?", [
         religionData,
         religionId,
       ]);
@@ -49,8 +51,10 @@ const Religions = {
   },
   deleteReligion: async (religionId) => {
     try {
-      const result = await query(" DELETE FROM religions where id = ? ", 
-        religionId);
+      const result = await query1(
+        " DELETE FROM religions where id = ? ",
+        religionId
+      );
       return result;
     } catch (error) {
       throw error;

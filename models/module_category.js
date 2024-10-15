@@ -8,13 +8,12 @@ const moduleCategory = {
       const result = await query2(
         `
             INSERT INTO category_module_permissions (
-                id,
                 uuid, 
                 name
             ) 
-                VALUES (?, ?, ?)
+                VALUES (?, ?)
             `,
-        [categoryData.id, uuidCategory, categoryData.name]
+        [uuidCategory, categoryData.name]
       );
       return result;
     } catch (error) {

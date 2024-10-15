@@ -32,16 +32,18 @@ const Permissions = {
               lms_db2.role_permissions.can_edit AS 'edit', 
               lms_db2.role_permissions.can_delete AS 'delete', 
               lms_module.module_permission.uuid AS  Permission,
-              lms_module.module_permission.name AS moduleName
+              lms_module.module_permission.name AS moduleName,
+              lms_module.category_module_permissions.name AS categoryName
           FROM lms_db2.role_permissions 
           LEFT JOIN lms_module.module_permission 
             ON lms_db2.role_permissions.module_permission_id = module_permission.id
+            LEFT JOIN lms_module.category_module_permissions
+            ON lms_module.module_permission.category_module_permissions_id = category_module_permissions.id
         WHERE role_id = ?`,
         [role_id]
       );
       return result;
     } catch (error) {
-      console.error("Error getting role permission: ", error);
       throw error;
     }
   },

@@ -10,11 +10,12 @@ const modulePermission = {
             INSERT INTO module_permission (
                 uuid, 
                 name,
-                category_module_permissions_id
+                category_module_permissions_id,
+                created_by
             ) 
-                VALUES (?, ?, ?)
+                VALUES (?, ?, ?, ?)
             `,
-        [uuidModule, moduleData.name, moduleData.categoryId]
+        [uuidModule, moduleData.name, moduleData.categoryId, "1"]
       );
       return result;
     } catch (error) {

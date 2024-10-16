@@ -9,11 +9,12 @@ const moduleCategory = {
         `
             INSERT INTO category_module_permissions (
                 uuid, 
-                name
+                name,
+                created_by
             ) 
-                VALUES (?, ?)
+                VALUES (?, ?, ?)
             `,
-        [uuidCategory, categoryData.name]
+        [uuidCategory, categoryData.name, "1"]
       );
       return result;
     } catch (error) {

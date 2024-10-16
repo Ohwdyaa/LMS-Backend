@@ -14,6 +14,7 @@ dotenv.config();
 
 function generateJWT(user, permission) {
   const payload = {
+    username: user.username,
     email: user.email,
     fullname: user.fullname,
     roleId: user.role_id,

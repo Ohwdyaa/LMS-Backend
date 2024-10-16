@@ -8,7 +8,6 @@ async function rolePermissionHandler(req, res) {
       data: { rolePermission },
     });
   } catch (error) {
-    console.error("Error in createRolePermission:", error);
     return res.status(err.internalServerError.statusCode).json({
       message: err.internalServerError.message,
     });

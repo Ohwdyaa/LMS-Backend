@@ -17,7 +17,6 @@ async function createReligionHandler(req, res) {
       data: { religionsId },
     });
   } catch (error) {
-    console.error("Error in createReligionHandler:", error);
     return res.status(err.internalServerError.statusCode).json({
       message: err.internalServerError.message,
     });

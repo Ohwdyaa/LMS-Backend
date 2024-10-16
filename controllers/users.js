@@ -13,7 +13,13 @@ const { err } = require("../utils/customError");
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
-    const { token, user } = await loginUser(email, password);
+    const result = await loginUser(email, password);
+    if (!result) {
+      return res.status(403).json({
+          message: "Access denied: No modules available for this user",
+      });
+    }
+    const { token, user } = result;
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
     //   secure: process.env.NODE_ENV === "production",

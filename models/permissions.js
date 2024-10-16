@@ -31,7 +31,7 @@ const Permissions = {
               lms_db2.role_permissions.can_read AS 'read', 
               lms_db2.role_permissions.can_edit AS 'edit', 
               lms_db2.role_permissions.can_delete AS 'delete', 
-              lms_module.module_permission.uuid AS  Permission,
+              lms_module.module_permission.uuid AS permissionId,
               lms_module.module_permission.name AS moduleName,
               lms_module.category_module_permissions.name AS categoryName
           FROM lms_db2.role_permissions 
@@ -42,22 +42,8 @@ const Permissions = {
         WHERE role_id = ?`,
         [role_id]
       );
-      return result;
+      return result; 
     } catch (error) {
-      throw error;
-    }
-  },
-  getModulePermissionsById: async (module_permission_id) => {
-    try {
-      console.error(" data: ", module_permission_id);
-      const [result] = await query2(
-        `SELECT uuid, name, category_module_permissions_id FROM module_permission WHERE id = ?`,
-        [module_permission_id]
-      );
-      console.error(" data: ", result);
-      return result;
-    } catch (error) {
-      console.error("Error getting module permission: ", error);
       throw error;
     }
   },

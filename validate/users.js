@@ -4,6 +4,7 @@ const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
 const Permissions = require("../validate/permissions");
+const { validatePermission } = require("../middlewares/auth");
 
 async function loginUser(email, password) {
   try {
@@ -20,14 +21,19 @@ async function loginUser(email, password) {
     if (permissions === undefined) {
       throw new Error("Invalid credentials");
     }
-    const token = generateJWT(user, permissions);
-    verifyJWT(token);
-    return {
-      token,
-      user: {
-        username: user.username
-      },
-    };
+    const token = await generateJWT(user, permissions);
+    const verifyToken = await verifyJWT(token);
+    const validateAccess = await validatePermission(verifyToken);
+    if (validateAccess === "Access granted") {
+      return {
+        token,
+        user: {
+          username: user.username
+        },
+      };
+    } else {
+      return null;
+    }
   } catch (error) {
     throw error;
   }

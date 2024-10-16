@@ -17,15 +17,13 @@ async function createRolePermission(dataPermissions) {
   
 async function getPermissions(user) {
     try {
-      const permissions = await Permissions.getPermissionsByRoleid(user.role_id)
-      console.log(permissions);
+      const permissions = await Permissions.getPermissionsByRoleid(user.role_id);
       if (permissions === undefined) {
-        throw new Error("Invalid credentials");
+        throw new Error("Permissions not found for this role");
       }
       return permissions;
-      
     } catch (error) {
-      
+      throw error;
     }
 }
 module.exports = {

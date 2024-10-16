@@ -13,7 +13,7 @@ async function getRoleById(roleId) {
   try {
     const role = await Roles.getRoleById(roleId);
     if (role === undefined) {
-      throw new CustomError("Role not found", 404);
+      throw new CustomError("Role not found");
     }
     return role;
   } catch (error) {

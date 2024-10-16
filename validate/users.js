@@ -15,65 +15,6 @@ async function loginUser(email, password) {
     if (user === undefined) {
       throw new Error("Invalid credentials");
     }
-    let menu;
-
-    if (user.role_id === "b0453f80-31dd-41be-97e6-673fb1603483") {
-      menu = [
-        {
-          id: "1",
-          name: "Dashboard",
-          path: "/",
-          category: null,
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-        {
-          id: "2",
-          name: "Team",
-          path: "/team",
-          category: "Team Management",
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-        {
-          id: "3",
-          name: "Course",
-          path: "/course",
-          category: "Course Management",
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-      ];
-    } else {
-      menu = [
-        {
-          id: "1",
-          name: "Dashboard",
-          path: "/",
-          category: null,
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-        {
-          id: "3",
-          name: "Course",
-          path: "/course",
-          category: "Course Management",
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-      ];
-    }
 
     const permissions = await Permissions.getPermissions(user)
     if (permissions === undefined) {

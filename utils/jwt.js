@@ -24,7 +24,7 @@ function generateJWT(user, permission) {
     issuer: config.issuer,
     subject: user.email,
     audience: config.audience,
-    expiresIn: "1m",
+    expiresIn: "1day",
     algorithm: "RS256",
   };
 

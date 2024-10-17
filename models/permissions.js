@@ -1,4 +1,5 @@
 const { query1, query2 } = require("../config/db/db");
+const { err } = require("../utils/customError");
 const { uuid } = require("../utils/tools");
 
 const Permissions = {
@@ -42,7 +43,50 @@ const Permissions = {
         WHERE role_id = ?`,
         [role_id]
       );
-      return result; 
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getPermissionById: async (permissionId) => {
+    try {
+      const result = await query1(
+        `SELECT lms_db2.role_permissions.can_create, 
+        lms_db2.role_permissions.can_read, 
+        lms_db2.role_permissions.can_edit, 
+        lms_db2.role_permissions.can_delete, 
+        lms_db2.role_permissions.role_id, lms_db2.roles.name as role,
+        lms_db2.role_permissions.module_permission_id, lms_module.module_permission.name as module
+        FROM lms_db2.role_permissions
+        LEFT JOIN lms_db2.roles ON lms_db2.role_permissions.role_id = lms_db2.roles.id
+        LEFT JOIN lms_module.module_permission ON lms_db2.role_permissions.module_permission_id = lms_module.module_permission.id
+        WHERE lms_db2.role_permissions.id = ?`, [permissionId]);
+
+        console.log("query:", result)
+        return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updatePermission: async (permissionId, dataPermissions) => {
+    try {
+      const result = await query1(
+        `UPDATE role_permissions SET 
+        can_create = ?,
+        can_read = ?, 
+        can_edit = ?, 
+        can_delete = ?, 
+        updated_at = NOW()
+        WHERE id = ?`,
+        [
+          dataPermissions.can_create,
+          dataPermissions.can_read,
+          dataPermissions.can_edit,
+          dataPermissions.can_delete,
+          permissionId,
+        ]
+      );
+      return result;
     } catch (error) {
       throw error;
     }

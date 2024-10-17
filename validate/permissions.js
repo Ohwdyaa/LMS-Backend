@@ -37,7 +37,6 @@ async function updatePermission(permissionId, dataPermissions) {
     if (permission === undefined) {
       throw new Error("Pemission not found");
     }
-    
     await Permissions.updatePermission(permissionId, dataPermissions);
   } catch (error) {
     throw error;

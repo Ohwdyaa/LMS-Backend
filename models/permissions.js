@@ -61,8 +61,6 @@ const Permissions = {
         LEFT JOIN lms_db2.roles ON lms_db2.role_permissions.role_id = lms_db2.roles.id
         LEFT JOIN lms_module.module_permission ON lms_db2.role_permissions.module_permission_id = lms_module.module_permission.id
         WHERE lms_db2.role_permissions.id = ?`, [permissionId]);
-
-        console.log("query:", result)
         return result;
     } catch (error) {
       throw error;
@@ -79,10 +77,10 @@ const Permissions = {
         updated_at = NOW()
         WHERE id = ?`,
         [
-          dataPermissions.can_create,
-          dataPermissions.can_read,
-          dataPermissions.can_edit,
-          dataPermissions.can_delete,
+          dataPermissions.can_create ? 1 : 0,
+          dataPermissions.can_read ? 1 : 0,
+          dataPermissions.can_edit ? 1 : 0,
+          dataPermissions.can_delete ? 1 : 0,
           permissionId,
         ]
       );

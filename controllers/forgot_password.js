@@ -2,7 +2,8 @@ const {
   requestResetPassword,
   resetPassword,
 } = require("../validate/forgot_password");
-const { err } = require("../utils/customError");
+const { err, } = require("../utils/customError");
+
 
 async function requestResetPassHandler(req, res) {
   try {
@@ -22,10 +23,11 @@ async function requestResetPassHandler(req, res) {
 
 async function resetPassHandler(req, res) {
   try {
-    const { id: userId } = req.params;
-    const newPassword = req.body;
+    const { token } = req.params;
+   // const {id : userId} = req.params;
+    const {password : newPassword} = req.body;
 
-    const result = await resetPassword(userId, newPassword);
+    const result = await resetPassword(token, newPassword);
     return res.status(200).json({
       message: "password updated successfully",
       result,

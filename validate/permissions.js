@@ -3,9 +3,8 @@ const Module = require('../models/module_permission');
 
 async function createRolePermission(dataPermissions) {
     try {
-      const rolePermission = await Permissions.createRolePermission(dataPermissions);
+      const rolePermission = await Permissions.createRolePermission(dataPermissions); 
       const modulePermission = await Module.getModuleById(dataPermissions.modulePermissionId);
-  
       return {
         rolePermission: rolePermission,
         modulePermission: modulePermission

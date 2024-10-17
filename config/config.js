@@ -10,14 +10,14 @@ module.exports = {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
+    password: process.env.DB_PASSWORD || 'indah004',
     name: process.env.DB_NAME1 || 'lms_db2'
   },
   db2: {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    name: process.env.DB_NAME2 || 'lms_db2'
+    password: process.env.DB_PASSWORD || 'indah004',
+    name: process.env.DB_NAME2 || 'lms_module'
   }
 };

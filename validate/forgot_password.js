@@ -3,13 +3,13 @@ const forgotPassword = require('../models/forgot_password')
 const Users = require('../models/users')
 const {sendResetPasswordEmail} = require('../utils/send_email')
 const {hashPassword} = require('../utils/bcrypt')
-const {generateResetToken, verifyJWT} = require('../utils/jwt')   
+const {generateResetToken, verifyJWT, } = require('../utils/jwt')   
 const {validateEmail} = require('../middlewares/validate')
 
 async function requestResetPassword(email) {
     try {
         if (!validateEmail(email)) {
-            return error;
+            throw new Error ("invalid email format");
         }
         const user = await Users.getUserByEmail(email);
         if(user === undefined){
@@ -26,9 +26,17 @@ async function requestResetPassword(email) {
 }
 
 async function resetPassword(token, newPassword) {
-    try {
+
+        const tokenData = await forgotPassword.getResetToken(token);
+    if (!tokenData || tokenData.length === 0) {
+      throw new Error("Invalid or already used token");
+    }
+    try{
         const verify = await verifyJWT(token);
-        const user = await Users.getUserById(verify.userId);
+        const email = verify.email;
+        console.log("User Email from token:", email);
+
+        const user = await Users.getUserByEmail(email);
         if(user === undefined){
             throw new Error("Invalid credentials");
         }
@@ -39,7 +47,7 @@ async function resetPassword(token, newPassword) {
         if (error.name === 'TokenExpiredError') {
             throw new Error("Token expired");
         }
-        throw error;
+        throw new Error;
     }
 }
 

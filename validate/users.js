@@ -14,12 +14,12 @@ async function loginUser(email, password) {
     const user = await verifyUser(email, password);
 
     if (user === undefined) {
-      throw new Error("Invalid credentials");
+      throw new Error("Incorrect username or password!");
     }
 
     const permissions = await Permissions.getPermissions(user)
     if (permissions === undefined) {
-      throw new Error("Invalid credentials");
+      throw new Error("No permissions found for user");
     }
     const token = await generateJWT(user, permissions);
     const verifyToken = await verifyJWT(token);
@@ -42,11 +42,11 @@ async function loginUser(email, password) {
 async function createUser(data) {
   try {
     if (!validateEmail(data.email)) {
-      return error;
+      throw new Error("Invalid email format");
     }
     const validRole = await Roles.getRoleById(data.roleId);
-    if (!validRole) {
-      return error;
+    if (validRole === undefined) {
+      throw new Error("The given role was not found");
     }
     const password = "abc123";
     const hash = await hashPassword(password);
@@ -64,8 +64,8 @@ async function createUser(data) {
 async function updateUser(userId, userData) {
   try {
     const user = await Users.getUserById(userId);
-    if (user.affectedRows === 0) {
-      throw error;
+    if (user === undefined) {
+      throw new Error("User not found");
     }
     await Users.updateUser(userId, userData);
   } catch (error) {
@@ -76,8 +76,8 @@ async function updateUser(userId, userData) {
 async function deleteUser(userId) {
   try {
     const user = await Users.getUserById(userId);
-    if (user.affectedRows === 0) {
-      throw error;
+    if (user === undefined) {
+      throw new Error("User not found");
     }
     await Users.deleteUser(userId);
   } catch (error) {
@@ -89,7 +89,7 @@ async function getAllUser() {
   try {
     const users = await Users.getAllUser();
     if (!users || users.length === 0) {
-      throw error;
+      throw new Error("No users found");
     }
     const userList = [];
     for (let i = 0; i < users.length; i++) {
@@ -136,7 +136,7 @@ async function changeUserRole(userId, newRoleId) {
   try {
     const user = await Users.getUserById(userId);
     if (!user) {
-      throw error;
+      throw new Error("No users found");
     }
 
     await Users.changeUserRole(userId, newRoleId);

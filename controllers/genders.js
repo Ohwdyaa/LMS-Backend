@@ -11,7 +11,6 @@ async function createGenderHandler(req, res) {
       data: { genderId },
     });
   } catch (error) {
-    console.error("Error in createGenderHandler:", error);
     return res.status(err.internalServerError.statusCode).json({
       message: err.internalServerError.message,
     });

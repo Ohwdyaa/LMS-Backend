@@ -46,7 +46,6 @@ const Users = {
     }
   },
   updatePassword: async (userId, hashedPassword) => {
-    //belum sempurna
     try {
       const result = await query1(
         `UPDATE users SET password = ? where id = ?`,

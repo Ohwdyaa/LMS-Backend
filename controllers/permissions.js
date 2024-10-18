@@ -1,23 +1,8 @@
 const {
-  createRolePermission,
   updatePermission,
 } = require("../validate/permissions");
 const { err } = require("../utils/customError");
 
-async function rolePermissionHandler(req, res) {
-  try {
-    const dataPermissions = req.body;
-    const rolePermission = await createRolePermission(dataPermissions);
-    return res.status(201).json({
-      message: "Role created successfully",
-      data: { rolePermission },
-    });
-  } catch (error) {
-    return res.status(err.internalServerError.statusCode).json({
-      message: err.internalServerError.message,
-    });
-  }
-}
 async function updatePermissionHandler(req, res) {
   try {
     const { id: permissionId } = req.params;
@@ -35,6 +20,5 @@ async function updatePermissionHandler(req, res) {
   }
 }
 module.exports = {
-  rolePermissionHandler,
-  updatePermissionHandler,
+  updatePermissionHandler
 };

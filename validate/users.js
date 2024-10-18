@@ -5,6 +5,7 @@ const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
 const Permissions = require("../validate/permissions");
 const { validatePermission } = require("../middlewares/auth");
+const {createPermission} = require('../validate/permissions')
 
 async function loginUser(email, password) {
   try {
@@ -53,19 +54,21 @@ async function createUser(data) {
       password: hash,
     };
     const userId = await Users.createUser(userData);
+    await createPermission(userData.roleId);
+    console.log("role", userData.roleId)
     return userId;
   } catch (error) {
     throw error;
   }
 }
 
-async function updateUser(userId, userData) {
+async function updateUser(userEmail, userData) {
   try {
-    const user = await Users.getUserById(userId);
+    const user = await Users.getUserByEmail(userEmail);
     if (user === undefined) {
       throw new Error("User not found");
     }
-    await Users.updateUser(userId, userData);
+    await Users.updateUser(userEmail, userData);
   } catch (error) {
     throw error;
   }

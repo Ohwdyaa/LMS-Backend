@@ -11,8 +11,8 @@ async function createReligion(religionData) {
 async function getReligionById(religionId) {
   try {
     const religion = await Religions.getReligionById(religionId);
-    if (!religion) {
-      throw error;
+    if (religion === undefined) {
+      throw new CustomError("Religion not found");
     }
     return religion;
   } catch (error) {

@@ -73,7 +73,7 @@ const Users = {
           gender_id = ?,
           religion_id = ?,
           updated_at = NOW() 
-          WHERE id = ?;`,
+          WHERE id = ?`,
         [
           userData.profile_image,
           userData.phone_number,
@@ -101,7 +101,7 @@ const Users = {
   getAllUser: async () => {
     try {
       const result = await query1(
-        `SELECT users.id, users.email, users.fullname, users.gender_id, users.role_id, users.religion_id, roles.name as role, genders.name as gender, religions.name as religion
+        `SELECT users.id, users.username, users.email, users.fullname, users.gender_id, users.role_id, users.religion_id, roles.name as role, genders.name as gender, religions.name as religion
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
@@ -124,10 +124,8 @@ const Users = {
             `,
         [id]
       );
-      console.log("Query Result:", result);
       return result;
     } catch (error) {
-      console.error("Error in getUserById:", error.message);
       throw error;
     }
   },

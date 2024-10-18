@@ -13,7 +13,13 @@ const { err } = require("../utils/customError");
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
-    const { token, user } = await loginUser(email, password);
+    const result = await loginUser(email, password);
+    if (!result) {
+      return res.status(403).json({
+        message: "Access denied: No modules available for this user",
+      });
+    }
+    const { token, user } = result;
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
     //   secure: process.env.NODE_ENV === "production",
@@ -25,12 +31,10 @@ async function loginHandler(req, res) {
       data: { token, user },
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorLogin.statusCode)
-      .json({
-        message: error.message || err.errorLogin.message,
-        details: error.stack || null,
-      });
+    return res.status(error.statusCode || err.errorLogin.statusCode).json({
+      message: error.message || err.errorLogin.message,
+      details: error.stack || null,
+    });
   }
 }
 
@@ -43,12 +47,10 @@ async function createUserHandler(req, res) {
       data: { userId },
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorCreate.statusCode)
-      .json({
-        message: error.message || err.errorCreate.message,
-        details: error.details || null,
-      });
+    return res.status(error.statusCode || err.errorCreate.statusCode).json({
+      message: error.message || err.errorCreate.message,
+      details: error.details || null,
+    });
   }
 }
 
@@ -62,12 +64,10 @@ async function updateUserHandler(req, res) {
       result,
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorUpdate.statusCode)
-      .json({
-        message: error.message || err.errorUpdate.message,
-        details: error.details || null,
-      }); 
+    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
+      message: error.message || err.errorUpdate.message,
+      details: error.details || null,
+    });
   }
 }
 
@@ -79,12 +79,10 @@ async function deleteUserHandler(req, res) {
       message: "User deleted successfully",
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorDelete.statusCode)
-      .json({
-        message: error.message || err.errorDelete.message,
-        details: error.details || null,
-      });
+    return res.status(error.statusCode || err.errorDelete.statusCode).json({
+      message: error.message || err.errorDelete.message,
+      details: error.details || null,
+    });
   }
 }
 
@@ -95,18 +93,16 @@ async function getAllUserHandler(req, res) {
       data: userAll,
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorSelect.statusCode)
-      .json({
-        message: error.message || err.errorSelect.message,
-        details: error.details || null,
-      });
+    return res.status(error.statusCode || err.errorSelect.statusCode).json({
+      message: error.message || err.errorSelect.message,
+      details: error.details || null,
+    });
   }
 }
 
 async function forgetPasswordHandler(req, res) {
   try {
-    const {id: userId} = req.params;
+    const { id: userId } = req.params;
     const newPassword = req.body;
     const result = await forgetPassword(newPassword, userId);
     return res.status(200).json({
@@ -133,12 +129,10 @@ async function changeUserRoleHandler(req, res) {
       message: "User role updated successfully",
     });
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorChangeRole.statusCode)
-      .json({
-        message: error.message || err.errorChangeRole.message,
-        details: error.details || null,
-      });
+    return res.status(error.statusCode || err.errorChangeRole.statusCode).json({
+      message: error.message || err.errorChangeRole.message,
+      details: error.details || null,
+    });
   }
 }
 async function logoutUserHandler(req, res) {
@@ -154,12 +148,10 @@ async function logoutUserHandler(req, res) {
       });
     }
   } catch (error) {
-    return res
-      .status(error.statusCode || err.errorLogout.statusCode)
-      .json({
-        message: error.message || err.errorLogout.message,
-        details: error.details || null,
-      });
+    return res.status(error.statusCode || err.errorLogout.statusCode).json({
+      message: error.message || err.errorLogout.message,
+      details: error.details || null,
+    });
   }
 }
 

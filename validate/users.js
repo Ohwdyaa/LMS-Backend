@@ -59,13 +59,13 @@ async function createUser(data) {
   }
 }
 
-async function updateUser(userId, userData) {
+async function updateUser(userEmail, userData) {
   try {
-    const user = await Users.getUserById(userId);
+    const user = await Users.getUserByEmail(userEmail);
     if (user === undefined) {
       throw new Error("User not found");
     }
-    await Users.updateUser(userId, userData);
+    await Users.updateUser(userEmail, userData);
   } catch (error) {
     throw error;
   }

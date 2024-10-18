@@ -8,7 +8,7 @@ const {
 } = require("../controllers/religions");
 const router = express.Router();
 
-router.post("/religion", createReligionHandler);
+router.post("/religion",  createReligionHandler);
 router.put("/religion/:id", updateReligionHandler);
 router.delete("/religion/:id", deleteReligionHandler);
 router.get("/religion/:id", getReligionByIdHandler);

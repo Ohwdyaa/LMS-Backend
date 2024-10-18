@@ -4,11 +4,12 @@ const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { passport } = require("./middlewares/auth");
-const db = require("./config/db/db");
 const userRoutes = require("./routes/users");
 const roleRoutes = require("./routes/roles");
 const religionRoutes = require("./routes/religions");
 const genderRoutes = require("./routes/genders");
+
+const categories = require("./routes/categories");
 
 //buat cors
 const allowedOrigins = ["http://localhost:5173"];
@@ -34,15 +35,7 @@ app.use("/", roleRoutes);
 app.use("/", religionRoutes);
 app.use("/", genderRoutes);
 
-app._router.stack.forEach(function (r) {
-  if (r.route && r.route.path) {
-    console.log(r.route.path);
-  }
-});
-
-db.query("SELECT 1")
-  .then(() => console.log("Database connection successful"))
-  .catch((err) => console.error("Database connection error:", err));
+app.use("/", categories);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

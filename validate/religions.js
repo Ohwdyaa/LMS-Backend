@@ -30,7 +30,7 @@ async function getAllReligions() {
 async function updateReligion(religionId, religionData) {
   try {
     const religion = await Religions.getReligionById(religionId, religionData);
-    if (relig.affectedRows === 0) {
+    if (religion === undefined) {
       throw error;
     }
     await Religions.updateReligion(religionId, religionData);

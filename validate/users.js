@@ -5,6 +5,7 @@ const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
 const Permissions = require("../validate/permissions");
 const { validatePermission } = require("../middlewares/auth");
+const {createPermission} = require('../validate/permissions')
 
 async function loginUser(email, password) {
   try {
@@ -53,6 +54,8 @@ async function createUser(data) {
       password: hash,
     };
     const userId = await Users.createUser(userData);
+    await createPermission(userData.roleId);
+    console.log("role", userData.roleId)
     return userId;
   } catch (error) {
     throw error;

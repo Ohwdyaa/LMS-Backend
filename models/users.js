@@ -57,7 +57,7 @@ const Users = {
       throw error;
     }
   },
-  updateUser: async (userId, userData) => {
+  updateUser: async (userEmail, userData) => {
     try {
       const result = await query1(
         `UPDATE users
@@ -70,7 +70,7 @@ const Users = {
           gender_id = ?,
           religion_id = ?,
           updated_at = NOW() 
-          WHERE id = ?`,
+          WHERE email = ?`,
         [
           userData.profile_image,
           userData.phone_number,
@@ -79,7 +79,7 @@ const Users = {
           userData.date_of_birth,
           userData.genderId,
           userData.religionId,
-          userId,
+          userEmail,
         ]
       );
       return result;
@@ -98,7 +98,16 @@ const Users = {
   getAllUser: async () => {
     try {
       const result = await query1(
-        `SELECT users.id, users.username, users.email, users.fullname, users.gender_id, users.role_id, users.religion_id, roles.name as role, genders.name as gender, religions.name as religion
+        `SELECT users.id, 
+        users.username, 
+        users.email, 
+        users.fullname, 
+        users.gender_id, 
+        users.role_id, 
+        users.religion_id, 
+        roles.name as role, 
+        genders.name as gender, 
+        religions.name as religion
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
           LEFT JOIN genders ON users.gender_id = genders.id
@@ -112,13 +121,13 @@ const Users = {
   getUserById: async (id) => {
     try {
       const result = await query1(
-        `SELECT users.username, users.email, users.fullname, users.role_id, roles.name as role, genders.name as gender, religions.name as religion
+        `SELECT users.username, 
+          users.email, 
+          users.fullname, 
+          users.role_id, roles.name as role
           FROM users
           LEFT JOIN roles ON users.role_id = roles.id
-          LEFT JOIN genders ON users.gender_id = genders.id
-          LEFT JOIN religions ON users.religion_id = religions.id
-          WHERE users.id = ?
-            `,
+          WHERE users.id = ?`,
         [id]
       );
       return result;
@@ -129,8 +138,14 @@ const Users = {
   getUserByEmail: async (email) => {
     try {
       const [result] = await query1(
-        `SELECT users.id, users.username, users.email, users.password, users.fullname, users.role_id, roles.name as role 
-        FROM users LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
+        `SELECT users.id, 
+        users.username, 
+        users.email, 
+        users.password, 
+        users.fullname, 
+        users.role_id, roles.name as role 
+        FROM users 
+        LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
         [email]
       );
       return result;

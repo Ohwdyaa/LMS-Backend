@@ -33,5 +33,20 @@ const modulePermission = {
       throw error;
     }
   },
+  getAllModule: async () => {
+    try {
+      const result = await query2(`SELECT module_permission.id, 
+        module_permission.uuid, 
+        module_permission.name, 
+        module_permission.category_module_permissions_id, 
+        category_module_permissions.name as categoryModule
+        FROM module_permission
+        LEFT JOIN category_module_permissions 
+        ON module_permission.category_module_permissions_id = category_module_permissions.id`);
+      return result;    
+    } catch (error) {
+      throw error;
+    }
+  }
 };
 module.exports = modulePermission;

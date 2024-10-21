@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const config = require("../config/config");
 const fs = require("fs");
-const privateKey = fs.readFileSync("D:/lms-backend/keys/private.pem", "utf8");
-const publicKey = fs.readFileSync("D:/lms-backend/keys/public.pem", "utf8");
+const privateKey = fs.readFileSync("D:/DATA KELAS/magang infinte/lms-backend/keys/private.pem", "utf8");
+const publicKey = fs.readFileSync("D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem", "utf8");
 dotenv.config();
 
 function generateJWT(user, permission) {

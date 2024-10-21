@@ -5,6 +5,7 @@ const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const Roles = require("../models/roles");
 const Permissions = require("./permissions");
 const { validatePermission } = require("../middlewares/auth");
+const { err } = require("../utils/customError");
 
 async function loginUser(req, res) {
   const { email, password} = req.body;
@@ -37,9 +38,9 @@ async function loginUser(req, res) {
       },
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred during login",
-      details: error.stack || null,
+    res.status(err.errorLogin.statusCode).json({
+      message: err.errorLogin.message,
+      error: error.message
     });
   }
 }
@@ -67,9 +68,9 @@ async function createUser(req, res) {
       data: { userId },
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while creating the user.",
-      details: error.details || null,
+    res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message
     });
   }
 }
@@ -88,11 +89,10 @@ async function updateUser(req, res) {
       message: "User updated successfully",
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while updating the user.",
-      details: error.details || null,
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
     });
-
   }
 }
 
@@ -108,9 +108,9 @@ async function deleteUser(req, res) {
       message: "User deleted successfully",
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while deleting the user.",
-      details: error.details || null,
+    res.status(err.errorDelete.statusCode).json({
+      message: err.errorDelete.message,
+      error: error.message
     });
   }
 }
@@ -137,9 +137,9 @@ async function getAllUser(req, res) {
       data: userList,
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while retrieving users.",
-      details: error.details || null,
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
     });
   }
 }
@@ -168,9 +168,9 @@ async function forgetPassword(req, res) {
       message: "Password updated successfully",
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while updating the password.",
-      details: error.details || null,
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
     });
   }
 }
@@ -189,9 +189,9 @@ async function changeUserRole(req, res) {
       message: "User role updated successfully",
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred while updating the user role.",
-      details: error.details || null,
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
     });
   }
 }
@@ -210,9 +210,9 @@ async function logoutUser(req, res) {
     }
     return res.status(400).json({ message: "Logout failed" });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message: error.message || "An error occurred during logout.",
-      details: error.details || null,
+    res.status(err.errorLogout.statusCode).json({
+      message: err.errorLogout.message,
+      error: error.message
     });
   }
 }

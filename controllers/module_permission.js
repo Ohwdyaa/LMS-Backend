@@ -1,5 +1,5 @@
-const { createModule, getAllModule } = require("../validate/module_permission");
-
+const modulePermission = require("../models/module_permission");
+const {err} = require(`../utils/customError`)
 
 async function createModule(req, res) {
   const moduleData = req.body;
@@ -16,10 +16,9 @@ async function createModule(req, res) {
   }
 }
 
-async function getAllModulesHandler(req, res) {
+async function getAllModules(req, res) {
   try {
-    
-    const modules = await getAllModule();
+    const modules = await modulePermission.getAllModule();
     
     if (modules && modules.length > 0) {
       return res.status(200).json({
@@ -43,8 +42,6 @@ async function getAllModulesHandler(req, res) {
   }
 }
 module.exports = { 
-
-  createModuleHandler,
-  getAllModulesHandler
-
+  createModule,
+  getAllModules
  };

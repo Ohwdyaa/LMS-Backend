@@ -49,7 +49,7 @@ const Permissions = {
   },
   getPermissionById: async (permissionId) => {
     try {
-      console.log("permissionId", permissionId)
+      console.log("permissionId", permissionId);
       const result = await query1(
         `SELECT lms_db2.role_permissions.can_create, 
         lms_db2.role_permissions.can_read, 
@@ -60,15 +60,34 @@ const Permissions = {
         FROM lms_db2.role_permissions
         LEFT JOIN lms_db2.roles ON lms_db2.role_permissions.role_id = lms_db2.roles.id
         LEFT JOIN lms_module.module_permission ON lms_db2.role_permissions.module_permission_id = lms_module.module_permission.id
-        WHERE lms_db2.role_permissions.id = ?`, [permissionId]);
-        console.log("result", result)
+        WHERE lms_db2.role_permissions.id = ?`,
+        [permissionId]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllPermission: async () => {
+    try {
+      const result = await query1(`SELECT lms_db2.role_permissions.id, lms_db2.role_permissions.can_create, 
+        lms_db2.role_permissions.can_read, 
+        lms_db2.role_permissions.can_edit, 
+        lms_db2.role_permissions.can_delete, 
+        lms_db2.role_permissions.role_id, lms_db2.roles.name as role,
+        lms_db2.role_permissions.module_permission_id, lms_module.module_permission.name as module
+        FROM lms_db2.role_permissions
+        LEFT JOIN lms_db2.roles ON lms_db2.role_permissions.role_id = lms_db2.roles.id
+        LEFT JOIN lms_module.module_permission ON lms_db2.role_permissions.module_permission_id = lms_module.module_permission.id`);
+        
         return result;
     } catch (error) {
       throw error;
     }
   },
-  updatePermission: async (permissionId, dataPermissions) => {
+  updatePermission: async (id, update) => {
     try {
+      console.log(id, update);
       const result = await query1(
         `UPDATE role_permissions SET 
         can_create = ?,
@@ -78,11 +97,11 @@ const Permissions = {
         updated_at = NOW()
         WHERE id = ?`,
         [
-          dataPermissions.can_create ? 1 : 0,
-          dataPermissions.can_read ? 1 : 0,
-          dataPermissions.can_edit ? 1 : 0,
-          dataPermissions.can_delete ? 1 : 0,
-          permissionId,
+          update.can_create ? 1 : 0,
+          update.can_read ? 1 : 0,
+          update.can_edit ? 1 : 0,
+          update.can_delete ? 1 : 0,
+          id,
         ]
       );
       return result;

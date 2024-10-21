@@ -1,8 +1,10 @@
 const express = require("express");
 const {
-  updatePermissionHandler
+  updatePermissionHandler,
+  getAllPermissionHandler
 } = require("../controllers/permissions");
 const router = express.Router();
 
-router.put("/permission/:id", updatePermissionHandler);
+router.get("/permission", getAllPermissionHandler);
+router.put("/permission", updatePermissionHandler);
 module.exports = router;

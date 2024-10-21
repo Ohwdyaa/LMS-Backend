@@ -2,14 +2,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const config = require("../config/config");
 const fs = require("fs");
-const privateKey = fs.readFileSync(
-  "D:/DATA KELAS/magang infinte/lms-backend/keys/private.pem",
-  "utf8"
-);
-const publicKey = fs.readFileSync(
-  "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
-  "utf8"
-);
+const privateKey = fs.readFileSync("D:/lms-backend/keys/private.pem", "utf8");
+const publicKey = fs.readFileSync("D:/lms-backend/keys/public.pem", "utf8");
 dotenv.config();
 
 function generateJWT(user, permission) {
@@ -29,7 +23,8 @@ function generateJWT(user, permission) {
     algorithm: "RS256",
   };
 
-  return jwt.sign(payload, privateKey, signOptions);
+  const token = jwt.sign(payload, privateKey, signOptions);
+  return token;
 }
 
 function verifyJWT(token) {
@@ -51,6 +46,7 @@ function generateResetToken(user) {
 
   const payload = {
     user: user.email,
+    email : user.email
   };
 
   const signOptions = {

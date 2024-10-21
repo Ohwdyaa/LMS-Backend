@@ -8,6 +8,6 @@ const router = express.Router();
 const { passport, authorizeRole} = require("../middlewares/auth");
 
 router.post("/request",  requestResetPassHandler);
-router.post("/reset", resetPassHandler);
+router.post("/reset-password/:token", resetPassHandler);
 
 module.exports = router;

@@ -23,7 +23,6 @@ async function getPermissionByRoleHandler(req, res) {
   try {
     const roleId = req.params.id;
     const result = await getPermissionByRole(roleId);
-    
     return res.status(200).json({
       result,
     });
@@ -36,9 +35,9 @@ async function getPermissionByRoleHandler(req, res) {
 }
 async function updatePermissionHandler(req, res) {
   try {
-    const permissionUpdate = req.body.permissions;
-    console.log("req", permissionUpdate);
-    const result = await updatePermission(permissionUpdate);
+    const roleId = req.body.roleId;
+    const permissions = req.body.permissions;
+    const result = await updatePermission(roleId, permissions);
     return res.status(200).json({
       message: "Permission updated successfully",
       result,

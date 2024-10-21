@@ -1,5 +1,6 @@
 const Permissions = require("../models/permissions");
 const Module = require("../models/module_permission");
+const { err } = require("../utils/customError");
 
 async function createPermission(roleId) {
   try {
@@ -20,19 +21,24 @@ async function createPermission(roleId) {
     throw error;
   }
 }
-async function updatePermission(permissions) { // update pengecekan nya berdasarkan role_id dan module_id - bulk query
-  try {
+async function updatePermission(roleId, permissions) { // update pengecekan nya berdasarkan role_id dan module_id - bulk query
+  try { 
     const result = [];
     for(let i = 0; i < permissions.length; i++){
-      const {id, update, role_id, module_permission_id} = permissions[i];
-      const idPermission = await Permissions.getPermissionByRoleAndModule(role_id, module_permission_id)
-      if (idPermission === undefined) {
-        throw new Error("User not found");
+
+      const {moduleId, update} = permissions[i];
+
+      const existingData = await Permissions.getPermissionByRoleAndModule(roleId, moduleId);
+      if (existingData === undefined) {
+        // await createPermission(update);
+        // console.log("Permission baru telah dibuat.");
+        // continue;
+        console.error("undifined data");
       } 
-      result.push({id, update});
+      const results = await Permissions.updatePermission(roleId, update); 
+      result.push(results);
     }
-    const results = await Permissions.updatePermission(result); 
-    return results;
+    return result;
   } catch (error) {
     throw error;
   }

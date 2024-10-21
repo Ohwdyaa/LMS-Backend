@@ -7,7 +7,7 @@ const moduleCategory = {
       const uuidCategory = uuid();
       const result = await query2(
         `
-            INSERT INTO category_module_permissions (
+            INSERT INTO category_module(
                 uuid, 
                 name
             ) 
@@ -23,7 +23,7 @@ const moduleCategory = {
   updateCategory: async (categoryId, categoryData) => {
     try {
       const result = await query2(
-        `UPDATE category_module_permissions 
+        `UPDATE category_module
         SET name = ? WHERE id =?`,
         [categoryData, categoryId]
       );
@@ -35,7 +35,7 @@ const moduleCategory = {
   getCategoryById: async (id) => {
     try {
       console.log('id', id)
-      const result = await query2(`SELECT uuid, name FROM category_module_permissions WHERE id = ?`, [id]);
+      const result = await query2(`SELECT uuid, name FROM category_module WHERE id = ?`, [id]);
       return result;
     } catch (error) {
       throw error;

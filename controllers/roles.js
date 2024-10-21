@@ -17,9 +17,9 @@ async function createRole(req, res) {
   }
 }
 async function getRoleById(req, res) {
-  const { id } = req.params;
+  const roleId = req.params;
   try {
-    const role = await Roles.getRoleById(id);
+    const role = await Roles.getRoleById(roleId);
     if (role === undefined) {
       throw new CustomError("Role not found");
     }

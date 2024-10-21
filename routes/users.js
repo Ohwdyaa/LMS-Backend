@@ -8,13 +8,18 @@ const {
   changeUserRoleHandler,
   logoutUserHandler,
 } = require("../controllers/users");
+const {
+  validateUser, 
+  validateLogin,
+  validateUpdateUser
+} = require("../middlewares/validate")
 const router = express.Router();
 const { passport, checkPermission} = require("../middlewares/auth");
 
 
-router.post("/login", loginHandler);
-router.post("/user", passport.authenticate("jwt", { session: false }), createUserHandler);
-router.put("/user/:id", passport.authenticate("jwt", { session: false }), updateUserHandler);
+router.post("/login", validateLogin, loginHandler);
+router.post("/user", passport.authenticate("jwt", { session: false }), validateLogin, createUserHandler);
+router.put("/user/:id", passport.authenticate("jwt", { session: false }), validateUpdateUser, updateUserHandler);
 router.delete("/user/:id", passport.authenticate("jwt", { session: false }), deleteUserHandler);
 router.get("/user", passport.authenticate("jwt", { session: false }), getAllUserHandler);
 router.put("/role/:id", passport.authenticate("jwt", { session: false }), changeUserRoleHandler);

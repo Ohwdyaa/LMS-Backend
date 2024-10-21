@@ -47,7 +47,7 @@ const Permissions = {
       throw error;
     }
   },
-  getPermissionByRoleAndModule: async (roleId, module_permission_id) => {
+  getPermissionByRoleAndModule: async (roleId, moduleId) => {
     try {
       const result = await query1(
         `SELECT lms_db2.role_permissions.can_create AS 'create', 
@@ -56,7 +56,7 @@ const Permissions = {
               lms_db2.role_permissions.can_delete AS 'delete'
           FROM lms_db2.role_permissions 
         WHERE role_id = ? AND module_permission_id =?`,
-        [roleId, module_permission_id]
+        [roleId, moduleId]
       );
       console.log("models", result)
       return result;
@@ -102,9 +102,9 @@ const Permissions = {
       throw error;
     }
   },
-  updatePermission: async (id, update) => {
+  updatePermission: async (roleId, update) => {
     try {
-      console.log(id, update);
+      console.log(roleId, update);
       const result = await query1(
         `UPDATE role_permissions SET 
         can_create = ?,
@@ -112,13 +112,13 @@ const Permissions = {
         can_edit = ?, 
         can_delete = ?, 
         updated_at = NOW()
-        WHERE id = ?`,
+        WHERE role_id = ?`,
         [
           update.can_create ? 1 : 0,
           update.can_read ? 1 : 0,
           update.can_edit ? 1 : 0,
           update.can_delete ? 1 : 0,
-          id,
+          roleId,
         ]
       );
       return result;

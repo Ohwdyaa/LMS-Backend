@@ -20,23 +20,19 @@ async function createPermission(roleId) {
     throw error;
   }
 }
-async function updatePermission(permissions) {
+async function updatePermission(permissions) { // update pengecekan nya berdasarkan role_id dan module_id - bulk query
   try {
-    console.log("update", permissions)
     const result = [];
     for(let i = 0; i < permissions.length; i++){
-      const {id, update} = permissions[i];
-      const idPermission = await Permissions.getPermissionById(id)
-      console.log("before", idPermission)
+      const {id, update, role_id, module_permission_id} = permissions[i];
+      const idPermission = await Permissions.getPermissionByRoleAndModule(role_id, module_permission_id)
       if (idPermission === undefined) {
         throw new Error("User not found");
-      }
-
-      const results = await Permissions.updatePermission(id, update);
-      console.log("after", results)
-      result.push(results)
+      } 
+      result.push({id, update});
     }
-    return result;
+    const results = await Permissions.updatePermission(result); 
+    return results;
   } catch (error) {
     throw error;
   }
@@ -67,35 +63,20 @@ async function getAllPermission() {
     throw error;
   }
 }
-async function getPermissionByRole(idPermission) {
+async function getPermissionByRole(roleId) {
   try {
-    const result = await Permissions.getPermissionsByRoleid(idPermission);
-    
-    if (!result || result.length === 0) {
+    const result = await Permissions.getPermissionByRole(roleId);
+    if (result === undefined) {
       throw new Error("No permissions found");
     }
-    const permissionList = [];
-    for (let i = 0; i < result.length; i++) {
-      const permission = result[i];
-      const listObj = new Object(); 
-      listObj.id = permission.id;
-      listObj.can_create = permission.can_create
-      listObj.can_read = permission.can_read;
-      listObj.can_edit = permission.can_edit;
-      listObj.can_delete = permission.can_delete;
-      listObj.role_id = permission.role;
-      listObj.module_permission_id = permission.module;
-      permissionList.push(listObj);
-    }
-    console.log("validate", permissionList)
-    return permissionList;
+    return result;
   } catch (error) {
     throw error;
   }
 }
 async function getPermissions(user) {
   try {
-    const permissions = await Permissions.getPermissionsByRoleid(user.role_id);
+    const permissions = await Permissions.getPermissionByRole(user.role_id);
     if (permissions === undefined) {
       throw new Error("Permissions not found for this role");
     }

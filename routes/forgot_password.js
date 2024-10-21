@@ -4,7 +4,6 @@ const {
   resetPassword,
 } = require("../controllers/forgot_password");
 const router = express.Router();
-
 const { passport, authorizeRole} = require("../middlewares/auth");
 
 router.post("/request",  requestResetPassword);

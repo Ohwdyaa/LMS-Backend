@@ -46,12 +46,14 @@ const Users = {
     }
   },
   updatePassword: async (userId, hashedPassword) => {
-    //belum sempurna
     try {
       const result = await query1(
         `UPDATE users SET password = ? where id = ?`,
         [hashedPassword, userId]
       );
+      if (result.affectedRows === 0) {
+        throw new Error("No user found with the given ID.");
+    }
       return result;
     } catch (error) {
       throw error;

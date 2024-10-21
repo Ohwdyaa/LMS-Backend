@@ -10,6 +10,7 @@ const publicKey = fs.readFileSync(
   "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
+
 dotenv.config();
 
 function generateJWT(user, permission) {
@@ -29,7 +30,8 @@ function generateJWT(user, permission) {
     algorithm: "RS256",
   };
 
-  return jwt.sign(payload, privateKey, signOptions);
+  const token = jwt.sign(payload, privateKey, signOptions);
+  return token;
 }
 
 function verifyJWT(token) {
@@ -51,6 +53,7 @@ function generateResetToken(user) {
 
   const payload = {
     user: user.email,
+    email : user.email
   };
 
   const signOptions = {

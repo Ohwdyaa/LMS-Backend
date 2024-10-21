@@ -8,6 +8,11 @@ const {
   changeUserRoleHandler,
   logoutUserHandler,
 } = require("../controllers/users");
+const {
+  validateUser, 
+  validateLogin,
+  validateUpdateUser
+} = require("../middlewares/validate")
 const router = express.Router();
 const { passport } = require("../middlewares/auth");
 

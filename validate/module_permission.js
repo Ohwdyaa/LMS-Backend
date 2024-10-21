@@ -8,4 +8,13 @@ async function createModule(moduleData) {
     throw error;
   }
 }
-module.exports = { createModule };
+async function getAllModule(){
+  try{
+    const modules = await modulePermission.getAllModule();
+    return modules;
+  }catch (error){
+    throw error;
+  }
+}
+
+module.exports = { createModule, getAllModule };

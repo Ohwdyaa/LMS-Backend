@@ -1,6 +1,7 @@
 const {
   updatePermission,
   getAllPermission,
+  getPermissionByRole,
 } = require("../validate/permissions");
 const { err } = require("../utils/customError");
 
@@ -8,6 +9,21 @@ async function getAllPermissionHandler(req, res) {
   try {
     const result = await getAllPermission();
     console.log("controller", result)
+    return res.status(200).json({
+      result,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
+      message: error.message || err.errorUpdate.message,
+      details: error.details || null,
+    });
+  }
+}
+async function getPermissionByRoleHandler(req, res) {
+  try {
+    const roleId = req.params.id;
+    const result = await getPermissionByRole(roleId);
+    
     return res.status(200).json({
       result,
     });
@@ -36,5 +52,6 @@ async function updatePermissionHandler(req, res) {
 }
 module.exports = {
   getAllPermissionHandler,
+  getPermissionByRoleHandler,
   updatePermissionHandler
 };

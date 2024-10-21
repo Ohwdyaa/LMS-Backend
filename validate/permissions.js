@@ -36,6 +36,7 @@ async function updatePermission(permissions) {
       console.log("after", results)
       result.push(results)
     }
+    return result;
   } catch (error) {
     throw error;
   }
@@ -49,6 +50,31 @@ async function getAllPermission() {
     }
     const permissionList = [];
     
+    for (let i = 0; i < result.length; i++) {
+      const permission = result[i];
+      const listObj = new Object(); 
+      listObj.id = permission.id;
+      listObj.can_create = permission.can_create
+      listObj.can_read = permission.can_read;
+      listObj.can_edit = permission.can_edit;
+      listObj.can_delete = permission.can_delete;
+      listObj.role_id = permission.role;
+      listObj.module_permission_id = permission.module;
+      permissionList.push(listObj);
+    }
+    return permissionList;
+  } catch (error) {
+    throw error;
+  }
+}
+async function getPermissionByRole(idPermission) {
+  try {
+    const result = await Permissions.getPermissionsByRoleid(idPermission);
+    
+    if (!result || result.length === 0) {
+      throw new Error("No permissions found");
+    }
+    const permissionList = [];
     for (let i = 0; i < result.length; i++) {
       const permission = result[i];
       const listObj = new Object(); 
@@ -82,5 +108,6 @@ module.exports = {
   createPermission,
   updatePermission,
   getAllPermission,
+  getPermissionByRole,
   getPermissions
 };

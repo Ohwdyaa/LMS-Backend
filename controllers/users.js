@@ -9,6 +9,7 @@ const {
   forgetPassword,
 } = require("../validate/users");
 const { err } = require("../utils/customError");
+const { use } = require("passport");
 
 async function loginHandler(req, res) {
   try {
@@ -56,9 +57,9 @@ async function createUserHandler(req, res) {
 
 async function updateUserHandler(req, res) {
   try {
-    const { id: userId } = req.params;
+    const userEmail = req.user.email;
     const userUpdate = req.body;
-    const result = await updateUser(userId, userUpdate);
+    const result = await updateUser(userEmail, userUpdate);
     return res.status(200).json({
       message: "User updated successfully",
       result,

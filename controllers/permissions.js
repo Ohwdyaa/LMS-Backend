@@ -1,28 +1,28 @@
 const {
-  createRolePermission,
   updatePermission,
+  getAllPermission,
 } = require("../validate/permissions");
 const { err } = require("../utils/customError");
 
-async function rolePermissionHandler(req, res) {
+async function getAllPermissionHandler(req, res) {
   try {
-    const dataPermissions = req.body;
-    const rolePermission = await createRolePermission(dataPermissions);
-    return res.status(201).json({
-      message: "Role created successfully",
-      data: { rolePermission },
+    const result = await getAllPermission();
+    console.log("controller", result)
+    return res.status(200).json({
+      result,
     });
   } catch (error) {
-    return res.status(err.internalServerError.statusCode).json({
-      message: err.internalServerError.message,
+    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
+      message: error.message || err.errorUpdate.message,
+      details: error.details || null,
     });
   }
 }
 async function updatePermissionHandler(req, res) {
   try {
-    const { id: permissionId } = req.params;
-    const permissionUpdate = req.body;
-    const result = await updatePermission(permissionId, permissionUpdate);
+    const permissionUpdate = req.body.permissions;
+    console.log("req", permissionUpdate);
+    const result = await updatePermission(permissionUpdate);
     return res.status(200).json({
       message: "Permission updated successfully",
       result,
@@ -35,6 +35,6 @@ async function updatePermissionHandler(req, res) {
   }
 }
 module.exports = {
-  rolePermissionHandler,
-  updatePermissionHandler,
+  getAllPermissionHandler,
+  updatePermissionHandler
 };

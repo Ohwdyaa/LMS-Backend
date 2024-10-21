@@ -23,6 +23,15 @@ async function getRoleById(roleId) {
 async function getAllRoles() {
   try {
     const roles = await Roles.getAllRoles();
+    const filteredRoles = [];
+    for (let i = 0; i < roles.length; i++) {
+      filteredRoles.push({
+        id: roles[i].id,
+        name: roles[i].name
+      });
+    }
+
+    return filteredRoles;
     return roles;
   } catch (error) {
     throw error;

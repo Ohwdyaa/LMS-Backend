@@ -1,7 +1,7 @@
 const express = require("express");
-const { createModuleHandler, getAllModulesHandler } = require("../controllers/module_permission");
+const { createModule, getAllModules } = require("../controllers/module_permission");
 const router = express.Router();
 
-router.post("/module", createModuleHandler);
-router.get("/module", getAllModulesHandler );
+router.post("/module", createModule);
+router.get("/module", getAllModules );
 module.exports = router;

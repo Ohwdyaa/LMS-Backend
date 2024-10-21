@@ -7,10 +7,10 @@ const modulePermission = {
       const uuidModule = uuid();
       const result = await query2(
         `
-            INSERT INTO module_permission (
+            INSERT INTO module (
                 uuid, 
                 name,
-                category_module_permissions_id,
+                category_module_id
                 created_by
             ) 
                 VALUES (?, ?, ?, ?)
@@ -25,7 +25,7 @@ const modulePermission = {
   getModuleById: async (module_permission_id) => {
     try {
       const [result] = await query2(
-        `SELECT uuid, name, category_module_permissions_id FROM module_permission WHERE id = ?`,
+        `SELECT uuid, name, category_module_id FROM module WHERE id = ?`,
         [module_permission_id.modulePermissionId]
       );
       return result;
@@ -35,14 +35,15 @@ const modulePermission = {
   },
   getAllModule: async () => {
     try {
-      const result = await query2(`SELECT module_permission.id, 
-        module_permission.uuid, 
-        module_permission.name, 
-        module_permission.category_module_permissions_id, 
-        category_module_permissions.name as categoryModule
-        FROM module_permission
-        LEFT JOIN category_module_permissions 
-        ON module_permission.category_module_permissions_id = category_module_permissions.id`);
+      const result = await query2(`
+        SELECT module.id, 
+          module.uuid, 
+          module.name, 
+          module.category_module_id, 
+          category_module.name as categoryModule
+        FROM module
+        LEFT JOIN category_module 
+        ON module.category_module_id = category_module.id`);
       return result;    
     } catch (error) {
       throw error;

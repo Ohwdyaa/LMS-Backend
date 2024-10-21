@@ -16,7 +16,7 @@ const err = {
     statusCode: 400, 
   },
   errorSelect:{
-    message: "An error occurred while displaying all data",
+    message: "An error occurred while displaying data",
     statusCode: 400, 
   },
   errorChangePassword:{

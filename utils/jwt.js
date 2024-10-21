@@ -53,7 +53,7 @@ function generateResetToken(user) {
 
   const payload = {
     user: user.email,
-    email : user.email
+    email: user.email,
   };
 
   const signOptions = {

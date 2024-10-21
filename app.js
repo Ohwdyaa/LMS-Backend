@@ -3,7 +3,6 @@ const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { passport } = require("./middlewares/auth");
-const db = require("./config/db/db");
 const userRoutes = require("./routes/users");
 const forgetPasswordRoutes = require("./routes/forgot_password")
 const roleRoutes = require("./routes/roles");

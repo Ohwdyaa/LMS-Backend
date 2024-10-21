@@ -1,12 +1,11 @@
-const { createModule } = require("../validate/module_permission");
+const modulePermission = require("../models/module_permission");
 
-async function createModuleHandler(req, res) {
+async function createModule(req, res) {
+  const moduleData = req.body;
   try {
-    const moduleData = req.body;
-    const moduleId = await createModule(moduleData);
+    await modulePermission.createModule(moduleData);
     return res.status(201).json({
-      message: "Module created successfully",
-      data: { moduleId },
+      message: "Module created successfully"
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -15,4 +14,4 @@ async function createModuleHandler(req, res) {
     });
   }
 }
-module.exports = { createModuleHandler };
+module.exports = { createModule };

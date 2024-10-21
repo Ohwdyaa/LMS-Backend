@@ -1,7 +1,7 @@
 const express = require("express");
-const { createGenderHandler } = require("../controllers/genders");
+const { createGender } = require("../controllers/genders");
 const router = express.Router();
 
-router.post("/gender", createGenderHandler);
+router.post("/gender", createGender);
 
 module.exports = router;

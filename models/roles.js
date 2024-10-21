@@ -20,7 +20,7 @@ const Roles = {
   },
   getRoleById: async (roleId) => {
     try {
-      const [result] = await query1("SELECT * FROM roles WHERE id = ?", roleId);
+      const [result] = await query1("SELECT name FROM roles WHERE id = ?", roleId);
       return result;
     } catch (error) {
       throw error;
@@ -28,7 +28,7 @@ const Roles = {
   },
   getAllRoles: async () => {
     try {
-      const result = await query1("SELECT * FROM roles");
+      const result = await query1("SELECT id, name FROM roles");
       return result;
     } catch (error) {
       throw error;

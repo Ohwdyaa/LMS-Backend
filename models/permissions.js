@@ -50,22 +50,23 @@ const Permissions = {
   getPermissionByRoleAndModule: async (roleId, moduleId) => {
     try {
       const result = await query1(
-        `SELECT lms_db2.role_permissions.can_create AS 'create', 
-              lms_db2.role_permissions.can_read AS 'read', 
-              lms_db2.role_permissions.can_edit AS 'edit', 
-              lms_db2.role_permissions.can_delete AS 'delete'
-          FROM lms_db2.role_permissions 
-        WHERE role_id = ? AND module_permission_id =?`,
+        `SELECT 
+          can_create AS create, 
+          can_read AS read, 
+          can_edit AS edit, 
+          can_delete AS delete
+        FROM lms_db2.role_permissions 
+        WHERE role_id = ? AND module_permission_id = ?`,
         [roleId, moduleId]
       );
-      console.log("models", result)
+      console.log("models", result);
       return result;
     } catch (error) {
       throw error;
     }
   },
   getPermissionById: async (permissionId) => {
-    try {  
+    try {
       const result = await query1(
         `SELECT lms_db2.role_permissions.can_create, 
           lms_db2.role_permissions.can_read, 
@@ -97,7 +98,7 @@ const Permissions = {
           LEFT JOIN lms_db2.roles ON lms_db2.role_permissions.role_id = lms_db2.roles.id
           LEFT JOIN lms_module.module_permission ON 
           lms_db2.role_permissions.module_permission_id = lms_module.module_permission.id`);
-        return result;
+      return result;
     } catch (error) {
       throw error;
     }

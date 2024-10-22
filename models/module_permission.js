@@ -11,11 +11,10 @@ const modulePermission = {
                 uuid, 
                 name,
                 category_module_id
-                created_by
             ) 
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?)
             `,
-        [uuidModule, moduleData.name, moduleData.categoryId, "1"]
+        [uuidModule, moduleData.name, moduleData.categoryId]
       );
       return result;
     } catch (error) {
@@ -44,10 +43,10 @@ const modulePermission = {
         FROM module
         LEFT JOIN category_module 
         ON module.category_module_id = category_module.id`);
-      return result;    
+      return result;
     } catch (error) {
       throw error;
     }
-  }
+  },
 };
 module.exports = modulePermission;

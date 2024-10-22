@@ -2,6 +2,7 @@ const Permissions = require("../models/permissions");
 const Module = require("../models/module_permission");
 const { err } = require("../utils/customError");
 const Roles = require("../models/roles");
+const { uuid } = require("../utils/tools");
 
 async function createPermission(req, res) {
   const { roleId, listModules } = req.body;
@@ -17,14 +18,14 @@ async function createPermission(req, res) {
         can_delete: 0,
         roleId: roleId,
         moduleId: module.id,
-      }
+      };
       for (let j = 0; j < listModules.length; j++) {
         if (listModules[j].moduleId === module.id.toString()) {
           permissionData.can_create = listModules[j].canCreate ? 1 : 0;
           permissionData.can_read = listModules[j].canRead ? 1 : 0;
           permissionData.can_edit = listModules[j].canUpdate ? 1 : 0;
           permissionData.can_delete = listModules[j].canDelete ? 1 : 0;
-          break; 
+          break;
         }
       }
       await Permissions.createPermission(permissionData);
@@ -33,63 +34,74 @@ async function createPermission(req, res) {
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
 async function updatePermission(req, res) {
-  const {id: roleId} = req.params;
-  const {listModules} = req.body;
-  const result = [];
+  const { id: roleId } = req.params;
+  const { listModules } = req.body;
+  let newValue = [];
+
   try {
     const isRoleExists = await Roles.getRoleById(roleId);
-    if (!isRoleExists) {
-      return res.status(404).json({ message: "Role not found" });
+    if (isRoleExists === undefined) {
+      return res.status(400).json({ message: "Role not found" });
     }
-    console.log('data', listModules.length)
-    for (let i = 0; i < listModules.length; i++) {
-      const { moduleId, canRead, canCreate, canUpdate, canDelete } = listModules[i]; 
-      
-      const existingData = await Permissions.getPermissionByRoleAndModule(roleId, moduleId);
-      
-      const updateData = {
-        can_read: canRead, 
-        can_create: canCreate, 
-        can_edit: canUpdate, 
-        can_delete: canDelete, 
-      };
-      if (existingData) {
-        const updatedPermission = await Permissions.updatePermission(roleId, moduleId, updateData);
-        result.push(updatedPermission); 
-      }else{
-        const newPermission = await Permissions.createPermission({
-          role_id: roleId, 
-          module_id: moduleId, 
-          ...updateData, 
-        });
-        result.push(newPermission); 
-        console.log("Permission baru telah dibuat.");
+
+    const moduleLength = listModules.length;
+    for (let i = 0; i < moduleLength; i++) {
+      const { moduleId, canRead, canCreate, canUpdate, canDelete } =
+        listModules[i];
+
+      const isExists = await Permissions.getPermissionByRoleAndModule(
+        roleId,
+        moduleId
+      );
+
+      if (isExists !== undefined) {
+        // update query for existing role and module
+        const updateData = {
+          canRead,
+          canCreate,
+          canUpdate,
+          canDelete,
+        };
+        await Permissions.updatePermission(roleId, moduleId, updateData);
       }
-      //   roleId,
-      //   moduleId
-      // );
-      // if (existingData === undefined) {
-      //   // await createPermission(update);
-      //   // console.log("Permission baru telah dibuat.");
-      //   // continue;
-      //   console.error("undifined data");
-      // }
-      // const results = await Permissions.updatePermission(roleId, update);
-      // result.push(results);
+
+      if (isExists === undefined) {
+        // insert new permission role and module if not exists
+        newValue.push([
+          uuid(),
+          canCreate,
+          canRead,
+          canUpdate,
+          canDelete,
+          roleId,
+          moduleId,
+        ]);
+      }
     }
+
+    if (newValue.length > 0) {
+      // in here we do inserting bulk query
+      await Permissions.createBulkPermission(
+        `INSERT INTO role_permissions ( 
+          id, can_create, can_read, can_edit, can_delete, role_id,  module_id
+        ) VALUES ?`,
+        [newValue]
+      );
+    }
+
     return res.status(200).json({
       message: "Permissions updated successfully",
-      result,
     });
   } catch (error) {
-    res.status(err.errorUpdate.statusCode).json({
+    console.log(error);
+    return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -120,7 +132,7 @@ async function getAllPermission(req, res) {
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -137,7 +149,7 @@ async function getPermissionByRole(req, res) {
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -147,12 +159,12 @@ async function getPermissions(user) {
     if (permissions === undefined) {
       throw new Error("Permissions not found for this role");
     }
-    console.log(permissions)
+    console.log(permissions);
     return permissions;
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }

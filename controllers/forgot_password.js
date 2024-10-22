@@ -5,6 +5,7 @@ const { sendResetPasswordEmail } = require("../utils/send_email");
 const { hashPassword } = require("../utils/bcrypt");
 const { generateResetToken, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
+const { err } = require(`../utils/customError`);
 
 async function requestResetPassword(req, res) {
   const { email } = req.body;
@@ -28,10 +29,9 @@ async function requestResetPassword(req, res) {
       data: { email },
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({
-      message:
-        error.message || "An error occurred while processing your request.",
-      details: error.stack || null,
+    res.status(err.errorRequest.statusCode).json({
+      message: err.errorRequest.message,
+      error: error.message,
     });
   }
 }
@@ -54,9 +54,9 @@ async function resetPassword(req, res) {
     if (error.name === "TokenExpiredError") {
       throw new Error("Token expired");
     }
-    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
-      message: error.message || err.errorUpdate.message,
-      details: error.details || null,
+    res.status(err.errorReset.statusCode).json({
+      message: err.errorReset.message,
+      error: error.message,
     });
   }
 }

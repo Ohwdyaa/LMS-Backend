@@ -20,11 +20,9 @@ const Roles = {
   },
   getRoleById: async (roleId) => {
     try {
-      console.log("roleId", roleId);
-      const result = await query1("SELECT name FROM roles WHERE id = ?", [
+      const [result] = await query1("SELECT name FROM roles WHERE id = ?", [
         roleId,
       ]);
-      console.log("result models", result);
       return result;
     } catch (error) {
       throw error;
@@ -33,6 +31,17 @@ const Roles = {
   getAllRoles: async () => {
     try {
       const result = await query1("SELECT id, name FROM roles");
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateRole: async (roleId, updateData) => {
+    try {
+      const result = await query1("UPDATE roles SET ? WHERE id = ?", [
+        updateData,
+        roleId,
+      ]);
       return result;
     } catch (error) {
       throw error;

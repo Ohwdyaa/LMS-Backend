@@ -2,9 +2,9 @@ const { query2 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");  
 
 const moduleCategory = {
-  createCategory: async (categoryData) => {
+  createCategory: async (data) => {
     try {
-      const uuidCategory = uuid();
+      const id = uuid();
       const result = await query2(
         `
             INSERT INTO category_module(
@@ -13,19 +13,19 @@ const moduleCategory = {
             ) 
                 VALUES (?, ?)
             `,
-        [uuidCategory, categoryData.name]
+        [id, data.name]
       );
       return result;
     } catch (error) {
       throw error;
     }
   },
-  updateCategory: async (categoryId, categoryData) => {
+  updateCategory: async (categoryId, newValue) => {
     try {
       const result = await query2(
         `UPDATE category_module
         SET name = ? WHERE id =?`,
-        [categoryData, categoryId]
+        [newValue, categoryId]
       );
       return result;
     } catch (error) {

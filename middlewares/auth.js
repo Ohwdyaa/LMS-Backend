@@ -45,6 +45,12 @@ function validatePermission(token){
   }
   return "Access granted";
 }
+module.exports = {
+  passport,
+  validatePermission
+};
+
+
 // const checkPermission = (moduleName, permission) => {
 //   return (req, res, next) => {
 //     console.log("User data in req.user:", req.user);
@@ -62,8 +68,3 @@ function validatePermission(token){
 //     next();
 //   };
 // };
-
-module.exports = {
-  passport,
-  validatePermission
-};

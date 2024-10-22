@@ -1,16 +1,16 @@
 const express = require("express");
 const {
   createReligion,
-  updateReligion,
-  deleteReligion,
+  updateReligions,
+  deleteReligions,
   getReligionById,
   getAllReligions,
-} = require("../controllers/religions");
+} = require("../../controllers/religions");
 const router = express.Router();
 
 router.post("/religion", createReligion);
-router.put("/religion/:id", updateReligion);
-router.delete("/religion/:id", deleteReligion);
+router.put("/religion/:id", updateReligions);
+router.delete("/religion/:id", deleteReligions);
 router.get("/religion/:id", getReligionById);
 router.get("/religion", getAllReligions);
 

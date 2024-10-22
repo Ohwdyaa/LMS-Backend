@@ -42,11 +42,8 @@ function verifyJWT(token) {
 }
 
 function generateResetToken(user) {
-  console.log("email:", user.email);
-
   const payload = {
     user: user.email,
-    email : user.email
   };
 
   const signOptions = {
@@ -65,16 +62,3 @@ module.exports = {
   verifyJWT,
   generateResetToken,
 };
-// function generateRefreshToken(user) {
-//   const payload = { id: user.id };
-//   const secret = process.env.REFRESH_TOKEN_SECRET;
-//   const options = { expiresIn: "1d" };
-
-//   if (!secret) {
-//     throw new Error(
-//       "REFRESH_TOKEN_SECRET is not defined in environment variables"
-//     );
-//   }
-
-//   return jwt.sign(payload, secret, options);
-// }

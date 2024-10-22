@@ -2,29 +2,29 @@ const Religions = require("../models/religions");
 const { err } = require("../utils/customError");
 
 async function createReligion(req, res) {
-  const religionData = req.body;
+  const data = req.body;
   try {
-    const result = await Religions.createReligion(religionData);
+    await Religions.createReligion(data);
     return res.status(201).json({
       message: "Religion created successfully"
     });
   } catch (error) {
-    res.status(err.errorCreate.statusCode).json({
+    return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
       error: error.message
     });
   }
 }
 async function getReligionById(req, res) {
-  const { id } = req.params;
+  const { id: religionId } = req.params;
   try {
-    const result = await Religions.getReligionById(id);
-    if (result === undefined) {
-      throw new CustomError("Religion not found");
+    const religion = await Religions.getReligionById(religionId);
+    if (religion === undefined) {
+      throw new Error("Religion not found");
     }
-    return res.status(200).json(result);
+    return res.status(200).json(religion);
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message
     });
@@ -32,26 +32,26 @@ async function getReligionById(req, res) {
 }
 async function getAllReligions(req, res) {
   try {
-    const result = await Religions.getAllReligions();
+    const religion = await Religions.getAllReligion();
     return res.status(200).json({
-      data: result,
+      data: religion,
     });
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message
     });
   }
 }
-async function updateReligion(req, res) {
+async function updateReligions(req, res) {
   const { id: religionId } = req.params;
-  const religionData = req.body;
+  const newValue = req.body;
   try {
-    const religion = await Religions.getReligionById(religionId, religionData);
+    const religion = await Religions.getReligionById(religionId);
     if (religion === undefined) {
-      throw error;
+      throw new Error("Religion not found");
     }
-    await Religions.updateReligion(religionId, religionData);
+    await Religions.updateReligion(religionId, newValue);
     return res.status(200).json({
       message: "Religion updated successfully"
     });
@@ -62,8 +62,8 @@ async function updateReligion(req, res) {
     });
   }
 }
-async function deleteReligion(req, res) {
-  const religionId = req.params.id;
+async function deleteReligions(req, res) {
+  const {id:religionId} = req.params.id;
   try {
     await Religions.deleteReligion(religionId);
     return res.status(200).json({
@@ -81,6 +81,6 @@ module.exports = {
   createReligion,
   getReligionById,
   getAllReligions,
-  updateReligion,
-  deleteReligion,
+  updateReligions,
+  deleteReligions,
 };

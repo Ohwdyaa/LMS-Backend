@@ -1,7 +1,5 @@
 const Users = require("../models/users");
 const Roles = require("../models/roles");
-const Genders = require("../models/genders");
-const Religions = require("../models/religions");
 
 function validateEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,9 +14,10 @@ function validatePhoneNumber(phoneNumber) {
   return re.test(phoneNumber);
 }
 
+
 function validateLogin(req, res, next) {
   const { email, password } = req.body;
-  if (!email) {
+  if (email.length === 0) {
     return res.status(400).json({ message: "Email is required" });
   }
   if (!validateEmail(email)) {
@@ -33,29 +32,29 @@ function validateLogin(req, res, next) {
 }
 
 async function validateUser(req, res, next) {
-  const { username, email, fullname, roleId, genderId, religionId } = req.body;
+  const { username, email, fullname, roleId} = req.body;
   console.log(req.body);
-  if (!username) {
+  if (username.length === 0) {
     return res.status(400).json({ message: "Username is required" });
   }
-  if (!email) {
+  if (email.length === 0) {
     return res.status(400).json({ message: "Email is required" });
   }
   if (!validateEmail(email)) {
     return res.status(400).json({ message: "Invalid email format" });
   }
-  if (!fullname) {
+  if (fullname.length === 0) {
     return res.status(400).json({ message: "Fullname is required" });
   }
-  if (!roleId) {
+  if (roleId.length === 0) {
     return res.status(400).json({ message: "Role is required" });
   }
-  if (!genderId) {
-    return res.status(400).json({ message: "Gender is required" });
-  }
-  if (!religionId) {
-    return res.status(400).json({ message: "Religion is required" });
-  }
+  // if (genderId.length === 0) {
+  //   return res.status(400).json({ message: "Gender is required" });
+  // }
+  // if (religionId.length === 0) {
+  //   return res.status(400).json({ message: "Religion is required" });
+  // }
   try {
     const existingEmail = await Users.getUserByEmail(email);
     if (existingEmail && existingEmail.length > 0) {
@@ -63,7 +62,6 @@ async function validateUser(req, res, next) {
         .status(400)
         .json({ message: "User with this email already exists" });
     }
-
     const validRole = await Roles.getRoleById(roleId);
     if (validRole === undefined) {
       return res.status(400).json({ message: "The given role was not found" });
@@ -97,12 +95,12 @@ function validateUpdateUser(req, res, next) {
     institute,
     date_of_birth,
   } = req.body;
-  if (username && username.length < 4) {
+  if (username && username.length === 0) {
     return res
       .status(400)
       .json({ message: "Username must be at least 4 characters long" });
   }
-  if (fullname && fullname.length < 4) {
+  if (fullname && fullname.length === 0) {
     return res
       .status(400)
       .json({ message: "Name must be at least 4 characters long" });
@@ -112,10 +110,10 @@ function validateUpdateUser(req, res, next) {
       message: "Phone number must start with 0 and consist of 12 digits",
     });
   }
-  if (address && address.length < 5) {
+  if (address && address.length === 0) {
     return res.status(400).json({ message: "Address cannot be empty" });
   }
-  if (institute && institute.length < 5) {
+  if (institute && institute.length === 0) {
     return res.status(400).json({ message: "Address cannot be empty" });
   }
   if (date_of_birth && !validateDateOfBirth(date_of_birth)) {
@@ -127,8 +125,7 @@ function validateUpdateUser(req, res, next) {
 }
 async function validateDelete(req, res, next) {
   const { id: userId } = req.params;
-  console.log(userId)
-  if (!userId) {
+  if (userId === 0) {
     return res.status(400).json({ message: "User ID is required" });
   }
   const user = await Users.getUserById(userId);
@@ -144,6 +141,7 @@ module.exports = {
   validateUpdateUser,
   validateDelete,
 };
+
 // const validateUser = [
 //     body('email')
 //         .notEmpty().withMessage('Email is required')

@@ -1,10 +1,10 @@
 const moduleCategory = require("../models/module_category");
 const {err} = require(`../utils/customError`);
 
-async function createCategory(req, res) {
-  const categoryData = req.body;
+async function createCategories(req, res) {
+  const data = req.body;
   try {
-    const result = await moduleCategory.createCategory(categoryData);
+    await moduleCategory.createCategory(data);
     return res.status(201).json({
       message: "Module created successfully",
       data: { result },
@@ -16,15 +16,15 @@ async function createCategory(req, res) {
     });
   }
 }
-async function updateCategory(req, res) {
-  const categoryId = req.params;
-  const categoryData = req.body;
+async function updateCategories(req, res) {
+  const {id: categoryId} = req.params;
+  const newValue = req.body;
   try {
     const category = await moduleCategory.getCategoryById(categoryId);
     if (category === undefined) {
       throw new Error("Category not found");
     }
-    await moduleCategory.updateCategory(categoryId, categoryData);
+    await moduleCategory.updateCategory(categoryId, newValue);
     return res.status(200).json({
       message: "Category updated successfully"
     });
@@ -36,4 +36,4 @@ async function updateCategory(req, res) {
   }
 }
 
-module.exports = { createCategory, updateCategory };
+module.exports = { createCategories, updateCategories };

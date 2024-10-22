@@ -1,17 +1,17 @@
 const express = require("express");
 const {
-  createRole,
+  createRoles,
   getAllRoles,
   getRoleById,
-  updateRole,
-  deleteRole,
-} = require("../controllers/roles");
+  updateRoles,
+  deleteRoles,
+} = require("../../controllers/roles");
 const router = express.Router();
 
-router.post("/role", createRole);
+router.post("/role", createRoles);
 router.get("/role/:id", getRoleById);
 router.get("/role", getAllRoles);
-router.put("/role/:id", updateRole);
-router.delete("/role/:id", deleteRole);
+router.put("/role/:id", updateRoles);
+router.delete("/role/:id", deleteRoles);
 
 module.exports = router;

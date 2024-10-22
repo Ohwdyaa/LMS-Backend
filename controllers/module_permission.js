@@ -34,10 +34,9 @@ async function getAllModules(req, res) {
     }
   } catch (error) {
     console.error('Error fetching modules:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'An error occurred while fetching modules',
-      error: error.message,
+    return res.status(error.statusCode || err.errorSelect.statusCode).json({
+      message: error.message || err.errorSelect.message,
+      details: error.details || null,
     });
   }
 }

@@ -126,7 +126,8 @@ function validateUpdateUser(req, res, next) {
   next();
 }
 async function validateDelete(req, res, next) {
-  const { userId } = req.params;
+  const { id: userId } = req.params;
+  console.log(userId)
   if (!userId) {
     return res.status(400).json({ message: "User ID is required" });
   }

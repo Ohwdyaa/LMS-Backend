@@ -1,4 +1,5 @@
 const Genders = require("../models/genders");
+const {err} = require(`../utils/customError`);
 
 async function createGender(req, res) {
   const genderData = req.body;
@@ -8,8 +9,9 @@ async function createGender(req, res) {
       message: "Gender created successfully"
     });
   } catch (error) {
-    return res.status(err.internalServerError.statusCode).json({
-      message: err.internalServerError.message,
+    res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message
     });
   }
 }
@@ -19,7 +21,10 @@ async function getGenderById(req, res) {
     const gender = await Genders.getGenderById(genderId);
     return gender;
   } catch (error) {
-    throw error;
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
+    });
   }
 }
 async function getAllGenders(req, res) {
@@ -27,7 +32,10 @@ async function getAllGenders(req, res) {
     const gender = await Genders.getAllGenders();
     return gender;
   } catch (error) {
-    throw error;
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
+    });
   }
 }
 

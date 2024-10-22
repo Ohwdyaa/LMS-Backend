@@ -155,7 +155,7 @@ async function getPermissionByRole(req, res) {
 }
 async function getPermissions(user) {
   try {
-    const permissions = await Permissions.getPermissionByRole(user.role_id);
+    const permissions = await Permissions.getPermissionByRoleJwt(user.role_id);
     if (permissions === undefined) {
       throw new Error("Permissions not found for this role");
     }

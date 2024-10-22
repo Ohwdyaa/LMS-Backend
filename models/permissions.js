@@ -31,6 +31,29 @@ const Permissions = {
               lms_db2.role_permissions.can_read AS 'read', 
               lms_db2.role_permissions.can_edit AS 'edit', 
               lms_db2.role_permissions.can_delete AS 'delete', 
+              lms_module.module.id AS moduleId,
+              lms_module.module.name AS moduleName,
+              lms_module.category_module.name AS categoryName
+          FROM lms_db2.role_permissions 
+          LEFT JOIN lms_module.module 
+            ON lms_db2.role_permissions.module_id = module.id
+            LEFT JOIN lms_module.category_module
+            ON lms_module.module.category_module_id = category_module.id
+        WHERE role_id = ?`,
+        [roleId]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getPermissionByRoleJwt: async (roleId) => {
+    try {
+      const result = await query1(
+        `SELECT lms_db2.role_permissions.can_create AS 'create', 
+              lms_db2.role_permissions.can_read AS 'read', 
+              lms_db2.role_permissions.can_edit AS 'edit', 
+              lms_db2.role_permissions.can_delete AS 'delete', 
               lms_module.module.uuid AS moduleId,
               lms_module.module.name AS moduleName,
               lms_module.category_module.name AS categoryName

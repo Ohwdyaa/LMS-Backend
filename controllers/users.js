@@ -8,7 +8,7 @@ const { validatePermission } = require("../middlewares/auth");
 const { err } = require("../utils/customError");
 
 async function loginUser(req, res) {
-  const { email, password} = req.body;
+  const { email, password } = req.body;
   try {
     const user = await verifyUser(email, password);
     if (user === undefined) {
@@ -23,7 +23,9 @@ async function loginUser(req, res) {
     const validateAccess = await validatePermission(verifyToken);
 
     if (validateAccess !== "Access granted") {
-      return res.status(403).json({ message: "Access denied: No modules available for this user" });
+      return res
+        .status(403)
+        .json({ message: "Access denied: No modules available for this user" });
     }
     return res.status(200).json({
       message: "Login successful",
@@ -37,7 +39,7 @@ async function loginUser(req, res) {
   } catch (error) {
     res.status(err.errorLogin.statusCode).json({
       message: err.errorLogin.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -55,19 +57,18 @@ async function createUser(req, res) {
 
     return res.status(201).json({
       message: "User created successfully",
-      data: { userId },
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
 
 async function updateUser(req, res) {
   const userEmail = req.user.email; //dari jwt
-  const userData = req.body; 
+  const userData = req.body;
   try {
     const user = await Users.getUserByEmail(userEmail);
     if (user === undefined) {
@@ -81,7 +82,7 @@ async function updateUser(req, res) {
   } catch (error) {
     res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -96,7 +97,7 @@ async function deleteUser(req, res) {
   } catch (error) {
     res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -125,7 +126,7 @@ async function getAllUser(req, res) {
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -144,8 +145,8 @@ async function verifyUser(email, password) {
 }
 
 async function forgetPassword(req, res) {
-  const {id: userId} = req.params;
-  const {newPassword} = req.body;
+  const { id: userId } = req.params;
+  const { newPassword } = req.body;
   try {
     const hashedPassword = await hashPassword(newPassword);
     await Users.forgetUserPassword(hashedPassword, userId);
@@ -156,14 +157,14 @@ async function forgetPassword(req, res) {
   } catch (error) {
     res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
 
 async function changeUserRole(req, res) {
-  const{ id: userId} = req.params;
-  const{roleId: newRoleId} = req.body;
+  const { id: userId } = req.params;
+  const { roleId: newRoleId } = req.body;
   try {
     const user = await Users.getUserById(userId);
     if (!user) {
@@ -177,7 +178,7 @@ async function changeUserRole(req, res) {
   } catch (error) {
     res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -198,7 +199,7 @@ async function logoutUser(req, res) {
   } catch (error) {
     res.status(err.errorLogout.statusCode).json({
       message: err.errorLogout.message,
-      error: error.message
+      error: error.message,
     });
   }
 }

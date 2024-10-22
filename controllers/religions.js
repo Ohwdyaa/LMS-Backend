@@ -6,8 +6,7 @@ async function createReligion(req, res) {
   try {
     const result = await Religions.createReligion(religionData);
     return res.status(201).json({
-      message: "Religion created successfully",
-      data: { result },
+      message: "Religion created successfully"
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
@@ -54,8 +53,7 @@ async function updateReligion(req, res) {
     }
     await Religions.updateReligion(religionId, religionData);
     return res.status(200).json({
-      message: "Religion updated successfully",
-      result,
+      message: "Religion updated successfully"
     });
   } catch (error) {
     res.status(err.errorUpdate.statusCode).json({

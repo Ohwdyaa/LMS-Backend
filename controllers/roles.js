@@ -6,8 +6,7 @@ async function createRole(req, res) {
   try {
     const roleId = await Roles.createRole(roleData);
     return res.status(201).json({
-      message: "Role created successfully",
-      data: { roleId },
+      message: "Role created successfully"
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
@@ -50,12 +49,31 @@ async function getAllRoles(req, res) {
     });
   }
 }
+async function updateRole(req, res) {
+  const { id: roleId } = req.params;
+  const newValue = req.body;
+  try {
+    const roleData = await Roles.getRoleById(roleId, newValue);
+    if (roleData === undefined) {
+      throw new CustomError("Data not found");
+    }
+    await roleData.updateRole(roleId, newValue);
+    return res.status(200).json({
+      message: "Role updated successfully"
+    });
+  } catch (error) {
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
+    });
+  }
+}
 async function deleteRole(req, res) {
   const roleId = req.params.id;
   try {
     await Roles.deleteRole(roleId);
     return res.status(200).json({
-      message: "Role deleted successfully",
+      message: "Role deleted successfully"
     });
   } catch (error) {
     res.status(err.errorDelete.statusCode).json({
@@ -69,5 +87,6 @@ module.exports = {
   createRole,
   getRoleById,
   getAllRoles,
+  updateRole,
   deleteRole,
 };

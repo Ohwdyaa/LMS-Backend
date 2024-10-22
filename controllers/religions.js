@@ -1,4 +1,5 @@
 const Religions = require("../models/religions");
+const { err } = require("../utils/customError");
 
 async function createReligion(req, res) {
   const religionData = req.body;
@@ -9,8 +10,9 @@ async function createReligion(req, res) {
       data: { result },
     });
   } catch (error) {
-    return res.status(err.internalServerError.statusCode).json({
-      message: err.internalServerError.message,
+    res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message
     });
   }
 }
@@ -23,7 +25,10 @@ async function getReligionById(req, res) {
     }
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(404).json({ message: error.message });
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
+    });
   }
 }
 async function getAllReligions(req, res) {
@@ -33,8 +38,9 @@ async function getAllReligions(req, res) {
       data: result,
     });
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
     });
   }
 }
@@ -52,8 +58,9 @@ async function updateReligion(req, res) {
       result,
     });
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
     });
   }
 }
@@ -65,7 +72,10 @@ async function deleteReligion(req, res) {
       message: "Religion deleted successfully",
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    res.status(err.errorDelete.statusCode).json({
+      message: err.errorDelete.message,
+      error: error.message
+    });
   }
 }
 

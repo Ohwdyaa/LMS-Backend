@@ -20,10 +20,12 @@ const Genders = {
   },
   getGenderById: async (genderId) => {
     try {
-      const [result] = await query(
-        "SELECT * FROM genders WHERE id = ?",
-        genderId
+      console.log("genderId", genderId);
+      const result = await query1(
+        "SELECT name FROM genders WHERE id = ?",
+        [genderId]
       );
+      console.log("result gender", result);
       return result;
     } catch (error) {
       throw error;
@@ -31,7 +33,7 @@ const Genders = {
   },
   getAllGenders: async () => {
     try {
-      const result = await query1(" SELECT * FROM genders ");
+      const result = await query1(" SELECT id, name FROM genders");
       return result;
     } catch (error) {
       throw error;

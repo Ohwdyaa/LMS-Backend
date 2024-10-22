@@ -64,6 +64,7 @@ const Users = {
       const result = await query1(
         `UPDATE users
           SET 
+          username = ?,
           profile_image = ?,
           phone_number = ?,
           address = ?,
@@ -74,6 +75,7 @@ const Users = {
           updated_at = NOW() 
           WHERE email = ?`,
         [
+          userData.username,
           userData.profile_image,
           userData.phone_number,
           userData.address,
@@ -139,6 +141,7 @@ const Users = {
   },
   getUserByEmail: async (email) => {
     try {
+      console.log("req result:", email);
       const [result] = await query1(
         `SELECT users.id, 
         users.username, 
@@ -150,6 +153,7 @@ const Users = {
         LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
         [email]
       );
+      console.log("Query result:", result);
       return result;
     } catch (error) {
       throw error;

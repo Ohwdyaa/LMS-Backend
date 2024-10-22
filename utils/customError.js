@@ -31,6 +31,14 @@ const err = {
     message: "An error occurred while logging out",
     statusCode: 400, 
   },
+  errorRequest:{
+    message: "An error occurred while processing your request.",
+    statusCode: 500, 
+  },
+  errorReset:{
+    message: "An error occurred while resetting your request.",
+    statusCode: 500, 
+  },
 };
 
 module.exports = {

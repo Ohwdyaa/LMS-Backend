@@ -1,5 +1,5 @@
 const modulePermission = require("../models/module_permission");
-const {err} = require(`../utils/customError`)
+const {err} = require(`../utils/customError`);
 
 async function createModule(req, res) {
   const moduleData = req.body;
@@ -9,9 +9,9 @@ async function createModule(req, res) {
       message: "Module created successfully"
     });
   } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+    res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message
     });
   }
 }
@@ -33,11 +33,9 @@ async function getAllModules(req, res) {
       });
     }
   } catch (error) {
-    console.error('Error fetching modules:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'An error occurred while fetching modules',
-      error: error.message,
+    res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message
     });
   }
 }

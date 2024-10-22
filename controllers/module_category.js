@@ -1,4 +1,5 @@
 const moduleCategory = require("../models/module_category");
+const {err} = require(`../utils/customError`);
 
 async function createCategory(req, res) {
   const categoryData = req.body;
@@ -9,9 +10,9 @@ async function createCategory(req, res) {
       data: { result },
     });
   } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+    res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message
     });
   }
 }
@@ -28,9 +29,9 @@ async function updateCategory(req, res) {
       message: "Category updated successfully"
     });
   } catch (error) {
-    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
-      message: error.message || err.errorUpdate.message,
-      details: error.details || null,
+    res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message
     });
   }
 }

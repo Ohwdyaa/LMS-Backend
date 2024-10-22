@@ -114,6 +114,7 @@ async function getAllUsers(req, res) {
       userObj.username = user.username;
       userObj.email = user.email;
       userObj.fullname = user.fullname;
+      userObj.role = user.role_id;
       userObj.role = user.role;
       userList.push(userObj);
     }

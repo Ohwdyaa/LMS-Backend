@@ -53,11 +53,11 @@ async function updateRole(req, res) {
   const { id: roleId } = req.params;
   const newValue = req.body;
   try {
-    const roleData = await Roles.getRoleById(roleId, newValue);
+    const roleData = await Roles.getRoleById(roleId);
     if (roleData === undefined) {
-      throw new CustomError("Data not found");
+      throw new CustomError("Role not found");
     }
-    await roleData.updateRole(roleId, newValue);
+    await Roles.updateRole(roleId, newValue);
     return res.status(200).json({
       message: "Role updated successfully"
     });

@@ -10,9 +10,6 @@ const { err } = require("../utils/customError");
 async function loginUser(req, res) {
   const { email, password} = req.body;
   try {
-    if (!email || !password) {
-      throw new Error("Email and password are required");
-    }
     const user = await verifyUser(email, password);
     if (user === undefined) {
       throw new Error("Incorrect username or password!");
@@ -48,13 +45,6 @@ async function loginUser(req, res) {
 async function createUser(req, res) {
   const data = req.body;
   try {
-    if (!validateEmail(data.email)) {
-      throw new Error("Invalid email format");
-    }
-    const validRole = await Roles.getRoleById(data.roleId);
-    if (validRole === undefined) {
-      throw new Error("The given role was not found");
-    }
     const password = "admin12345";
     const hash = await hashPassword(password);
     const userData = {
@@ -76,14 +66,14 @@ async function createUser(req, res) {
 }
 
 async function updateUser(req, res) {
-  const userEmail = req.user.email; // user jwt
-  const userUpdate = req.body; 
+  const userEmail = req.user.email; //dari jwt
+  const userData = req.body; 
   try {
-
     const user = await Users.getUserByEmail(userEmail);
     if (user === undefined) {
       throw new Error("User not found");
     }
+
     await Users.updateUser(userEmail, userData);
     return res.status(200).json({
       message: "User updated successfully",
@@ -99,10 +89,6 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
   const userId = req.params.id;
   try {
-    const user = await Users.getUserById(userId);
-    if (user === undefined) {
-      throw new Error("User not found");
-    }
     await Users.deleteUser(userId);
     return res.status(200).json({
       message: "User deleted successfully",

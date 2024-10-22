@@ -20,9 +20,11 @@ const Roles = {
   },
   getRoleById: async (roleId) => {
     try {
-      console.log('roleId', roleId)
-      const result = await query1("SELECT name FROM roles WHERE id = ?", [roleId]);
-      console.log('result models', result)
+      console.log("roleId", roleId);
+      const result = await query1("SELECT name FROM roles WHERE id = ?", [
+        roleId,
+      ]);
+      console.log("result models", result);
       return result;
     } catch (error) {
       throw error;

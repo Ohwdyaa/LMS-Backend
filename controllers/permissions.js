@@ -147,6 +147,7 @@ async function getPermissions(user) {
     if (permissions === undefined) {
       throw new Error("Permissions not found for this role");
     }
+    console.log(permissions)
     return permissions;
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({

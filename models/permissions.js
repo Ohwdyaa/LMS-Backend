@@ -31,7 +31,7 @@ const Permissions = {
               lms_db2.role_permissions.can_read AS 'read', 
               lms_db2.role_permissions.can_edit AS 'edit', 
               lms_db2.role_permissions.can_delete AS 'delete', 
-              lms_module.module.uuid AS permissionId,
+              lms_module.module.uuid AS moduleId,
               lms_module.module.name AS moduleName,
               lms_module.category_module.name AS categoryName
           FROM lms_db2.role_permissions 
@@ -115,10 +115,10 @@ const Permissions = {
         updated_at = NOW()
         WHERE role_id = ? AND module_id = ?`,
         [
-          update.can_create ? 1 : 0,
-          update.can_read ? 1 : 0,
-          update.can_edit ? 1 : 0,
-          update.can_delete ? 1 : 0,
+          update.canCreate ? 1 : 0,
+          update.canRead ? 1 : 0,
+          update.canEdit ? 1 : 0,
+          update.canDelete ? 1 : 0,
           roleId,
           moduleId
         ]

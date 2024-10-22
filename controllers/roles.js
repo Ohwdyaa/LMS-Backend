@@ -31,7 +31,15 @@ async function getRoleById(req, res) {
 async function getAllRoles(req, res) {
   try {
     const roles = await Roles.getAllRoles();
-    return res.status(200).json(roles);
+    const roleList = [];
+    for (let i = 0; i < roles.length; i++) {
+      const role = roles[i];
+      const roleObj = new Object();
+      roleObj.id = role.id;
+      roleObj.name = role.name;
+      roleList.push(roleObj);
+    }
+    return res.status(200).json(roleList);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -39,7 +47,7 @@ async function getAllRoles(req, res) {
 async function deleteRole(req, res) {
   const roleId = req.params.id;
   try {
-    const deleteRoles = await Roles.deleteRole(roleId);
+    await Roles.deleteRole(roleId);
     return res.status(200).json({
       message: "Role deleted successfully",
     });

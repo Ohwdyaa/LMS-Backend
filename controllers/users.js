@@ -116,8 +116,8 @@ async function getAllUser(req, res) {
       userObj.username = user.username;
       userObj.email = user.email;
       userObj.fullname = user.fullname;
+      userObj.role = user.role_id;
       userObj.role = user.role;
-      userObj.gender = user.gender;
       userList.push(userObj);
     }
     return res.status(200).json({

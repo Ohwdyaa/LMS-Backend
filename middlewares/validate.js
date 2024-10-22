@@ -69,19 +69,19 @@ async function validateUser(req, res, next) {
       return res.status(400).json({ message: "The given role was not found" });
     }
 
-    const validGender = await Genders.getGenderById(genderId);
-    if (validGender === undefined) {
-      return res
-        .status(400)
-        .json({ message: "The given gender was not found" });
-    }
+    // const validGender = await Genders.getGenderById(genderId);
+    // if (validGender === undefined) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "The given gender was not found" });
+    // }
 
-    const validReligions = await Religions.getReligionById(religionId);
-    if (validReligions === undefined) {
-      return res
-        .status(400)
-        .json({ message: "The given religion was not found" });
-    }
+    // const validReligions = await Religions.getReligionById(religionId);
+    // if (validReligions === undefined) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "The given religion was not found" });
+    // }
   } catch (error) {
     return res.status(500).json({ message: "Database error occurred" });
   }

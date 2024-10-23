@@ -35,18 +35,35 @@ const modulePermission = {
   getAllModule: async () => {
     try {
       const result = await query2(`
-        SELECT module.id, 
-          module.uuid, 
-          module.name, 
-          module.category_module_id, 
-          category_module.name as categoryModule
-        FROM module
-        LEFT JOIN category_module 
-        ON module.category_module_id = category_module.id`);
+        SELECT 
+          m.id, 
+          m.uuid, 
+          m.name, 
+          m.category_module_id, 
+          cm.name as categoryModule
+        FROM module m
+        LEFT JOIN category_module cm
+        ON m.category_module_id = cm.id`);
       return result;    
     } catch (error) {
       throw error;
     }
-  }
+  }, 
+  // getModuleByCategory: async (categoryId) => {
+  //   try {
+  //     const result = await query2(`
+  //       SELECT 
+  //         m.id, 
+  //         m.uuid, 
+  //         m.name, 
+  //       FROM module m
+  //       LEFT JOIN category_module cm
+  //         ON m.category_module_id = cm.id
+  //       Where
+  //         `)
+  //   } catch (error) {
+      
+  //   }
+  // }
 };
 module.exports = modulePermission;

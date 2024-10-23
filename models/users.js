@@ -117,6 +117,7 @@ const Users = {
           LEFT JOIN genders ON users.gender_id = genders.id
           LEFT JOIN religions ON users.religion_id = religions.id `
       );
+      console.log(result);
       return result;
     } catch (error) {
       throw error;

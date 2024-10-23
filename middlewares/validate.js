@@ -11,7 +11,7 @@ const userSchema = z.object({
   body: z.object({
     username: z.string().min(5),
     email: z.string().email(),
-    fullname: z.string().min(1, "require"),
+    fullname: z.string().min(1, "Full name cannot be empty"),
     roleId: z.string().uuid()
   })
 });
@@ -19,7 +19,7 @@ const userSchema = z.object({
 const updateUserSchema = z.object({
   body: z.object({
     username: z.string().min(5),
-    fullname: z.string().min(1, "require")  ,
+    fullname: z.string().min(1, "Full name cannot be empty")  ,
     phone_number: z.string().regex(/^0\d{11}$/),
     address: z.string().optional(),
     institute: z.string().optional(),
@@ -44,7 +44,7 @@ const changeRoleSchema = z.object({
 
 const roleSchema = z.object({
   body: z.object({
-    name: z.string().min(1, "require")
+    name: z.string().min(1, "Roles cannot be empty")
   })
 })
 const updateRoleSchema = z.object({
@@ -52,7 +52,7 @@ const updateRoleSchema = z.object({
     id: z.string().uuid()
   }),
   body: z.object({
-    name: z.string().min(1, "require")
+    name: z.string().min(1, "Roles cannot be empty")
   })
 })
 
@@ -60,14 +60,14 @@ function validateMiddleware(schema) {
   return (req, res, next) => {
     try {
       schema.parse({
-        body: req.body, 
-        params: req.params
+        params: req.params,
+        body: req.body
       });
       next();
     } catch (error) {
       if (error instanceof ZodError) {
         const errorMessages = error.errors.map((issue) => ({
-          message: `${issue.path.join(".")} is ${issue.message}`,
+          message: `${issue.message}`,
         }));
         res.status(400).json({ error: "Invalid data", details: errorMessages});
       } else {

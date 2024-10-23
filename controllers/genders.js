@@ -1,7 +1,7 @@
 const Genders = require("../models/genders");
 const {err} = require(`../utils/customError`);
 
-async function createGender(req, res) {
+async function createGenders(req, res) {
   const genderData = req.body;
   try {
     await Genders.createGender(genderData);
@@ -40,7 +40,7 @@ async function getAllGenders(req, res) {
 }
 
 module.exports = {
-  createGender,
+  createGenders,
   getGenderById,
   getAllGenders,
 };

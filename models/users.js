@@ -13,7 +13,7 @@ const Users = {
             email,
             password,                
             profile_image, 
-            fullName, 
+            fullname, 
             phone_number, 
             address, 
             institute, 
@@ -30,7 +30,7 @@ const Users = {
           userData.email,
           userData.password,
           userData.profile_image,
-          userData.fullName,
+          userData.fullname,
           userData.phone_number,
           userData.address,
           userData.institute,
@@ -117,6 +117,7 @@ const Users = {
           LEFT JOIN genders ON users.gender_id = genders.id
           LEFT JOIN religions ON users.religion_id = religions.id `
       );
+      console.log(result);
       return result;
     } catch (error) {
       throw error;

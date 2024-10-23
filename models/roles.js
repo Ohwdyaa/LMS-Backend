@@ -2,7 +2,7 @@ const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Roles = {
-  createRole: async (roleData) => {
+  createRole: async (data) => {
     try {
       const id = uuid();
       const result = await query1(
@@ -11,7 +11,7 @@ const Roles = {
         id,
         name
         ) VALUES (?,?)`,
-        [id, roleData.name]
+        [id, data.name]
       );
       return result;
     } catch (error) {
@@ -28,7 +28,7 @@ const Roles = {
       throw error;
     }
   },
-  getAllRoles: async () => {
+  getAllRole: async () => {
     try {
       const result = await query1("SELECT id, name FROM roles");
       return result;

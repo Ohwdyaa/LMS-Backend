@@ -11,14 +11,14 @@ async function requestResetPassword(req, res) {
   const { email } = req.body;
   try {
     if (!validateEmail(email)) {
-      return error;
+      return new Error("invalid email");
     }
     const user = await Users.getUserByEmail(email);
     if (user === undefined) {
       throw new Error("User not found with the provided email address");
     }
     const resetToken = await generateResetToken(user);
-
+    console.log(resetToken);
     const expiredDate = moment().add(1, "hours").toDate();
     await forgotPassword.createResetToken(user.id, resetToken, expiredDate);
 

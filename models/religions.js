@@ -2,7 +2,7 @@ const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Religions = {
-  createReligion: async (religionData) => {
+  createReligion: async (data) => {
     try {
       const id = uuid();
       const result = await query1(
@@ -29,7 +29,7 @@ const Religions = {
       throw error;
     }
   },
-  getAllReligions: async () => {
+  getAllReligion: async () => {
     try {
       const result = await query1("SELECT * FROM religions");
       return result;

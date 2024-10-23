@@ -1,7 +1,7 @@
 const Permissions = require("../models/permissions");
 const Module = require("../models/module_permission");
-const { err } = require("../utils/customError");
 const Roles = require("../models/roles");
+const { err } = require("../utils/customError");
 const { uuid } = require("../utils/tools");
 
 async function createPermission(req, res) {
@@ -32,33 +32,29 @@ async function createPermission(req, res) {
     }
     res.status(200).json({ message: "Permissions created successfully" });
   } catch (error) {
-    res.status(err.errorCreate.statusCode).json({
+    return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
       error: error.message,
     });
   }
 }
-async function updatePermission(req, res) {
+async function updatePermissions(req, res) {
   const { id: roleId } = req.params;
   const { listModules } = req.body;
   let newValue = [];
-
   try {
     const isRoleExists = await Roles.getRoleById(roleId);
     if (isRoleExists === undefined) {
       return res.status(400).json({ message: "Role not found" });
     }
-
     const moduleLength = listModules.length;
     for (let i = 0; i < moduleLength; i++) {
       const { moduleId, canRead, canCreate, canUpdate, canDelete } =
         listModules[i];
-
       const isExists = await Permissions.getPermissionByRoleAndModule(
         roleId,
         moduleId
       );
-
       if (isExists !== undefined) {
         // update query for existing role and module
         const updateData = {
@@ -69,7 +65,6 @@ async function updatePermission(req, res) {
         };
         await Permissions.updatePermission(roleId, moduleId, updateData);
       }
-
       if (isExists === undefined) {
         // insert new permission role and module if not exists
         newValue.push([
@@ -83,7 +78,6 @@ async function updatePermission(req, res) {
         ]);
       }
     }
-
     if (newValue.length > 0) {
       // in here we do inserting bulk query
       await Permissions.createBulkPermission(
@@ -93,27 +87,23 @@ async function updatePermission(req, res) {
         [newValue]
       );
     }
-
     return res.status(200).json({
       message: "Permissions updated successfully",
     });
   } catch (error) {
-    console.log(error);
     return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
       error: error.message,
     });
   }
 }
-async function getAllPermission(req, res) {
+async function getAllPermissions(req, res) {
   try {
     const result = await Permissions.getAllPermission();
-
     if (!result || result.length === 0) {
       throw new Error("No permissions found");
     }
     const permissionList = [];
-
     for (let i = 0; i < result.length; i++) {
       const permission = result[i];
       const listObj = new Object();
@@ -130,24 +120,24 @@ async function getAllPermission(req, res) {
       result: permissionList,
     });
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message,
     });
   }
 }
 async function getPermissionByRole(req, res) {
-  const roleId = req.params.id;
+  const {id: roleId} = req.params;
   try {
-    const result = await Permissions.getPermissionByRole(roleId);
-    if (result === undefined) {
+    const permission = await Permissions.getPermissionByRole(roleId);
+    if (permission === undefined) {
       throw new Error("No permissions found");
     }
     return res.status(200).json({
-      result,
+      permission,
     });
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message,
     });
@@ -159,10 +149,9 @@ async function getPermissions(user) {
     if (permissions === undefined) {
       throw new Error("Permissions not found for this role");
     }
-    console.log(permissions);
     return permissions;
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message,
     });
@@ -170,8 +159,8 @@ async function getPermissions(user) {
 }
 module.exports = {
   createPermission,
-  updatePermission,
-  getAllPermission,
+  updatePermissions,
+  getAllPermissions,
   getPermissionByRole,
   getPermissions,
 };

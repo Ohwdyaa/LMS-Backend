@@ -1,23 +1,46 @@
 const { query2 } = require("../config/db/db");
-const { uuid } = require("../utils/tools");
+const { uuid } = require("../utils/tools");  
 
 const moduleCategory = {
-  createCategory: async (categoryData) => {
+  createCategory: async (data) => {
     try {
-      const uuidCategory = uuid();
+      const id = uuid();
       const result = await query2(
-        `INSERT INTO category_module_permissions (
-          uuid, 
-          name) VALUES (?, ?)`,
-        [uuidCategory, categoryData.name]
+        `
+            INSERT INTO category_module(
+              uuid, 
+              name
+            ) 
+              VALUES (?, ?)
+            `,
+        [id, data.name]
       );
       return result;
     } catch (error) {
       throw error;
     }
   },
-  getCategoryById: async (categoryId) => {
-    
+  updateCategory: async (categoryId, newValue) => {
+    try {
+      const result = await query2(
+        `UPDATE category_module
+        SET name = ? WHERE id =?`,
+        [newValue, categoryId]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getCategoryById: async (id) => {
+    try {
+      console.log('id', id)
+      const result = await query2(`SELECT uuid, name FROM category_module WHERE id = ?`, [id]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 };
+
 module.exports = moduleCategory;

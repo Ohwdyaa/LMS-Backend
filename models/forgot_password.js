@@ -17,11 +17,9 @@ const forgetPassword = {
   getResetToken: async (resetToken) => {
     try {
       const result = await query1(
-        `SELECT forget_password.id, 
-        forget_password.expired_date, 
-        forget_password.user_id, users.fullname as user 
+        `SELECT forget_password.id, forget_password.expired_date, forget_password.user_id, users.fullname as user 
             FROM forget_password 
-            LEFT JOIN users ON forget_password.user_id = users.id
+            LEFT JOIN users ON forget_password.user_id= users.id
             WHERE reset_token = ? AND is_used = false`,
         [resetToken]
       );

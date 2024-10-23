@@ -49,7 +49,7 @@ const Roles = {
   },
   deleteRole: async (roleId) => {
     try {
-      const result = await query1("DELETE FROM roles where id = ? ", roleId);
+      const result = await query1("DELETE FROM roles where id = ? ", [roleId]);
       return result;
     } catch (error) {
       throw error;

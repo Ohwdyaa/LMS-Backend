@@ -8,10 +8,10 @@ const moduleCategory = {
       const result = await query2(
         `
             INSERT INTO category_module(
-                uuid, 
-                name
+              uuid, 
+              name
             ) 
-                VALUES (?, ?)
+              VALUES (?, ?)
             `,
         [id, data.name]
       );

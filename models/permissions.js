@@ -24,6 +24,7 @@ const Permissions = {
       throw error;
     }
   },
+
   getPermissionByRole: async (roleId) => {
     try {
       const result = await query1(

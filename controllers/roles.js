@@ -69,7 +69,7 @@ async function updateRoles(req, res) {
   }
 }
 async function deleteRoles(req, res) {
-  const {id: roleId} = req.params.id;
+  const {id: roleId} = req.params;
   try {
     await Roles.deleteRole(roleId);
     return res.status(200).json({

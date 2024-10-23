@@ -8,10 +8,11 @@ const {
 } = require("../../controllers/religions");
 const router = express.Router();
 
+//religion data is static
 router.post("/religion", createReligion);
-router.put("/religion/:id", updateReligions);
-router.delete("/religion/:id", deleteReligions);
 router.get("/religion/:id", getReligionById);
 router.get("/religion", getAllReligions);
 
+router.put("/religion/:id", updateReligions);
+router.delete("/religion/:id", deleteReligions);
 module.exports = router;

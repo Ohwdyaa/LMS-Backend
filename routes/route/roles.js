@@ -11,12 +11,13 @@ const {
   validateMiddleware,
   roleSchema,
   updateRoleSchema,
+  deleteRoleSchema,
 } = require("../../middlewares/validate");
 
 router.post("/role", validateMiddleware(roleSchema), createRoles);
 router.get("/role/:id", getRoleById);
 router.get("/role", getAllRoles);
 router.put("/role/:id", validateMiddleware(updateRoleSchema), updateRoles);
-router.delete("/role/:id", deleteRoles);
+router.delete("/role/:id", validateMiddleware(deleteRoleSchema), deleteRoles);
 
 module.exports = router;

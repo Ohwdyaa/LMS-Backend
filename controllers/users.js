@@ -1,13 +1,11 @@
 const Users = require("../models/users");
 const { generateJWT, verifyJWT } = require("../utils/jwt");
-const { validateEmail } = require("../middlewares/validate");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
-const Roles = require("../models/roles");
 const Permissions = require("./permissions");
 const { validatePermission } = require("../middlewares/auth");
 const { err } = require("../utils/customError");
 
-async function loginUser(req, res) {
+async function loginUsers(req, res) {
   const { email, password } = req.body;
   try {
     const user = await verifyUser(email, password);
@@ -37,14 +35,14 @@ async function loginUser(req, res) {
       },
     });
   } catch (error) {
-    res.status(err.errorLogin.statusCode).json({
+    return res.status(err.errorLogin.statusCode).json({
       message: err.errorLogin.message,
       error: error.message,
     });
   }
 }
 
-async function createUser(req, res) {
+async function createUsers(req, res) {
   const data = req.body;
   try {
     const password = "admin12345";
@@ -53,20 +51,20 @@ async function createUser(req, res) {
       ...data,
       password: hash,
     };
-    const userId = await Users.createUser(userData);
+    await Users.createUser(userData);
 
     return res.status(201).json({
       message: "User created successfully",
     });
   } catch (error) {
-    res.status(err.errorCreate.statusCode).json({
+    return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
       error: error.message,
     });
   }
 }
 
-async function updateUser(req, res) {
+async function updateUsers(req, res) {
   const userEmail = req.user.email; //dari jwt
   const userData = req.body;
   try {
@@ -80,14 +78,14 @@ async function updateUser(req, res) {
       message: "User updated successfully",
     });
   } catch (error) {
-    res.status(err.errorUpdate.statusCode).json({
+    return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
       error: error.message,
     });
   }
 }
 
-async function deleteUser(req, res) {
+async function deleteUsers(req, res) {
   const userId = req.params.id;
   try {
     await Users.deleteUser(userId);
@@ -95,14 +93,14 @@ async function deleteUser(req, res) {
       message: "User deleted successfully",
     });
   } catch (error) {
-    res.status(err.errorDelete.statusCode).json({
+    return res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
       error: error.message,
     });
   }
 }
 
-async function getAllUser(req, res) {
+async function getAllUsers(req, res) {
   try {
     const users = await Users.getAllUser();
     if (!users || users.length === 0) {
@@ -124,7 +122,7 @@ async function getAllUser(req, res) {
       data: userList,
     });
   } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
+    return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
       error: error.message,
     });
@@ -155,39 +153,37 @@ async function forgetPassword(req, res) {
       message: "Password updated successfully",
     });
   } catch (error) {
-    res.status(err.errorUpdate.statusCode).json({
+    return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
       error: error.message,
     });
   }
 }
 
-async function changeUserRole(req, res) {
+async function changeUserRoles(req, res) {
   const { id: userId } = req.params;
   const { roleId: newRoleId } = req.body;
   try {
     const user = await Users.getUserById(userId);
-    if (!user) {
+    if (user === undefined) {
       throw new Error("No users found");
     }
     await Users.changeUserRole(userId, newRoleId);
-
     return res.status(200).json({
       message: "User role updated successfully",
     });
   } catch (error) {
-    res.status(err.errorUpdate.statusCode).json({
+    return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
       error: error.message,
     });
   }
 }
-async function logoutUser(req, res) {
+async function logoutUsers(req, res) {
   const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
+  if (token === undefined) {
     return res.status(400).json({ message: "No token provided" });
   }
-
   try {
     const result = await Users.logoutUser(token);
     if (result) {
@@ -197,7 +193,7 @@ async function logoutUser(req, res) {
     }
     return res.status(400).json({ message: "Logout failed" });
   } catch (error) {
-    res.status(err.errorLogout.statusCode).json({
+    return res.status(err.errorLogout.statusCode).json({
       message: err.errorLogout.message,
       error: error.message,
     });
@@ -205,15 +201,15 @@ async function logoutUser(req, res) {
 }
 
 module.exports = {
-  loginUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  getAllUser,
+  loginUsers,
+  createUsers,
+  updateUsers,
+  deleteUsers,
+  getAllUsers,
   verifyUser,
   forgetPassword,
-  changeUserRole,
-  logoutUser,
+  changeUserRoles,
+  logoutUsers,
   // getAccessToken,
 };
 

@@ -1,15 +1,15 @@
 const modulePermission = require("../models/module_permission");
 const {err} = require(`../utils/customError`);
 
-async function createModule(req, res) {
-  const moduleData = req.body;
+async function createModules(req, res) {
+  const data = req.body;
   try {
-    await modulePermission.createModule(moduleData);
+    await modulePermission.createModule(data);
     return res.status(201).json({
       message: "Module created successfully"
     });
   } catch (error) {
-    res.status(err.errorCreate.statusCode).json({
+    return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
       error: error.message
     });
@@ -19,7 +19,6 @@ async function createModule(req, res) {
 async function getAllModules(req, res) {
   try {
     const modules = await modulePermission.getAllModule();
-    
     if (modules && modules.length > 0) {
       return res.status(200).json({
         success: true,
@@ -40,6 +39,6 @@ async function getAllModules(req, res) {
   }
 }
 module.exports = { 
-  createModule,
+  createModules,
   getAllModules
  };

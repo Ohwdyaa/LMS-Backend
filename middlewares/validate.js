@@ -9,7 +9,7 @@ const loginSchema = z.object({
 
 const userSchema = z.object({
   body: z.object({
-    username: z.string().min(5),
+    username: z.string().min(1, "Username cannot be empty"),
     email: z.string().email(),
     fullname: z.string().min(1, "Full name cannot be empty"),
     roleId: z.string().uuid()
@@ -18,7 +18,7 @@ const userSchema = z.object({
 
 const updateUserSchema = z.object({
   body: z.object({
-    username: z.string().min(5),
+    username: z.string().min(1, "Username cannot be empty"),
     fullname: z.string().min(1, "Full name cannot be empty")  ,
     phone_number: z.string().regex(/^0\d{11}$/),
     address: z.string().optional(),
@@ -56,6 +56,29 @@ const updateRoleSchema = z.object({
   })
 })
 
+const deleteRoleSchema = z.object({
+  params: z.object({
+    id: z.string().uuid()
+  })
+});
+
+const permissionSchema = z.object({
+  params: z.object({
+    id: z.string().uuid()
+  }),
+  body: z.object({
+    listModules: z.array(
+      z.object({
+        moduleId: z.string().min(1, "module cannot be empty"),
+        canRead: z.number().min(0).max(1),
+        canCreate: z.number().min(0).max(1),
+        canUpdate: z.number().min(0).max(1),
+        canDelete: z.number().min(0).max(1)
+      })
+    ).nonempty("Permission cannot be empty")
+  })
+});
+
 function validateMiddleware(schema) {
   return (req, res, next) => {
     try {
@@ -88,6 +111,8 @@ module.exports = {
   changeRoleSchema,
   roleSchema,
   updateRoleSchema,
+  deleteRoleSchema,
+  permissionSchema,
 };
 
 // function validateEmail(email) {

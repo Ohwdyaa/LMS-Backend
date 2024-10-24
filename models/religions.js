@@ -11,7 +11,7 @@ const Religions = {
         id,
         name
         ) VALUES (?,?)`,
-        [id, religionData.name]
+        [id, data.name]
       );
       return result;
     } catch (error) {
@@ -31,7 +31,7 @@ const Religions = {
   },
   getAllReligion: async () => {
     try {
-      const result = await query1("SELECT * FROM religions");
+      const result = await query1("SELECT id, name FROM religions");
       return result;
     } catch (error) {
       throw error;

@@ -143,7 +143,7 @@ const Permissions = {
         [
           update.canCreate,
           update.canRead,
-          update.canUpdate,
+          update.canEdit,
           update.canDelete,
           roleId,
           moduleId,

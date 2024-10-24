@@ -7,8 +7,8 @@ const Categories = {
     try {
       const id = uuid();
       const result = await query1(
-        `INSERT INTO categories(
-                id, name) VALUES(?,?)`,
+        `INSERT INTO categories(id, name) 
+        VALUES(?,?)`,
         [id, categoriesData.name]
       );
       return result;

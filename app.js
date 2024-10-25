@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser");
 const { passport } = require("./middlewares/auth");
 const routes = require("./routes/routes");
 
 //buat cors
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173"]; //taruh di .env
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
@@ -21,11 +21,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());  remove
 app.use(passport.initialize());
-app.use("/", routes);
+app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// kurang authentication express limiter. buat limitasi
+// buat 1 user untuk database - bukan root(saat) 

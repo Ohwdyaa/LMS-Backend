@@ -49,7 +49,7 @@ async function updatePermissions(req, res) {
       return res.status(400).json({ message: "Role not found" });
     }
     const moduleLength = listModules.length;
-    for (let i = 0; i < moduleLength; i++) {
+    for (let i = 0; i < moduleLength; i++) {   
       const { moduleId, canRead, canCreate, canEdit, canDelete } =
         listModules[i];
       const isExists = await Permissions.getPermissionByRoleAndModule(

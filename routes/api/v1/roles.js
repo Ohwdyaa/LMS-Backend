@@ -2,9 +2,8 @@ const express = require("express");
 const {
   createRoles,
   getAllRoles,
-  getRoleById,
-  updateRoles,
   deleteRoles,
+  changeUserRoles,
 } = require("../../../controllers/roles");
 const router = express.Router();
 const {
@@ -12,12 +11,12 @@ const {
   roleSchema,
   updateRoleSchema,
   deleteRoleSchema,
+  changeRoleSchema,
 } = require("../../../middlewares/validate");
 
-router.post("/role", validateMiddleware(roleSchema), createRoles);
-router.get("/role/:id", getRoleById); // remove
+router.post("/role", validateMiddleware(roleSchema), createRoles); 
 router.get("/role", getAllRoles);
-router.put("/role/:id", validateMiddleware(updateRoleSchema), updateRoles);
 router.delete("/role/:id", validateMiddleware(deleteRoleSchema), deleteRoles);
+router.put("/user/:id", validateMiddleware(changeRoleSchema), changeUserRoles);
 
 module.exports = router;

@@ -49,21 +49,5 @@ const modulePermission = {
       throw error;
     }
   }, 
-  // getModuleByCategory: async (categoryId) => {
-  //   try {
-  //     const result = await query2(`
-  //       SELECT 
-  //         m.id, 
-  //         m.uuid, 
-  //         m.name, 
-  //       FROM module m
-  //       LEFT JOIN category_module cm
-  //         ON m.category_module_id = cm.id
-  //       Where
-  //         `)
-  //   } catch (error) {
-      
-  //   }
-  // }
 };
 module.exports = modulePermission;

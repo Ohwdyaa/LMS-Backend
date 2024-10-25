@@ -1,30 +1,6 @@
 const { query1, formatBulkQuery1 } = require("../config/db/db");
-const { uuid } = require("../utils/tools");
 
 const Permissions = {
-  createPermission: async (permissionData) => {
-    try {
-      const id = uuid();
-      const result = await query1(
-        `INSERT INTO role_permissions (id, can_create, can_read, can_edit, can_delete, role_id,  module_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          id,
-          permissionData.can_create ? 1 : 0,
-          permissionData.can_read ? 1 : 0,
-          permissionData.can_edit ? 1 : 0,
-          permissionData.can_delete ? 1 : 0,
-          permissionData.roleId,
-          permissionData.moduleId,
-        ]
-      );
-      return result;
-    } catch (error) {
-      console.error("Error creating role permission: ", error);
-      throw error;
-    }
-  },
-
   getPermissionByRole: async (roleId) => {
     try {
       const result = await query1(
@@ -111,25 +87,6 @@ const Permissions = {
       throw error;
     }
   },
-  getAllPermission: async () => {
-    try {
-      const result = await query1(
-        `SELECT 
-          rp.id, 
-          rp.can_create as 'create', 
-          rp.can_read as 'read', 
-          rp.can_edit as 'edit', 
-          rp.can_delete as 'delete', 
-          rp.role_id as roleId, r.name as role,
-          rp.module_id as moduleId, m.name as module
-        FROM lms_db2.role_permissions rp
-        LEFT JOIN lms_db2.roles r ON rp.role_id = r.id
-        LEFT JOIN lms_module.module m ON rp.module_id = m.id`);
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
   updatePermission: async (roleId, moduleId, update) => {
     try {
       const result = await query1(
@@ -154,6 +111,7 @@ const Permissions = {
       throw error;
     }
   },
+
   createBulkPermission: async (query, array) => {
     const formatQuery = await formatBulkQuery1(query, array);
     await query1(formatQuery);

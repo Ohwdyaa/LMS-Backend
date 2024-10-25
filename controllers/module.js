@@ -1,4 +1,4 @@
-const modulePermission = require("../models/module_permission");
+const modulePermission = require("../models/module");
 const { err } = require(`../utils/customError`);
 
 async function createModules(req, res) {
@@ -38,30 +38,7 @@ async function getAllModules(req, res) {
   }
 }
 
-async function getModuleByCategories(req, res) {
-  const { id: categoryId } = req.params;
-  try {
-    const modules = await modulePermission.getModuleByCategory(categoryId);
-    if (modules && modules.length > 0) {
-      return res.status(200).json({
-        success: true,
-        data: modules,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-        message: "No modules found",
-      });
-    }
-  } catch (error) {
-    return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
 module.exports = {
   createModules,
   getAllModules,
-  getModuleByCategories,
 };

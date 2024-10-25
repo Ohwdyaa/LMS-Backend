@@ -37,7 +37,7 @@ async function requestResetPassword(req, res) {
 }
 
 async function resetPassword(req, res) {
-  const { id: userId } = req.params;
+  // const { id: userId } = req.params;
   const newPassword = req.body;
   try {
     const verify = await verifyJWT(token);

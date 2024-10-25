@@ -16,17 +16,6 @@ async function createGenders(req, res) {
   }
 }
 
-async function getGenderById(req, res) {
-  try {
-    const gender = await Genders.getGenderById(genderId);
-    return gender;
-  } catch (error) {
-    res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
 async function getAllGenders(req, res) {
   try {
     const gender = await Genders.getAllGenders();
@@ -41,6 +30,5 @@ async function getAllGenders(req, res) {
 
 module.exports = {
   createGenders,
-  getGenderById,
   getAllGenders,
 };

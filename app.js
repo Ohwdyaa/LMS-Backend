@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-// const cookieParser = require("cookie-parser"); : remove
 const { passport } = require("./middlewares/auth");
 const routes = require("./routes");
 
@@ -21,7 +20,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser()); : remove
 app.use(passport.initialize());
 app.use(routes);
 

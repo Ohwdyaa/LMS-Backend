@@ -1,5 +1,6 @@
 const { ZodError, z } = require("zod");
 
+//validate pakai regex 
 const loginSchema = z.object({
   body: z.object({
     email: z.string().email(),

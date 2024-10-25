@@ -1,6 +1,5 @@
 const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const { deleteCourse } = require("./course");
 
 const Categories = {
   createCategories: async (categoriesData) => {
@@ -31,7 +30,7 @@ const Categories = {
       throw error;
     }
   },
-  deleteCourse: async (categoriesId) => {
+  deleteCategory: async (categoriesId) => {
     try {
       const result = await query1(`DELETE FROM categories WHERE id = ?`, categoriesId);
       return result;

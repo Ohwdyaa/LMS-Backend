@@ -1,4 +1,5 @@
 const { ZodError, z } = require("zod");
+const Religions = require("../models/religions");
 
 const loginSchema = z.object({
   body: z.object({
@@ -23,7 +24,9 @@ const updateUserSchema = z.object({
     phone_number: z.string().regex(/^0\d{11}$/),
     address: z.string().optional(),
     institute: z.string().optional(),
-    date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+    date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    genderId: z.string().uuid(),
+    ReligionId: z.string().uuid()
   }).partial()
 });
 
@@ -69,10 +72,10 @@ const permissionSchema = z.object({
   body: z.object({
     listModules: z.array(
       z.object({
-        moduleId: z.number(),
+        moduleId: z.number().min(1, "module cannot be empty"),
         canRead: z.number().min(0).max(1),
         canCreate: z.number().min(0).max(1),
-        canUpdate: z.number().min(0).max(1),
+        canEdit: z.number().min(0).max(1),
         canDelete: z.number().min(0).max(1)
       })
     ).nonempty("Permission cannot be empty")

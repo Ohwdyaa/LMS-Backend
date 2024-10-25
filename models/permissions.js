@@ -24,6 +24,7 @@ const Permissions = {
       throw error;
     }
   },
+
   getPermissionByRole: async (roleId) => {
     try {
       const result = await query1(
@@ -142,7 +143,7 @@ const Permissions = {
         [
           update.canCreate,
           update.canRead,
-          update.canUpdate,
+          update.canEdit,
           update.canDelete,
           roleId,
           moduleId,

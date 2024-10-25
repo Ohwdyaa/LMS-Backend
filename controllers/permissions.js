@@ -4,6 +4,7 @@ const Roles = require("../models/roles");
 const { err } = require("../utils/customError");
 const { uuid } = require("../utils/tools");
 
+//bakal dihapus
 async function createPermission(req, res) {
   const { roleId, listModules } = req.body;
   try {
@@ -49,7 +50,7 @@ async function updatePermissions(req, res) {
     }
     const moduleLength = listModules.length;
     for (let i = 0; i < moduleLength; i++) {
-      const { moduleId, canRead, canCreate, canUpdate, canDelete } =
+      const { moduleId, canRead, canCreate, canEdit, canDelete } =
         listModules[i];
       const isExists = await Permissions.getPermissionByRoleAndModule(
         roleId,
@@ -60,7 +61,7 @@ async function updatePermissions(req, res) {
         const updateData = {
           canRead,
           canCreate,
-          canUpdate,
+          canEdit,
           canDelete,
         };
         await Permissions.updatePermission(roleId, moduleId, updateData);
@@ -71,7 +72,7 @@ async function updatePermissions(req, res) {
           uuid(),
           canCreate,
           canRead,
-          canUpdate,
+          canEdit,
           canDelete,
           roleId,
           moduleId,
@@ -108,12 +109,12 @@ async function getAllPermissions(req, res) {
       const permission = result[i];
       const listObj = new Object();
       listObj.id = permission.id;
-      listObj.can_create = permission.can_create;
-      listObj.can_read = permission.can_read;
-      listObj.can_edit = permission.can_edit;
-      listObj.can_delete = permission.can_delete;
-      listObj.role_id = permission.role;
-      listObj.module_permission_id = permission.module;
+      listObj.canCreate = permission.can_create;
+      listObj.canRead = permission.can_read;
+      listObj.canEdit = permission.can_edit;
+      listObj.canDelete = permission.can_delete;
+      listObj.role = permission.role;
+      listObj.module = permission.module;
       permissionList.push(listObj);
     }
     return res.status(200).json({
@@ -127,7 +128,7 @@ async function getAllPermissions(req, res) {
   }
 }
 async function getPermissionByRole(req, res) {
-  const {id: roleId} = req.params;
+  const { id: roleId } = req.params;
   try {
     const permission = await Permissions.getPermissionByRole(roleId);
     if (permission === undefined) {

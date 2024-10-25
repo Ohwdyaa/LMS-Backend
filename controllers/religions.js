@@ -6,12 +6,12 @@ async function createReligion(req, res) {
   try {
     await Religions.createReligion(data);
     return res.status(201).json({
-      message: "Religion created successfully"
+      message: "Religion created successfully",
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -26,7 +26,7 @@ async function getReligionById(req, res) {
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -39,7 +39,7 @@ async function getAllReligions(req, res) {
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -53,17 +53,17 @@ async function updateReligions(req, res) {
     }
     await Religions.updateReligion(religionId, newValue);
     return res.status(200).json({
-      message: "Religion updated successfully"
+      message: "Religion updated successfully",
     });
   } catch (error) {
     res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message
+      error: error.message,
     });
   }
 }
 async function deleteReligions(req, res) {
-  const {id:religionId} = req.params.id;
+  const { id: religionId } = req.params;
   try {
     await Religions.deleteReligion(religionId);
     return res.status(200).json({
@@ -72,7 +72,7 @@ async function deleteReligions(req, res) {
   } catch (error) {
     res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
-      error: error.message
+      error: error.message,
     });
   }
 }

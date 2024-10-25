@@ -69,7 +69,7 @@ const permissionSchema = z.object({
   body: z.object({
     listModules: z.array(
       z.object({
-        moduleId: z.string().min(1, "module cannot be empty"),
+        moduleId: z.number(),
         canRead: z.number().min(0).max(1),
         canCreate: z.number().min(0).max(1),
         canUpdate: z.number().min(0).max(1),

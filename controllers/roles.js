@@ -32,16 +32,9 @@ async function getRoleById(req, res) {
 }
 async function getAllRoles(req, res) {
   try {
-    const roles = await Roles.getAllRole();
-    const roleList = [];
-    for (let i = 0; i < roles.length; i++) {
-      const role = roles[i];
-      const roleObj = new Object();
-      roleObj.id = role.id;
-      roleObj.name = role.name;
-      roleList.push(roleObj);
-    }
-    return res.status(200).json(roleList);
+    const data = await Roles.getAllRole();
+
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,
@@ -53,10 +46,12 @@ async function updateRoles(req, res) {
   const { id: roleId } = req.params;
   const newValue = req.body;
   try {
-    const roleData = await Roles.getRoleById(roleId);
-    if (roleData === undefined) {
+    const isExists = await Roles.getRoleById(roleId);
+    if (isExists === undefined) {
       throw new Error("Role not found");
+      // return res.status(400).json("Role not found!");
     }
+
     await Roles.updateRole(roleId, newValue);
     return res.status(200).json({
       message: "Role updated successfully",
@@ -72,6 +67,7 @@ async function deleteRoles(req, res) {
   const { id: roleId } = req.params;
   try {
     await Roles.deleteRole(roleId);
+
     return res.status(200).json({
       message: "Role deleted successfully",
     });

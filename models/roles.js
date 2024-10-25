@@ -30,7 +30,10 @@ const Roles = {
   },
   getAllRole: async () => {
     try {
-      const result = await query1("SELECT id, name FROM roles");
+      const result = await query1(
+        "SELECT id, name FROM roles WHERE is_deleted = 0;"
+      );
+
       return result;
     } catch (error) {
       throw error;

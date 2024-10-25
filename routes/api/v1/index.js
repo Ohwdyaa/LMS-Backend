@@ -6,8 +6,8 @@ const forgetPasswordRoutes = require("./forgot_password");
 const roleRoutes = require("./roles");
 const religionRoutes = require("./religions");
 const genderRoutes = require("./genders");
-const modulePermission = require("./module_permission");
-const moduleCategory = require("./module_category");
+const modulePermission = require("./module");
+const moduleCategory = require("./category_module");
 const permissions = require("./permissions");
 
 router.use(userRoutes);

@@ -158,17 +158,7 @@ const Users = {
       throw error;
     }
   },
-  changeUserRole: async (userId, roleId) => {
-    try {
-      const result = await query1(`UPDATE users SET role_id= ? WHERE id = ? `, [
-        roleId,
-        userId,
-      ]);
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
+  
   logoutUser: async (token) => {
     try {
       const result = await query1(

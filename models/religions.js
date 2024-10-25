@@ -18,43 +18,9 @@ const Religions = {
       throw error;
     }
   },
-  getReligionById: async (religionId) => {
-    try {
-      const [result] = await query1(
-        "SELECT * FROM religions WHERE id = ?",
-        religionId
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
   getAllReligion: async () => {
     try {
-      const result = await query1("SELECT id, name FROM religions");
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  updateReligion: async (religionId, religionData) => {
-    try {
-      const result = await query1("UPDATE religions SET ? WHERE id = ?", [
-        religionData,
-        religionId,
-      ]);
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
-  deleteReligion: async (religionId) => {
-    try {
-      const result = await query1(
-        " DELETE FROM religions where id = ? ",
-        religionId
-      );
+      const result = await query1("SELECT id, name FROM religions WHERE is_deleted = 0");
       return result;
     } catch (error) {
       throw error;

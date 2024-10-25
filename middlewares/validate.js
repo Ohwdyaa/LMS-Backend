@@ -1,6 +1,6 @@
 const { ZodError, z } = require("zod");
-const Religions = require("../models/religions");
 
+//validate pakai regex 
 const loginSchema = z.object({
   body: z.object({
     email: z.string().email(),
@@ -76,7 +76,7 @@ const permissionSchema = z.object({
         canRead: z.number().min(0).max(1),
         canCreate: z.number().min(0).max(1),
         canEdit: z.number().min(0).max(1),
-        canDelete: z.number().min(0).max(1)
+         canDelete: z.number().min(0).max(1)
       })
     ).nonempty("Permission cannot be empty")
   })

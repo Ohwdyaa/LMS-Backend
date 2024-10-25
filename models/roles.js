@@ -31,20 +31,9 @@ const Roles = {
   getAllRole: async () => {
     try {
       const result = await query1(
-        "SELECT id, name FROM roles WHERE is_deleted = 0;"
+        "SELECT id, name FROM roles WHERE is_deleted = 0"
       );
 
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
-  updateRole: async (roleId, updateData) => {
-    try {
-      const result = await query1("UPDATE roles SET ? WHERE id = ?", [
-        updateData,
-        roleId,
-      ]);
       return result;
     } catch (error) {
       throw error;
@@ -53,6 +42,17 @@ const Roles = {
   deleteRole: async (roleId) => {
     try {
       const result = await query1("DELETE FROM roles where id = ? ", [roleId]);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  changeUserRole: async (userId, roleId) => {
+    try {
+      const result = await query1(`UPDATE users SET role_id = ? WHERE id = ? `, [
+        roleId,
+        userId,
+      ]);
       return result;
     } catch (error) {
       throw error;

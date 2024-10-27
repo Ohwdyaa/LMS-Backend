@@ -1,14 +1,24 @@
-const { generateJWT, verifyJWT } = require("../utils/jwt");
+const Users = require("../models/users");
 const Permissions = require("./permissions");
-const { validatePermission } = require("../middlewares/auth");
-async function loginUsers(req, res) {
+const { generateJWT, verifyJWT } = require("../utils/jwt");
+const { validatePermission } = require("../middlewares/passport");
+const { verifyPassword, hashPassword } = require("../utils/bcrypt");
+const { err } = require("../utils/customError");
+const { use } = require("passport");
+
+
+async function login(req, res) {
   const { email, password } = req.body;
+  console.log("req", email)
+  console.log("req", password)
   try {
     const user = await verifyUser(email, password);
+    console.log("req", user)
     if (user === undefined) {
       throw new Error("Incorrect username or password!");
     }
     const permissions = await Permissions.getPermissions(user);
+    // console.log("req", permissions)
     if (permissions === undefined) {
       throw new Error("No permissions found for user");
     }
@@ -39,11 +49,16 @@ async function loginUsers(req, res) {
 }
 
 async function verifyUser(email, password) {
+  console.log("verify:", email);
+  console.log("verify:", password);
   try {
     const user = await Users.getUserByEmail(email);
+    console.log("user email:", user);
     if (user === undefined) {
       return undefined;
     }
+    console.log("password verify:", password);
+    console.log("password verify:", user.password);
     const isValid = await verifyPassword(password, user.password);
     return isValid ? user : undefined;
   } catch (error) {
@@ -69,7 +84,7 @@ async function forgetPassword(req, res) {
   }
 }
 
-async function logoutUsers(req, res) {
+async function logout(req, res) {
   const token = req.headers.authorization?.split(" ")[1];
   if (token === undefined) {
     return res.status(400).json({ message: "No token provided" });
@@ -90,9 +105,7 @@ async function logoutUsers(req, res) {
   }
 }
 module.exports = {
-    loginUsers,
-    verifyUser,
-    forgetPassword,
-    logoutUsers,
-    // getAccessToken,
-  };
+  login,
+  forgetPassword,
+  logout,
+};

@@ -18,14 +18,6 @@ const moduleCategory = {
       throw error;
     }
   },
-  // getCategoryById: async (id) => {
-  //   try {
-  //     const result = await query2(`SELECT uuid, name FROM category_module WHERE id = ?`, [id]);
-  //     return result;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // },
 };
 
 module.exports = moduleCategory;

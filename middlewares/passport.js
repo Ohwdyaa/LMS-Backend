@@ -52,22 +52,3 @@ module.exports = {
   passport,
   validatePermission
 };
-
-
-// const checkPermission = (moduleName, permission) => {
-//   return (req, res, next) => {
-//     console.log("User data in req.user:", req.user);
-//     const userPermission = req.user.permission;
-//     for (const i = 0; i < userPermission; i++) {
-//       if (
-//         userPermission[permission] !== 1 &&
-//         permission.module_name !== moduleName
-//       ) {
-//         return res
-//           .status(403)
-//           .json({ message: "Permission denied", permission });
-//       }
-//     }
-//     next();
-//   };
-// };

@@ -4,7 +4,7 @@ const { ZodError, z } = require("zod");
 const loginSchema = z.object({
   body: z.object({
     email: z.string().email(),
-    password: z.string().min(10)
+    password: z.string().min(1)
   })
 });
 

@@ -8,6 +8,7 @@ async function createUsers(req, res) {
   try {
     const password = "admin12345";
     const hash = await hashPassword(password);
+    console.log(hash)
     const userData = {
       ...data,
       password: hash,
@@ -26,7 +27,7 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {
-  const userEmail = req.user.email; //dari jwt
+  const {email: userEmail} = req.user; //dari jwt
   const userData = req.body;
   try {
     const user = await Users.getUserByEmail(userEmail);
@@ -34,7 +35,7 @@ async function updateUsers(req, res) {
       throw new Error("User not found");
     }
 
-    await Users.updateUser(userEmail, userData);
+    await Users.updateUser(user, userData);
     return res.status(200).json({
       message: "User updated successfully",
     });
@@ -47,9 +48,13 @@ async function updateUsers(req, res) {
 }
 
 async function deleteUsers(req, res) {
-  const userId = req.params.id;
+  const {id: userId} = req.params;
   try {
-    //check dulu apakah idnya ada atau tdak
+    const user = await Users.getUserById(userId);
+    if (user === undefined) {
+      throw new Error("User not found");
+    }
+
     await Users.deleteUser(userId);
     return res.status(200).json({
       message: "User deleted successfully",

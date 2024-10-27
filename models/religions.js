@@ -20,7 +20,7 @@ const Religions = {
   },
   getAllReligion: async () => {
     try {
-      const result = await query1("SELECT id, name FROM religions WHERE is_deleted = 0");
+      const result = await query1("SELECT name FROM religions WHERE is_deleted = 0");
       return result;
     } catch (error) {
       throw error;

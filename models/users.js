@@ -53,7 +53,7 @@ const Users = {
       );
       if (result.affectedRows === 0) {
         throw new Error("No user found with the given ID.");
-    }
+      }
       return result;
     } catch (error) {
       throw error;
@@ -141,7 +141,6 @@ const Users = {
   },
   getUserByEmail: async (email) => {
     try {
-      console.log("req result:", email);
       const [result] = await query1(
         `SELECT users.id, 
         users.username, 
@@ -158,7 +157,7 @@ const Users = {
       throw error;
     }
   },
-  
+
   logoutUser: async (token) => {
     try {
       const result = await query1(
@@ -173,33 +172,3 @@ const Users = {
 };
 
 module.exports = Users;
-
-// updateRefreshToken: async (userId, refreshToken) => {
-//   try {
-//     const result = await query(
-//       "UPDATE users SET refresh_token = ? WHERE id = ?",
-//       [refreshToken, userId]
-//     );
-
-//     return result.affectedRows > 0;
-//   } catch (error) {
-//     throw err.dataErr;
-//   }
-// },
-// getUserByRefreshToken: async (refreshToken) => {
-//   try {
-//     const result = await query(
-//       `
-//       SELECT users.id, users.username, users.email, roles.name as role
-//       FROM users
-//       JOIN roles ON users.role_id = roles.id
-//       WHERE users.refresh_token = ?
-//       `,
-//       [refreshToken]
-//     );
-
-//     return result;
-//   } catch (error) {
-//     throw err.dataErr;
-//   }
-// },

@@ -7,8 +7,6 @@ async function hashPassword(password) {
   return hashedPassword;
 };
 
-
-
 async function verifyPassword (password, hashedPassword) {
   console.log(hashedPassword)
   if (!password || !hashedPassword) {

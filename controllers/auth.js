@@ -4,25 +4,20 @@ const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/customError");
-const { use } = require("passport");
 
 
 async function login(req, res) {
   const { email, password } = req.body;
-  console.log("req", email)
-  console.log("req", password)
   try {
-    const user = await verifyUser(email, password);
-    console.log("req", user)
-    if (user === undefined) {
-      throw new Error("Incorrect username or password!");
+    const verifiedUser = await verifyUser(email, password);
+    if (verifiedUser === undefined) {
+      return res.status(400).json({ message: "Incorrect username or password!" });
     }
-    const permissions = await Permissions.getPermissions(user);
-    // console.log("req", permissions)
-    if (permissions === undefined) {
-      throw new Error("No permissions found for user");
+    const userPermissions = await Permissions.getPermissions(verifiedUser);
+    if (userPermissions === undefined) {
+      return res.status(400).json({ message: "No permissions found for user" });
     }
-    const token = await generateJWT(user, permissions);
+    const token = await generateJWT(verifiedUser, userPermissions);
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);
 
@@ -36,7 +31,7 @@ async function login(req, res) {
       data: {
         token,
         user: {
-          username: user.username,
+          username: verifiedUser.username,
         },
       },
     });
@@ -49,18 +44,13 @@ async function login(req, res) {
 }
 
 async function verifyUser(email, password) {
-  console.log("verify:", email);
-  console.log("verify:", password);
   try {
-    const user = await Users.getUserByEmail(email);
-    console.log("user email:", user);
-    if (user === undefined) {
-      return undefined;
+    const isUserExists = await Users.getUserByEmail(email);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "no user with registered email" });
     }
-    console.log("password verify:", password);
-    console.log("password verify:", user.password);
-    const isValid = await verifyPassword(password, user.password);
-    return isValid ? user : undefined;
+    const isValid = await verifyPassword(password, isUserExists.password);
+    return isValid ? isUserExists : undefined;
   } catch (error) {
     throw error;
   }

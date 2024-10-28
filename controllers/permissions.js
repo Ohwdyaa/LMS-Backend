@@ -62,6 +62,26 @@ async function updatePermissions(req, res) {
     });
   }
 }
+
+async function getPermissions(user) {
+  try {
+    const isRolePermissionsExist = await Permissions.getPermissionByRoleJwt(user.role_id);
+    if (isRolePermissionsExist === undefined) {
+      return res.status(400).json({ message: "Permissions not found for this role" });
+    }
+    return isRolePermissionsExist;
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+module.exports = {
+  updatePermissions,
+  getPermissions,
+};
+
 // async function getAllPermissions(req, res) {
 //   try {
 //     const result = await Permissions.getAllPermission();
@@ -108,22 +128,3 @@ async function updatePermissions(req, res) {
 //     });
 //   }
 // }
-
-async function getPermissions(user) {
-  try {
-    const permissions = await Permissions.getPermissionByRoleJwt(user.role_id);
-    if (permissions === undefined) {
-      throw new Error("Permissions not found for this role");
-    }
-    return permissions;
-  } catch (error) {
-    return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
-module.exports = {
-  updatePermissions,
-  getPermissions,
-};

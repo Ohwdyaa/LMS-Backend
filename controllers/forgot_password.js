@@ -13,14 +13,13 @@ async function requestResetPassword(req, res) {
     if (!validateEmail(email)) {
       return new Error("invalid email");
     }
-    const user = await Users.getUserByEmail(email);
-    if (user === undefined) {
+    const isUserExists = await Users.getUserByEmail(email);
+    if (isUserExists === undefined) {
       throw new Error("User not found with the provided email address");
     }
-    const resetToken = await generateResetToken(user);
-    console.log(resetToken);
+    const resetToken = await generateResetToken(isUserExists);
     const expiredDate = moment().add(1, "hours").toDate();
-    await forgotPassword.createResetToken(user.id, resetToken, expiredDate);
+    await forgotPassword.createResetToken(isUserExists.id, resetToken, expiredDate);
 
     await sendResetPasswordEmail(email, resetToken);
 
@@ -41,12 +40,12 @@ async function resetPassword(req, res) {
   const newPassword = req.body;
   try {
     const verify = await verifyJWT(token);
-    const user = await Users.getUserById(verify.userId);
-    if (user === undefined) {
+    const isUserExists = await Users.getUserById(verify.userId);
+    if (isUserExists === undefined) {
       throw new Error("Invalid credentials");
     }
     const hashedPassword = await hashPassword(newPassword);
-    await Users.updatePassword(user.id, hashedPassword);
+    await Users.updatePassword(isUserExists.id, hashedPassword);
     return res.status(200).json({
       message: "password updated successfully",
     });

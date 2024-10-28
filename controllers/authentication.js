@@ -1,6 +1,7 @@
 const { generateJWT, verifyJWT } = require("../utils/jwt");
 const Permissions = require("./permissions");
 const { validatePermission } = require("../middlewares/auth");
+const {err} = require ("../utils/customError")
 async function loginUsers(req, res) {
   const { email, password } = req.body;
   try {

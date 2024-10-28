@@ -26,15 +26,15 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {
-  const userEmail = req.user.email; //dari jwt
+  const {email: userEmail} = req.user; //dari jwt
   const userData = req.body;
   try {
-    const user = await Users.getUserByEmail(userEmail);
-    if (user === undefined) {
-      throw new Error("User not found");
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.updateUser(userEmail, userData);
+    await Users.updateUser(isUserExists, userData);
     return res.status(200).json({
       message: "User updated successfully",
     });
@@ -47,10 +47,14 @@ async function updateUsers(req, res) {
 }
 
 async function deleteUsers(req, res) {
-  const userId = req.params.id;
+  const {id: userId} = req.params;
   try {
-    //check dulu apakah idnya ada atau tdak
-    await Users.deleteUser(userId);
+    const isUserExists = await Users.getUserById(userId);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    await Users.deleteUser(isUserExists);
     return res.status(200).json({
       message: "User deleted successfully",
     });
@@ -66,7 +70,7 @@ async function getAllUsers(req, res) {
   try {
     const users = await Users.getAllUser();
     if (!users || users.length === 0) {
-      throw new Error("No users found");
+      return res.status(400).json({ message: "No users found" });
     }
     const userList = [];
     for (let i = 0; i < users.length; i++) {

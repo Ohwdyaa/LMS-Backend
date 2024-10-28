@@ -1,19 +1,23 @@
-const { generateJWT, verifyJWT } = require("../utils/jwt");
+const Users = require("../models/users");
 const Permissions = require("./permissions");
-const { validatePermission } = require("../middlewares/auth");
-const {err} = require ("../utils/customError")
-async function loginUsers(req, res) {
+const { generateJWT, verifyJWT } = require("../utils/jwt");
+const { validatePermission } = require("../middlewares/passport");
+const { verifyPassword, hashPassword } = require("../utils/bcrypt");
+const { err } = require("../utils/customError");
+
+
+async function login(req, res) {
   const { email, password } = req.body;
   try {
-    const user = await verifyUser(email, password);
-    if (user === undefined) {
-      throw new Error("Incorrect username or password!");
+    const verifiedUser = await verifyUser(email, password);
+    if (verifiedUser === undefined) {
+      return res.status(400).json({ message: "Incorrect username or password!" });
     }
-    const permissions = await Permissions.getPermissions(user);
-    if (permissions === undefined) {
-      throw new Error("No permissions found for user");
+    const userPermissions = await Permissions.getPermissions(verifiedUser);
+    if (userPermissions === undefined) {
+      return res.status(400).json({ message: "No permissions found for user" });
     }
-    const token = await generateJWT(user, permissions);
+    const token = await generateJWT(verifiedUser, userPermissions);
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);
 
@@ -27,7 +31,7 @@ async function loginUsers(req, res) {
       data: {
         token,
         user: {
-          username: user.username,
+          username: verifiedUser.username,
         },
       },
     });
@@ -41,12 +45,12 @@ async function loginUsers(req, res) {
 
 async function verifyUser(email, password) {
   try {
-    const user = await Users.getUserByEmail(email);
-    if (user === undefined) {
-      return undefined;
+    const isUserExists = await Users.getUserByEmail(email);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "no user with registered email" });
     }
-    const isValid = await verifyPassword(password, user.password);
-    return isValid ? user : undefined;
+    const isValid = await verifyPassword(password, isUserExists.password);
+    return isValid ? isUserExists : undefined;
   } catch (error) {
     throw error;
   }
@@ -70,7 +74,7 @@ async function forgetPassword(req, res) {
   }
 }
 
-async function logoutUsers(req, res) {
+async function logout(req, res) {
   const token = req.headers.authorization?.split(" ")[1];
   if (token === undefined) {
     return res.status(400).json({ message: "No token provided" });
@@ -91,9 +95,7 @@ async function logoutUsers(req, res) {
   }
 }
 module.exports = {
-    loginUsers,
-    verifyUser,
-    forgetPassword,
-    logoutUsers,
-    // getAccessToken,
-  };
+  login,
+  forgetPassword,
+  logout,
+};

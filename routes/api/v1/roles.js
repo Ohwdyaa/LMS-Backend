@@ -9,7 +9,6 @@ const router = express.Router();
 const {
   validateMiddleware,
   roleSchema,
-  updateRoleSchema,
   deleteRoleSchema,
   changeRoleSchema,
 } = require("../../../middlewares/validate");

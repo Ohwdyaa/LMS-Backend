@@ -30,11 +30,12 @@ async function updateUsers(req, res) {
   const userData = req.body;
   try {
     const isUserExists = await Users.getUserByEmail(userEmail);
+    console.log(isUserExists)
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.updateUser(isUserExists, userData);
+    await Users.updateUser(isUserExists.email, userData);
     return res.status(200).json({
       message: "User updated successfully",
     });
@@ -50,15 +51,16 @@ async function deleteUsers(req, res) {
   const {id: userId} = req.params;
   try {
     const isUserExists = await Users.getUserById(userId);
+    console.log(isUserExists)
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.deleteUser(isUserExists);
+    await Users.deleteUser(isUserExists.id);
     return res.status(200).json({
       message: "User deleted successfully",
     });
-  } catch (error) {
+  } catch (error) { 
     return res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
       error: error.message,

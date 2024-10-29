@@ -25,7 +25,7 @@ async function changeUserRoles(req, res) {
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
-    await Users.changeUserRole(isUserExists, newRoleId);
+    await Roles.changeUserRole(isUserExists.id, newRoleId);
     return res.status(200).json({
       message: "User role updated successfully",
     });
@@ -57,7 +57,7 @@ async function deleteRoles(req, res) {
       return res.status(400).json({ message: "Role not found" });
     }
 
-    await Roles.deleteRole(isRoleExists);
+    await Roles.deleteRole(isRoleExists.id);
     return res.status(200).json({
       message: "Role deleted successfully",
     });

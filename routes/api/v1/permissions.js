@@ -14,7 +14,7 @@ router.put(
   validateMiddleware(permissionSchema),
   updatePermissions
 );
-// router.get("/permission", getAllPermissions);
+
 router.get("/permission/:id", getPermissionByRole);
 
 module.exports = router;

@@ -20,7 +20,7 @@ const Roles = {
   },
   getRoleById: async (roleId) => {
     try {
-      const [result] = await query1("SELECT name FROM roles WHERE id = ?", [
+      const [result] = await query1("SELECT id, name FROM roles WHERE id = ?", [
         roleId,
       ]);
       return result;
@@ -31,7 +31,7 @@ const Roles = {
   getAllRole: async () => {
     try {
       const result = await query1(
-        "SELECT name FROM roles WHERE is_deleted = 0"
+        "SELECT id, name FROM roles WHERE is_deleted = 0"
       );
 
       return result;

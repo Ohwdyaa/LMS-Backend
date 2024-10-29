@@ -16,6 +16,6 @@ const {
 router.post("/role", validateMiddleware(roleSchema), createRoles); 
 router.get("/role", getAllRoles);
 router.delete("/role/:id", validateMiddleware(deleteRoleSchema), deleteRoles);
-router.put("/user/:id", validateMiddleware(changeRoleSchema), changeUserRoles);
+router.put("/role/:id", validateMiddleware(changeRoleSchema), changeUserRoles);
 
 module.exports = router;

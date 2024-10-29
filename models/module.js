@@ -44,7 +44,7 @@ const modulePermission = {
           cm.name as categoryModule
         FROM module m
         LEFT JOIN category_module cm
-        ON m.category_module_id = cm.id WHERE is_deleted = 0`);
+        ON m.category_module_id = cm.id`);
       return result;    
     } catch (error) {
       throw error;

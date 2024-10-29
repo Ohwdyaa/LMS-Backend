@@ -18,6 +18,6 @@ module.exports = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD ,
-    name: process.env.DB_NAME2 || 'lms_module'
+    name: process.env.DB_NAME2 
   }
 };

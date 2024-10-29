@@ -16,7 +16,7 @@ const userSchema = z.object({
   body: z.object({
     username: z
       .string()
-      .regex(/^[a-zA-Z]+$/, "Username should contain only alphabets"),
+      .regex(/^[a-zA-Z0-9]+$/, "Username cannot field by symbols"),
     email: z
       .string()
       .email("Invalid email format")

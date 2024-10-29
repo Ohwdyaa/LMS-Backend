@@ -47,11 +47,11 @@ const updateUserSchema = z.object({
     address: z
       .string()
       .optional()
-      .refine(val => val === undefined || /^[\w\s,.-]{1,}$/.test(val), "Address format is invalid"),
+      .refine(val => val === undefined || /^[a-zA-Z0-9\s,.-]+$/.test(val), "Address format is invalid"),
     institute: z
       .string()
       .optional()
-      .refine(val => val === undefined || /^[\w\s,.-]{1,}$/.test(val), "Institute name should contain only with alphabets and spaces"),
+      .refine(val => val === undefined || /^[a-zA-Z0-9\s,.-]+$/.test(val), "Institute name should contain only with alphabets and spaces"),
     date_of_birth: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),

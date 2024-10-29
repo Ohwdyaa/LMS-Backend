@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   updatePermissions,
+  getPermissionByRole
 } = require("../../../controllers/permissions");
 const router = express.Router();
 const {
@@ -14,6 +15,6 @@ router.put(
   updatePermissions
 );
 // router.get("/permission", getAllPermissions);
-// router.get("/permission/:id", getPermissionByRole);
+router.get("/permission/:id", getPermissionByRole);
 
 module.exports = router;

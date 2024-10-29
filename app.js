@@ -34,5 +34,3 @@ app.use(routes);
 app.listen(3000, () => {
   console.log('Server berjalan di port 3000');
 });
-
-// buat 1 user untuk database - bukan root(saat)

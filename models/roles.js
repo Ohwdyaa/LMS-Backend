@@ -31,7 +31,7 @@ const Roles = {
   getAllRole: async () => {
     try {
       const result = await query1(
-        "SELECT name FROM roles WHERE is_deleted = 0"
+        "SELECT id, name FROM roles WHERE is_deleted = 0"
       );
 
       return result;

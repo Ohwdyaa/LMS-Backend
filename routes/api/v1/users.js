@@ -19,4 +19,4 @@ router.delete("/user/:id", validateMiddleware(deleteUserSchema), deleteUsers);
 router.get("/user", getAllUsers);
 // router.get("/token", refreshTokenHandler);
 
-module.exports = router;
+module.exports = router; 

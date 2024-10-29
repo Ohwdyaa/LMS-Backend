@@ -125,33 +125,3 @@ module.exports = {
   getPermissionByRole,
   getPermissions,
 };
-
-// async function getAllPermissions(req, res) {
-//   try {
-//     const result = await Permissions.getAllPermission();
-//     if (!result || result.length === 0) {
-//       throw new Error("No permissions found");
-//     }
-//     const permissionList = [];
-//     for (let i = 0; i < result.length; i++) {
-//       const permission = result[i];
-//       const listObj = new Object();
-//       listObj.id = permission.id;
-//       listObj.canCreate = permission.can_create;
-//       listObj.canRead = permission.can_read;
-//       listObj.canEdit = permission.can_edit;
-//       listObj.canDelete = permission.can_delete;
-//       listObj.role = permission.role;
-//       listObj.module = permission.module;
-//       permissionList.push(listObj);
-//     }
-//     return res.status(200).json({
-//       result: permissionList,
-//     });
-//   } catch (error) {
-//     return res.status(err.errorSelect.statusCode).json({
-//       message: err.errorSelect.message,
-//       error: error.message,
-//     });
-//   }
-// }

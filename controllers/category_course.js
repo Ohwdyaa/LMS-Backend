@@ -14,6 +14,7 @@ async function createCategories(req, res) {
     });
   }
 }
+
 module.exports = {
   createCategories,
 };

@@ -26,7 +26,8 @@ const limiter = rateLimit({
 })
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(helmet())
+app.use(helmet());
+app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(routes);

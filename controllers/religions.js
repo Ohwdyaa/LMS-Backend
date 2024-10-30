@@ -1,5 +1,5 @@
 const Religions = require("../models/religions");
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 
 async function createReligion(req, res) {
   const data = req.body;

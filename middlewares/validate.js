@@ -17,13 +17,13 @@ const userSchema = z.object({
     username: z
       .string()
       .regex(/^[a-zA-Z0-9]+$/, "Username cannot field by symbols"),
-    email: z
+    email: z 
       .string()
       .email("Invalid email format")
       .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
     fullname: z
       .string()
-      .regex(/^[a-zA-Z]+$/, "Fullname should contain only alphabets")
+      .regex(/^[a-zA-Z\s]+$/, "Fullname should contain only alphabets")
       .min(1, "Fullname cannot be empty"),
     roleId: z
       .string()
@@ -39,7 +39,7 @@ const updateUserSchema = z.object({
       .min(1, "Username cannot be empty"),
     fullname: z
       .string()
-      .regex(/^[a-zA-Z]+$/, "Fullname should contain only alphabets")
+      .regex(/^[a-zA-Z\s]+$/, "Fullname should contain only alphabets")
       .min(1, "Fullname cannot be empty"),
     phone_number: z
       .string()

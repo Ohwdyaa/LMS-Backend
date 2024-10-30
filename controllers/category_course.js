@@ -1,4 +1,4 @@
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 const Categories = require("../models/categories");
 async function createCategories(req, res) {
   const categoriesData = req.body;

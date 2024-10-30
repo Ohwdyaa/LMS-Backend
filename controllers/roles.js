@@ -1,6 +1,6 @@
 const Roles = require("../models/roles");
 const Users = require("../models/users");
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 
 async function createRoles(req, res) {
   const data = req.body;

@@ -5,7 +5,6 @@ module.exports = {
   port: process.env.PORT,
   issuer: process.env.JWT_ISSUER,
   audience: process.env.JWT_AUDIENCE,
-  // jwtSecret: process.env.JWT_SECRET || 'infinite_le@rning',
   db1: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,

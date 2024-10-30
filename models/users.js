@@ -124,8 +124,10 @@ const Users = {
   },
   getUserById: async (id) => {
     try {
-      const result = await query1(
-        `SELECT users.username, 
+      const [result] = await query1(
+        `SELECT 
+        users.id,
+        users.username, 
           users.email, 
           users.fullname, 
           users.role_id, roles.name as role

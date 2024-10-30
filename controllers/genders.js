@@ -19,7 +19,9 @@ async function createGenders(req, res) {
 async function getAllGenders(req, res) {
   try {
     const gender = await Genders.getAllGenders();
-    return gender;
+    return res.status(200).json({
+      data: gender,
+    });
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,

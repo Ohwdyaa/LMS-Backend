@@ -6,41 +6,50 @@ const { err } = require("../utils/custom_error");
 async function createUsers(req, res) {
   const data = req.body;
   try {
-    const password = "admin12345";
+    const createdByEmail = req.user.email;
+    const password = "admin12345"; 
     const hash = await hashPassword(password);
+    
     const userData = {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData);
-
+    const result = await Users.createUser(userData, createdByEmail);
     return res.status(201).json({
       message: "User created successfully",
+      createdUserId: result.userId,        
+      createdById: result.createdById,         
+      createdByUsername: result.createdByUsername,
     });
   } catch (error) {
-    return res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
+    return res.status(500).json({
+      message: "Failed to create user",
       error: error.message,
     });
   }
 }
 
 async function updateUsers(req, res) {
-  const {email: userEmail} = req.user; //dari jwt
+  const { email: userEmail } = req.user; 
   const userData = req.body;
+
   try {
     const isUserExists = await Users.getUserByEmail(userEmail);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.updateUser(isUserExists.email, userData);
+  try {
+    const updatedUser = await Users.updateUser(userEmail, userData); 
     return res.status(200).json({
       message: "User updated successfully",
+      updatedUser,        
+      updatedByUsername:userEmail,
     });
   } catch (error) {
-    return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
+    console.error(error); 
+    return res.status(500).json({
+      message: "An error occurred while updating user",
       error: error.message,
     });
   }

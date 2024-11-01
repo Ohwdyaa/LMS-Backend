@@ -7,6 +7,7 @@ const { generateResetToken, verifyJWT } = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { err } = require("../utils/custom_error");
 
+
 async function requestResetPassword(req, res) {
   const { email } = req.body;
   try {

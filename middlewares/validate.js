@@ -43,7 +43,7 @@ const updateUserSchema = z.object({
       .min(1, "Fullname cannot be empty"),
     phone_number: z
       .string()
-      .regex(/^0\d{10}$/, "Phone number must be 11 digits starting with 0"),
+      .regex(/^0\d{10,}$/, "Phone number must be 11 digits starting with 0"),
     address: z
       .string()
       .optional()
@@ -89,7 +89,7 @@ const roleSchema = z.object({
   body: z.object({
     name: z
       .string()
-      .regex(/^[a-zA-Z]+$/, "Role name should contain only alphabets")
+      .regex(/^[a-zA-Z0-9]+$/, "Role name should contain only alphabets")
       .min(1, "Role cannot be empty")
   })
 });

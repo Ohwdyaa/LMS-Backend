@@ -2,9 +2,13 @@ const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
-  createUser: async (userData) => {
+  createUser: async (userData, createdByEmail) => {
     try {
+      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
+      if (!creator) throw new Error("Creator not found");
+
       const id = uuid();
+
       const result = await query1(
         `
         INSERT INTO users (
@@ -20,9 +24,10 @@ const Users = {
             date_of_birth, 
             role_id, 
             gender_id, 
-            religion_id
+            religion_id,
+            created_by
         ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
@@ -38,9 +43,16 @@ const Users = {
           userData.roleId,
           userData.genderId,
           userData.religionId,
+          creator.id,
         ]
       );
-      return result.insertId;
+      if (result.affectedRows === 0) {
+        throw new Error("User not created, check your input data");
+      } return {
+        userId: id,
+        createdById: creator.id,
+        createdByUsername: creator.username,
+      };
     } catch (error) {
       throw error;
     }

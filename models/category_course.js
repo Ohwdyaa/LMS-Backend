@@ -2,15 +2,24 @@ const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Categories = {
-  createCategories: async (categoriesData) => {
+  createCategories: async (categoriesData, createdByEmail) => {
     try {
+      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
+      if (!creator) throw new Error("Creator not found");
+
       const id = uuid();
       const result = await query1(
-        `INSERT INTO categories(id, name) 
-        VALUES(?,?)`,
-        [id, categoriesData.name]
+        `INSERT INTO categories(id, name, created_by) 
+        VALUES(?,?,?)`,
+        [id, categoriesData.name, creator.id]
       );
-      return result;
+      if (result.affectedRows === 0) {
+        throw new Error("Course Category not created, check your input data");
+      } return {
+        userId: id,
+        createdById: creator.id,
+        createdByUsername: creator.username,
+      };
     } catch (error) {
       throw error;
     }

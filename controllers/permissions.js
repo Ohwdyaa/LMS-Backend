@@ -1,7 +1,7 @@
 const Permissions = require("../models/permissions");
 const Roles = require("../models/roles");
 const Module = require("../models/module")
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 async function updatePermissions(req, res) {

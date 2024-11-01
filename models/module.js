@@ -2,22 +2,32 @@ const { query2 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const modulePermission = {
-  createModule: async (moduleData) => {
+  createModule: async (moduleData, createdByEmail) => {
+    const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
+    if (!creator) throw new Error("Creator not found");
+
     try {
       const uuidModule = uuid();
       const result = await query2(
         `
             INSERT INTO module (
-                uuid, 
+                uuid,
                 name,
                 position
-                category_module_id
+                category_module_id, 
+                created_by
             ) 
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
             `,
-        [uuidModule, moduleData.name, moduleData.position, moduleData.categoryId]
+        [uuidModule, moduleData.name, moduleData.position, moduleData.categoryId, creator.id]
       );
-      return result;
+      if (result.affectedRows === 0) {
+        throw new Error("Role not created, check your input data");
+      } return {
+        userId: id,
+        createdById: creator.id,
+        createdByUsername: creator.username,
+      };
     } catch (error) {
       throw error;
     }

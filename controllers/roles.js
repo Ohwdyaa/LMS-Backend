@@ -1,13 +1,18 @@
 const Roles = require("../models/roles");
 const Users = require("../models/users");
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 
 async function createRoles(req, res) {
   const data = req.body;
+  const createdByEmail= req.user.email;
   try {
-    await Roles.createRole(data);
+    const result = await Roles.createRole(data, createdByEmail);
     return res.status(201).json({
-      message: "Role created successfully",
+      message: "Role created successfully",        
+      roleId: result.roleIdId,    
+      createdById : result.createdById,     
+      createdByUsername: result.createdByUsername,
+
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({

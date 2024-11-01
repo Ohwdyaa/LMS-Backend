@@ -2,8 +2,11 @@ const { query1 } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Course = {
-  createCourse: async (courseData) => {
+  createCourse: async (courseData, createdByEmail) => {
     try {
+      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
+      if (!creator) throw new Error("Creator not found");
+
       const id = uuid();
       const result = await query1(
         `INSERT INTO course(
@@ -14,9 +17,10 @@ const Course = {
         enrollment_key,   
         start_date, 
         end_date, 
-        sub_category_id) 
+        sub_category_id,
+        created_by) 
         VALUES 
-        (?,?,?,?,?,?,?,?)`,
+        (?,?,?,?,?,?,?,?,?)`,
         [
           id,
           courseData.title,
@@ -25,9 +29,17 @@ const Course = {
           courseData.enrollment_key,
           courseData.start_date.courseData.end_date,
           courseData.subCategoryId,
+          creator.id
         ]
       );
-      return result.insertId;
+      //return result.insertId;
+      if (result.affectedRows === 0) {
+        throw new Error("Role not created, check your input data");
+      } return {
+        userId: id,
+        createdById: creator.id,
+        createdByUsername: creator.username,
+      };
     } catch (error) {
       throw error;
     }

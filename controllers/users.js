@@ -16,7 +16,7 @@ async function createUsers(req, res) {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData);
+    await Users.createUser(userData, isUserExists.id);
 
     return res.status(201).json({
       message: "User created successfully",
@@ -34,7 +34,6 @@ async function updateUsers(req, res) {
   const userData = req.body;
   try {
     const isUserExists = await Users.getUserByEmail(userEmail);
-    console.log(isUserExists);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -55,7 +54,6 @@ async function deleteUsers(req, res) {
   const { id: userId } = req.params;
   try {
     const isUserExists = await Users.getUserById(userId);
-    console.log(isUserExists);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }

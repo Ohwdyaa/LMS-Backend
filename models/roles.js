@@ -1,4 +1,4 @@
-const { query1, lmsManagement } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Roles = {

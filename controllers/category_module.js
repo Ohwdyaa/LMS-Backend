@@ -1,5 +1,4 @@
 const moduleCategory = require("../models/category_module");
-
 const { err } = require("../utils/custom_error");
 
 async function createCategories(req, res) {

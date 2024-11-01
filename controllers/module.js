@@ -1,7 +1,5 @@
 const modulePermission = require("../models/module");
-
 const { err } = require("../utils/custom_error");
-
 
 async function createModules(req, res) {
   const data = req.body;

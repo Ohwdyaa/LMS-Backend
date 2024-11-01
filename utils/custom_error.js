@@ -33,11 +33,11 @@ const err = {
   },
   errorRequest:{
     message: "An error occurred while processing your request.",
-    statusCode: 500, 
+    statusCode: 400, 
   },
   errorReset:{
     message: "An error occurred while resetting your request.",
-    statusCode: 500, 
+    statusCode: 400, 
   },
 };
 

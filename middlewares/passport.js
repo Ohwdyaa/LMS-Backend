@@ -3,7 +3,7 @@ const { Strategy, ExtractJwt } = require("passport-jwt");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
 
-  "D:/DATA KELAS/magang infinte/lms-backend1/keys/public.pem",
+  "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
 
   "utf8"
 );

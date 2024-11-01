@@ -2,25 +2,25 @@ const mysql = require("mysql2/promise");
 const config = require("../config");
 
 const pool1 = mysql.createPool({
-  host: config.db1.host,
-  port: config.db1.port,
-  user: config.db1.user,
-  password: config.db1.password,
-  database: config.db1.name,
+  host: config.dbLmsManagement.host,
+  port: config.dbLmsManagement.port,
+  user: config.dbLmsManagement.user,
+  password: config.dbLmsManagement.password,
+  database: config.dbLmsManagement.name,
   bigNumberStrings: true,
   waitForConnections: true,
 });
 const pool2 = mysql.createPool({
-  host: config.db2.host,
-  port: config.db2.port,
-  user: config.db2.user,
-  password: config.db2.password,
-  database: config.db2.name,
+  host: config.dbLmsModule.host,
+  port: config.dbLmsModule.port,
+  user: config.dbLmsModule.user,
+  password: config.dbLmsModule.password,
+  database: config.dbLmsModule.name,
   bigNumberStrings: true,
   waitForConnections: true,
 });
 
-async function query1(query, value) {
+async function lmsManagement(query, value) {
   try {
     const [result] = await pool1.query(query, value === undefined ? [] : value);
     return result;
@@ -37,7 +37,7 @@ async function formatBulkQuery1(query, array) {
     console.log(error);
   }
 }
-async function query2(query, value) {
+async function lmsModule(query, value) {
   try {
     const [result] = await pool2.query(query, value === undefined ? [] : value);
     return result;
@@ -47,4 +47,4 @@ async function query2(query, value) {
   }
 }
 
-module.exports = { query1, query2, formatBulkQuery1 };
+module.exports = { lmsManagement, lmsModule, formatBulkQuery1 };

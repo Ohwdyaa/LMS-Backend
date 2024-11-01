@@ -34,6 +34,12 @@ async function updateUsers(req, res) {
   const userData = req.body;
 
   try {
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+  try {
     const updatedUser = await Users.updateUser(userEmail, userData); 
     return res.status(200).json({
       message: "User updated successfully",
@@ -53,7 +59,6 @@ async function deleteUsers(req, res) {
   const {id: userId} = req.params;
   try {
     const isUserExists = await Users.getUserById(userId);
-    console.log(isUserExists)
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }

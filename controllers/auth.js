@@ -3,7 +3,7 @@ const Permissions = require("./permissions");
 const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
-const { err } = require("../utils/customError");
+const { err } = require("../utils/custom_error");
 
 
 async function login(req, res) {

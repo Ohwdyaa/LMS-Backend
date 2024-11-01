@@ -5,7 +5,7 @@ const Religions = {
   createReligion: async (data) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `
         INSERT INTO religions (
         id,
@@ -20,7 +20,7 @@ const Religions = {
   },
   getAllReligion: async () => {
     try {
-      const result = await query1("SELECT name FROM religions WHERE is_deleted = 0");
+      const result = await lmsManagement("SELECT name FROM religions WHERE is_deleted = 0");
       return result;
     } catch (error) {
       throw error;

@@ -1,21 +1,20 @@
-const { query2 } = require("../config/db/db");
+const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const modulePermission = {
   createModule: async (moduleData) => {
     try {
       const uuidModule = uuid();
-      const result = await query2(
+      const result = await lmsModule(
         `
             INSERT INTO module (
                 uuid, 
                 name,
-                position
                 category_module_id
             ) 
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?)
             `,
-        [uuidModule, moduleData.name, moduleData.position, moduleData.categoryId]
+        [uuidModule, moduleData.name, moduleData.categoryId]
       );
       return result;
     } catch (error) {
@@ -24,7 +23,7 @@ const modulePermission = {
   },
   getModuleById: async (module_permission_id) => {
     try {
-      const [result] = await query2(
+      const [result] = await lmsModule(
         `SELECT uuid, name, category_module_id FROM module WHERE id = ?`,
         [module_permission_id.modulePermissionId]
       );
@@ -35,7 +34,7 @@ const modulePermission = {
   },
   getAllModule: async () => {
     try {
-      const result = await query2(`
+      const result = await lmsModule(`
         SELECT 
           m.id, 
           m.uuid, 

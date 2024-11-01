@@ -1,9 +1,9 @@
-const { query1, formatBulkQuery1 } = require("../config/db/db");
+const { formatBulkQuery1, lmsManagement } = require("../config/db/db");
 
 const Permissions = {
   getPermissionByRole: async (roleId) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT 
               rp.can_create AS 'create', 
               rp.can_read AS 'read', 
@@ -12,7 +12,7 @@ const Permissions = {
               m.id AS moduleId,
               m.name AS moduleName,
               cm.name AS categoryName
-          FROM lms_db2.role_permissions rp
+          FROM lms_management.role_permissions rp
           LEFT JOIN lms_module.module m
             ON rp.module_id = m.id
           LEFT JOIN lms_module.category_module cm
@@ -27,7 +27,7 @@ const Permissions = {
   },
   getPermissionByRoleJwt: async (roleId) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT 
           rp.can_create AS 'create', 
           rp.can_read AS 'read', 
@@ -36,7 +36,7 @@ const Permissions = {
           m.uuid AS moduleId,
           m.name AS moduleName,
           cm.name AS categoryName
-        FROM lms_db2.role_permissions rp
+        FROM lms_management.role_permissions rp
         LEFT JOIN lms_module.module m
             ON rp.module_id = m.id
           LEFT JOIN lms_module.category_module cm
@@ -51,13 +51,13 @@ const Permissions = {
   },
   getPermissionByRoleAndModule: async (roleId, moduleId) => {
     try {
-      const [result] = await query1(
+      const [result] = await lmsManagement(
         `SELECT 
           can_create AS 'create', 
           can_read AS 'read', 
           can_edit AS 'edit', 
           can_delete AS 'delete'
-        FROM lms_db2.role_permissions 
+        FROM lms_management.role_permissions 
         WHERE role_id = ? AND module_id = ?`,
         [roleId, moduleId]
       );
@@ -68,7 +68,7 @@ const Permissions = {
   },
   getPermissionById: async (permissionId) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT 
           rp.can_create, 
           rp.can_read, 
@@ -76,7 +76,7 @@ const Permissions = {
           rp.can_delete, 
           rp.role_id, r.name as role,
           rp.module_id, m.name as module
-        FROM lms_db2.role_permissions rp
+        FROM lms_management.role_permissions rp
           LEFT JOIN lms_db2.roles r ON rp.role_id = r.id
           LEFT JOIN lms_module.module m ON rp.module_id = m.id
         WHERE rp.id = ?`,
@@ -89,7 +89,7 @@ const Permissions = {
   },
   updatePermission: async (roleId, moduleId, update) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE role_permissions SET 
         can_create = ?,
         can_read = ?, 
@@ -114,7 +114,7 @@ const Permissions = {
 
   createBulkPermission: async (query, array) => {
     const formatQuery = await formatBulkQuery1(query, array);
-    await query1(formatQuery);
+    await lmsManagement(formatQuery);
   },
 };
 module.exports = Permissions;

@@ -1,11 +1,11 @@
-const { query2 } = require("../config/db/db");
+const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const moduleCategory = {
   createCategory: async (data) => {
     try {
       const id = uuid();
-      const result = await query2(
+      const result = await lmsModule(
         `INSERT INTO category_module(
           uuid, 
           name

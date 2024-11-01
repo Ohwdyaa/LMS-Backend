@@ -1,11 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Genders = {
   createGender: async (genderData) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `
         INSERT INTO genders (
         id,
@@ -20,7 +20,7 @@ const Genders = {
   },
   getAllGenders: async () => {
     try {
-      const result = await query1(" SELECT name FROM genders");
+      const result = await lmsManagement(" SELECT name FROM genders");
       return result;
     } catch (error) {
       throw error;

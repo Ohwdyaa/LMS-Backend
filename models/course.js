@@ -1,11 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Course = {
   createCourse: async (courseData) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `INSERT INTO course(
         id, 
         title, 
@@ -34,7 +34,7 @@ const Course = {
   },
   updateCourse: async (courseId, courseData) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE course SET title = ?, 
         description = ?, 
         thumbnail = ?, 
@@ -59,7 +59,7 @@ const Course = {
   },
   deleteCourse: async (courseId) => {
     try {
-      const result = await query1(`DELETE FROM course WHERE id=?`, courseId);
+      const result = await lmsManagement(`DELETE FROM course WHERE id=?`, courseId);
       return result;
     } catch (error) {
       throw error;
@@ -67,7 +67,7 @@ const Course = {
   },
   getAllCourse: async () => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT course.id, 
         course.title, 
         course.description, 
@@ -83,7 +83,7 @@ const Course = {
   },
   getCourseById: async (courseId) => {
     try {
-      const result = await query1(`SELECT course.id, 
+      const result = await lmsManagement(`SELECT course.id, 
         course.title, 
         course.description, 
         course.thumbnail, 

@@ -1,11 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Categories = {
   createCategories: async (categoriesData) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `INSERT INTO categories(id, name) 
         VALUES(?,?)`,
         [id, categoriesData.name]
@@ -17,7 +17,7 @@ const Categories = {
   },
   updateCategories: async (categoriesId, categoriesData) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE categories
           SET
           name = ?,
@@ -32,7 +32,7 @@ const Categories = {
   },
   deleteCategory: async (categoriesId) => {
     try {
-      const result = await query1(`DELETE FROM categories WHERE id = ?`, categoriesId);
+      const result = await lmsManagement(`DELETE FROM categories WHERE id = ?`, categoriesId);
       return result;
     } catch (error) {
       throw error;

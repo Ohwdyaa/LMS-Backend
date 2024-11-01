@@ -1,11 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
-  createUser: async (userData) => {
+  createUser: async (userData, userId) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `
         INSERT INTO users (
             id,
@@ -18,11 +18,12 @@ const Users = {
             address, 
             institute, 
             date_of_birth, 
+            created_by,
             role_id, 
             gender_id, 
             religion_id
         ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
@@ -35,6 +36,7 @@ const Users = {
           userData.address,
           userData.institute,
           userData.date_of_birth,
+          userId,
           userData.roleId,
           userData.genderId,
           userData.religionId,
@@ -47,7 +49,7 @@ const Users = {
   },
   updatePassword: async (userId, hashedPassword) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE users SET password = ? where id = ?`,
         [hashedPassword, userId]
       );
@@ -61,7 +63,7 @@ const Users = {
   },
   updateUser: async (userEmail, userData) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE users
           SET 
           username = ?,
@@ -93,7 +95,7 @@ const Users = {
   },
   deleteUser: async (userId) => {
     try {
-      const result = await query1(`DELETE FROM users WHERE id = ?`, userId);
+      const result = await lmsManagement(`DELETE FROM users WHERE id = ?`, userId);
       return result;
     } catch (error) {
       throw error;
@@ -101,21 +103,21 @@ const Users = {
   },
   getAllUser: async () => {
     try {
-      const result = await query1(
-        `SELECT users.id, 
-        users.username, 
-        users.email, 
-        users.fullname, 
-        users.gender_id, 
-        users.role_id, 
-        users.religion_id, 
-        roles.name as role, 
-        genders.name as gender, 
-        religions.name as religion
-          FROM users
-          LEFT JOIN roles ON users.role_id = roles.id
-          LEFT JOIN genders ON users.gender_id = genders.id
-          LEFT JOIN religions ON users.religion_id = religions.id `
+      const result = await lmsManagement(
+        `SELECT u.id, 
+        u.username, 
+        u.email, 
+        u.fullname, 
+        u.gender_id, 
+        u.role_id, 
+        u.religion_id, 
+        r.name as role, 
+        g.name as gender, 
+        rg.name as religion
+          FROM users u
+          LEFT JOIN roles r ON u.role_id = r.id
+          LEFT JOIN genders g ON u.gender_id = g.id
+          LEFT JOIN religions  rg ON u.religion_id = rg.id `
       );
       return result;
     } catch (error) {
@@ -124,7 +126,7 @@ const Users = {
   },
   getUserById: async (id) => {
     try {
-      const [result] = await query1(
+      const [result] = await lmsManagement(
         `SELECT 
         users.id,
         users.username, 
@@ -143,7 +145,7 @@ const Users = {
   },
   getUserByEmail: async (email) => {
     try {
-      const [result] = await query1(
+      const [result] = await lmsManagement(
         `SELECT users.id, 
         users.username, 
         users.email, 
@@ -162,7 +164,7 @@ const Users = {
 
   logoutUser: async (token) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );

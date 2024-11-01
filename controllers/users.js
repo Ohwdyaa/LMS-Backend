@@ -2,11 +2,15 @@ const Users = require("../models/users");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
-
 async function createUsers(req, res) {
   const data = req.body;
+  const { email: userEmail } = req.user;
   try {
-    const password = "admin12345";
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    const password = "112233";
     const hash = await hashPassword(password);
     const userData = {
       ...data,
@@ -26,11 +30,11 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {
-  const {email: userEmail} = req.user; //dari jwt
+  const { email: userEmail } = req.user; //dari jwt
   const userData = req.body;
   try {
     const isUserExists = await Users.getUserByEmail(userEmail);
-    console.log(isUserExists)
+    console.log(isUserExists);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -48,10 +52,10 @@ async function updateUsers(req, res) {
 }
 
 async function deleteUsers(req, res) {
-  const {id: userId} = req.params;
+  const { id: userId } = req.params;
   try {
     const isUserExists = await Users.getUserById(userId);
-    console.log(isUserExists)
+    console.log(isUserExists);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -60,7 +64,7 @@ async function deleteUsers(req, res) {
     return res.status(200).json({
       message: "User deleted successfully",
     });
-  } catch (error) { 
+  } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
       error: error.message,

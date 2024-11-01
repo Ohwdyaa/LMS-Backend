@@ -1,11 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { query1, lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const subCategories = {
   createSubCategories: async (subData) => {
     try {
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `INSERT INTO sub_categories (id, name, categories_id) VALUES (?,?,?)`,
         [id, subData.name, subData.categories_id]
       );
@@ -16,7 +16,7 @@ const subCategories = {
   },
   updateSubCategories: async (subId, subData) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE sub_categories SET name = ?, categories_id = ?`,
         [subData.name, subId]
       );
@@ -27,7 +27,7 @@ const subCategories = {
   },
   deleteSubCategories: async (subId) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `DELETE FROM sub_categories WHERE id = ?`,
         subId
       );
@@ -39,7 +39,7 @@ const subCategories = {
   getAllSubCategories: async () => {
     try {
       const result =
-        await query1(`SELECT id, 
+        await lmsManagement(`SELECT id, 
           name, 
           categories_id, categories.name as categories 
             FROM sub_categories
@@ -51,7 +51,7 @@ const subCategories = {
   },
   getSubCategoriesById: async (subId) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT id, 
         name, 
         categories_id, categories.name as categories 

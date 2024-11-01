@@ -1,37 +1,26 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Roles = {
-  createRole: async (data, createdByEmail) => {
+  createRole: async (data) => {
     try {
-      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
-      if (!creator) throw new Error("Creator not found");
-
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `
         INSERT INTO roles (
         id,
-        name,
-        created_by
-        ) VALUES (?,?,?)`,
-        [id, data.name, creator.id]
+        name
+        ) VALUES (?,?)`,
+        [id, data.name]
       );
-
-      if (result.affectedRows === 0) {
-        throw new Error("Role not created, check your input data");
-      } return {
-        userId: id,
-        createdById: creator.id,
-        createdByUsername: creator.username,
-      };
+      return result;
     } catch (error) {
       throw error;
     }
   },
   getRoleById: async (roleId) => {
     try {
-      const [result] = await query1("SELECT id, name FROM roles WHERE id = ?", [
+      const [result] = await lmsManagement("SELECT id, name FROM roles WHERE id = ?", [
         roleId,
       ]);
       return result;
@@ -41,7 +30,7 @@ const Roles = {
   },
   getAllRole: async () => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         "SELECT id, name FROM roles WHERE is_deleted = 0"
       );
 
@@ -52,7 +41,7 @@ const Roles = {
   },
   deleteRole: async (roleId) => {
     try {
-      const result = await query1("DELETE FROM roles where id = ? ", [roleId]);
+      const result = await lmsManagement("DELETE FROM roles where id = ? ", [roleId]);
       return result;
     } catch (error) {
       throw error;
@@ -60,7 +49,7 @@ const Roles = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await query1(`UPDATE users SET role_id = ? WHERE id = ? `, [
+      const result = await lmsManagement(`UPDATE users SET role_id = ? WHERE id = ? `, [
         roleId,
         userId,
       ]);

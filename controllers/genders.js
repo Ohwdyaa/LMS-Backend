@@ -1,7 +1,5 @@
 const Genders = require("../models/genders");
-
 const { err } = require("../utils/custom_error");
-
 
 async function createGenders(req, res) {
   const genderData = req.body;

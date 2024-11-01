@@ -1,14 +1,11 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Course = {
-  createCourse: async (courseData, createdByEmail) => {
+  createCourse: async (courseData) => {
     try {
-      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
-      if (!creator) throw new Error("Creator not found");
-
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `INSERT INTO course(
         id, 
         title, 
@@ -17,10 +14,9 @@ const Course = {
         enrollment_key,   
         start_date, 
         end_date, 
-        sub_category_id,
-        created_by) 
+        sub_category_id) 
         VALUES 
-        (?,?,?,?,?,?,?,?,?)`,
+        (?,?,?,?,?,?,?,?)`,
         [
           id,
           courseData.title,
@@ -29,24 +25,16 @@ const Course = {
           courseData.enrollment_key,
           courseData.start_date.courseData.end_date,
           courseData.subCategoryId,
-          creator.id
         ]
       );
-      //return result.insertId;
-      if (result.affectedRows === 0) {
-        throw new Error("Role not created, check your input data");
-      } return {
-        userId: id,
-        createdById: creator.id,
-        createdByUsername: creator.username,
-      };
+      return result.insertId;
     } catch (error) {
       throw error;
     }
   },
   updateCourse: async (courseId, courseData) => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `UPDATE course SET title = ?, 
         description = ?, 
         thumbnail = ?, 
@@ -71,7 +59,7 @@ const Course = {
   },
   deleteCourse: async (courseId) => {
     try {
-      const result = await query1(`DELETE FROM course WHERE id=?`, courseId);
+      const result = await lmsManagement(`DELETE FROM course WHERE id=?`, courseId);
       return result;
     } catch (error) {
       throw error;
@@ -79,7 +67,7 @@ const Course = {
   },
   getAllCourse: async () => {
     try {
-      const result = await query1(
+      const result = await lmsManagement(
         `SELECT course.id, 
         course.title, 
         course.description, 
@@ -95,7 +83,7 @@ const Course = {
   },
   getCourseById: async (courseId) => {
     try {
-      const result = await query1(`SELECT course.id, 
+      const result = await lmsManagement(`SELECT course.id, 
         course.title, 
         course.description, 
         course.thumbnail, 

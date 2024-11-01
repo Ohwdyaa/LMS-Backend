@@ -1,36 +1,26 @@
-const { query1 } = require("../config/db/db");
+const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Genders = {
-  createGender: async (genderData, createdByEmail) => {
+  createGender: async (genderData) => {
     try {
-      const [creator] = await query1("SELECT id, username FROM users WHERE email = ?", [createdByEmail]);
-      if (!creator) throw new Error("Creator not found");
-
       const id = uuid();
-      const result = await query1(
+      const result = await lmsManagement(
         `
         INSERT INTO genders (
         id,
-        name,
-        created_by
-        ) VALUES (?,?,?)`,
-        [id, genderData.name, creator.id]
+        name
+        ) VALUES (?,?)`,
+        [id, genderData.name]
       );
-      if (result.affectedRows === 0) {
-        throw new Error("Role not created, check your input data");
-      } return {
-        userId: id,
-        createdById: creator.id,
-        createdByUsername: creator.username,
-      };
+      return result;
     } catch (error) {
       throw error;
     }
   },
   getAllGenders: async () => {
     try {
-      const result = await query1(" SELECT name FROM genders");
+      const result = await lmsManagement(" SELECT name FROM genders");
       return result;
     } catch (error) {
       throw error;

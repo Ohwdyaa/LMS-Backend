@@ -91,7 +91,6 @@ async function getPermissionByRole(req, res) {
         permission: permissionList,
       });
     }
-
     return res.status(200).json({
       permission,
     });

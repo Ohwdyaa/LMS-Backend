@@ -1,19 +1,34 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const Users = require("../models/users");
 
 const Roles = {
-  createRole: async (data) => {
+  createRole: async (data, creatorEmail) => {
     try {
+      const creatorRole = await Users.getUserByEmail(creatorEmail);
+      if(creatorRole === undefined || creatorRole === null){
+        throw new Error ('Creator not found');
+      }
+      creatorId = creatorRole.id;
+      creatorUsername = creatorRole.username;
       const id = uuid();
+
       const result = await lmsManagement(
         `
         INSERT INTO roles (
         id,
-        name
-        ) VALUES (?,?)`,
-        [id, data.name]
+        name,
+        created_by
+        ) VALUES (?,?,?)`,
+        [id, data.name, creatorId]
       );
-      return result;
+ console.log("role created : ", {
+  id, 
+  name : data.name,
+  created_by : creatorId,
+  created_by_username : creatorUsername,
+ });
+ return result.insertId;
     } catch (error) {
       throw error;
     }

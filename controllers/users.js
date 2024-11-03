@@ -11,13 +11,15 @@ async function createUsers(req, res) {
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
-    const password = "admin12345"; 
+    const password = "112233"; 
     const hash = await hashPassword(password);
     const userData = {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData, isUserExists.id);
+    await Users.createUser(userData, isUserExists.email);
+    console.log(`User created by: ID = ${creatorId}, Username = ${creatorUsername}`);
+
     return res.status(201).json({
       message: "User created successfully",
     });

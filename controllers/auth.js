@@ -50,6 +50,7 @@ async function verifyUser(email, password) {
       return res.status(400).json({ message: "no user with registered email" });
     }
     const isValid = await verifyPassword(password, isUserExists.password);
+    console.log(isValid);
     return isValid ? isUserExists : undefined;
   } catch (error) {
     throw error;

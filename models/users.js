@@ -2,8 +2,16 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
-  createUser: async (userData, userId) => {
+  createUser: async (userData, creatorEmail) => {
     try {
+      const creatorUser = await Users.getUserByEmail(creatorEmail);
+      if(creatorUser === undefined || creatorUser === null){
+        throw new Error ('Creator not found');
+      }
+
+      creatorId = creatorUser.id;
+      creatorUsername = creatorUser.username;
+
       const id = uuid();
       const result = await lmsManagement(
         `
@@ -36,7 +44,7 @@ const Users = {
           userData.address,
           userData.institute,
           userData.date_of_birth,
-          userId,
+          creatorId,
           userData.roleId,
           userData.genderId,
           userData.religionId,
@@ -61,7 +69,7 @@ const Users = {
       throw error;
     }
   },
-  updateUser: async (userEmail, userData) => {
+  updateUser: async (userEmail, userData, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE users
@@ -74,6 +82,7 @@ const Users = {
           date_of_birth = ?,
           gender_id = ?,
           religion_id = ?,
+          updated_by = ?,
           updated_at = NOW() 
           WHERE email = ?`,
         [
@@ -85,6 +94,7 @@ const Users = {
           userData.date_of_birth,
           userData.genderId,
           userData.religionId,
+          userId,
           userEmail,
         ]
       );
@@ -146,7 +156,8 @@ const Users = {
   getUserByEmail: async (email) => {
     try {
       const [result] = await lmsManagement(
-        `SELECT users.id, 
+        `SELECT 
+        users.id, 
         users.username, 
         users.email, 
         users.password, 

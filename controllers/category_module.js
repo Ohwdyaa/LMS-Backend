@@ -1,10 +1,12 @@
 const moduleCategory = require("../models/category_module");
 const { err } = require("../utils/custom_error");
 
+
 async function createCategories(req, res) {
   const data = req.body;
+  const {email: userEmail}= req.user;
   try {
-    await moduleCategory.createCategory(data);
+    await moduleCategory.createCategory(data, userEmail);
     return res.status(201).json({
       message: "Module created successfully",
     });

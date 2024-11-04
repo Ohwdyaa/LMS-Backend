@@ -151,6 +151,7 @@ const Users = {
         `SELECT 
             u.id, 
             u.username, 
+            u.email,
             u.password, 
             u.fullname, 
             u.role_id, 

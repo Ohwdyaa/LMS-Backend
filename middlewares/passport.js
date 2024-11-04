@@ -2,11 +2,10 @@ const passport = require("passport");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
-
   "D:/DATA KELAS/magang infinte/lms-backend/keys/public.pem",
-
   "utf8"
 );
+const Users = require("../models/users")
 
 passport.use(
   new Strategy(
@@ -22,8 +21,8 @@ passport.use(
           roleId: jwtPayload.roleId,
           permission: jwtPayload.permission,
         };
-
-        if (user === undefined) {
+        const isUserExists = await Users.getUserByEmail(userEmail);
+        if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });
         }
         return cb(null, user);

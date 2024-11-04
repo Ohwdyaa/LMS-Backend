@@ -61,7 +61,7 @@ const Users = {
      error;
     }
   },
-  updateUser: async (userEmail, userData, userId) => {
+  updateUser: async (userId, userData) => {
     try {
       const result = await lmsManagement(
         `UPDATE users
@@ -76,7 +76,7 @@ const Users = {
           religion_id = ?,
           updated_by = ?,
           updated_at = NOW() 
-          WHERE email = ?`,
+          WHERE id = ?`,
         [
           userData.username,
           userData.profile_image,
@@ -86,7 +86,6 @@ const Users = {
           userData.date_of_birth,
           userData.genderId,
           userData.religionId,
-          userId,
           userEmail,
         ]
       );
@@ -148,8 +147,7 @@ const Users = {
   getUserByEmail: async (email) => {
     try {
       const [result] = await lmsManagement(
-        `SELECT 
-        users.id, 
+        `SELECT users.id, 
         users.username, 
         users.email, 
         users.password, 

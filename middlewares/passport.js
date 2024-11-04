@@ -7,6 +7,7 @@ const publicKey = fs.readFileSync(
 
   "utf8"
 );
+const Users = require("../models/users")
 
 passport.use(
   new Strategy(
@@ -16,17 +17,11 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        const user = {
-          email: jwtPayload.email,
-          fullname: jwtPayload.fullname,
-          roleId: jwtPayload.roleId,
-          permission: jwtPayload.permission,
-        };
-
-        if (user === undefined) {
+        const isUserExists = await Users.getUserByEmail(jwtPayload.email);
+        if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });
         }
-        return cb(null, user);
+        return cb(null, isUserExists);
       } catch (error) {
         return error;
       }
@@ -50,6 +45,7 @@ function validatePermission(token){
   }
   return "Access granted";
 }
+
 module.exports = {
   passport,
   validatePermission

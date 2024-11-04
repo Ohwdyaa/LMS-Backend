@@ -32,15 +32,10 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {  
-  const { email: userEmail } = req.user; 
+  const { id: userId } = req.user;
   const userData = req.body;
-
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await Users.updateUser(isUserExists.email, userData); 
+    await Users.updateUser(userId, userData); 
     return res.status(200).json({
       message: "User updated successfully",
     });

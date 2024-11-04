@@ -61,7 +61,7 @@ const Users = {
       throw error;
     }
   },
-  updateUser: async (userEmail, userData) => {
+  updateUser: async (userId, userData) => {
     try {
       const result = await lmsManagement(
         `UPDATE users
@@ -74,8 +74,9 @@ const Users = {
           date_of_birth = ?,
           gender_id = ?,
           religion_id = ?,
+          updated_by = ?,
           updated_at = NOW() 
-          WHERE email = ?`,
+          WHERE id = ?`,
         [
           userData.username,
           userData.profile_image,
@@ -85,7 +86,8 @@ const Users = {
           userData.date_of_birth,
           userData.genderId,
           userData.religionId,
-          userEmail,
+          userId,
+          userId,
         ]
       );
       return result;
@@ -146,14 +148,21 @@ const Users = {
   getUserByEmail: async (email) => {
     try {
       const [result] = await lmsManagement(
-        `SELECT users.id, 
-        users.username, 
-        users.email, 
-        users.password, 
-        users.fullname, 
-        users.role_id, roles.name as role 
-        FROM users 
-        LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
+        `SELECT 
+            u.id, 
+            u.username, 
+            u.password, 
+            u.fullname, 
+            u.role_id, 
+            r.name AS role,
+            rp.can_create AS 'create',
+            rp.can_read AS 'read',
+            rp.can_edit AS 'edit',
+            rp.can_delete AS 'delete'
+        FROM users u
+        LEFT JOIN roles r ON u.role_id = r.id 
+        LEFT JOIN role_permissions rp ON r.id = rp.role_id
+        WHERE u.email = ?`,
         [email]
       );
       return result;

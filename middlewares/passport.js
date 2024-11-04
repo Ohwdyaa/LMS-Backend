@@ -15,17 +15,11 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        const user = {
-          email: jwtPayload.email,
-          fullname: jwtPayload.fullname,
-          roleId: jwtPayload.roleId,
-          permission: jwtPayload.permission,
-        };
-        const isUserExists = await Users.getUserByEmail(userEmail);
+        const isUserExists = await Users.getUserByEmail(jwtPayload.email);
         if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });
         }
-        return cb(null, user);
+        return cb(null, isUserExists);
       } catch (error) {
         return error;
       }
@@ -33,23 +27,22 @@ passport.use(
   )
 );
 
-function validatePermission(token){
-  const permission = token.permission;
-  let access = false;
-
-  for(let i = 0; i < permission.length; i++){
-    const p = permission[i];
-    if(p.create == 1 || p.read == 1 || p.edit == 1 || p.delete ==1){
-      access = true;
-      break;
-    }
-  }
-  if(!access){
-    return "Access denied: No modules available for this user";
-  }
-  return "Access granted";
-}
 module.exports = {
-  passport,
-  validatePermission
+  passport
 };
+// function validatePermission(token){
+//   const permission = token.permission;
+//   let access = false;
+
+//   for(let i = 0; i < permission.length; i++){
+//     const p = permission[i];
+//     if(p.create == 1 || p.read == 1 || p.edit == 1 || p.delete ==1){
+//       access = true;
+//       break;
+//     }
+//   }
+//   if(!access){
+//     return "Access denied: No modules available for this user";
+//   }
+//   return "Access granted";
+// }

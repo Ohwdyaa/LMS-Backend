@@ -8,10 +8,12 @@ const { err } = require("../utils/custom_error");
 
 async function login(req, res) {
   const { email, password } = req.body;
+  console.log("login:", email, password)
   try {
     const verifiedUser = await verifyUser(email, password);
+    console.log("verifiedUser:", verifiedUser)
     if (verifiedUser === undefined) {
-      return res.status(400).json({ message: "Incorrect username or password!" });
+      return res.status(400).json({ message: "Incorrect email or password!" });
     }
     const userPermissions = await Permissions.getPermissions(verifiedUser);
     if (userPermissions === undefined) {
@@ -46,10 +48,12 @@ async function login(req, res) {
 async function verifyUser(email, password) {
   try {
     const isUserExists = await Users.getUserByEmail(email);
+    console.log("isUserExists", isUserExists)
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "no user with registered email" });
     }
     const isValid = await verifyPassword(password, isUserExists.password);
+    console.log("isValid", isValid)
     return isValid ? isUserExists : undefined;
   } catch (error) {
     throw error;

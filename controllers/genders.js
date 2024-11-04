@@ -5,7 +5,11 @@ async function createGenders(req, res) {
   const genderData = req.body;
   const {email: userEmail}= req.user;
   try {
-    await Genders.createGender(genderData, userEmail);
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Genders.createGender(isUserExists.email, genderData);
     return res.status(201).json({
       message: "Gender created successfully",
     });

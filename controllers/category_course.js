@@ -4,7 +4,11 @@ async function createCategories(req, res) {
   const categoriesData = req.body;
   const {email: userEmail}= req.user;
   try {
-    await Categories.createCategories(categoriesData, userEmail);
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Categories.createCategories(isUserExists.email, categoriesData);
     return res.status(201).json({
       message: "Categories created successfully"
     });

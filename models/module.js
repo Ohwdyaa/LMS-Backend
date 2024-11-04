@@ -24,14 +24,8 @@ const modulePermission = {
             ) 
                 VALUES (?, ?, ?, ?)
             `,
-        [uuidModule, moduleData.name, creatorId, moduleData.categoryId]
+        [uuidModule, moduleData.name, userId, moduleData.categoryId]
       );
-      console.log("module created : ", {
-        uuidModule, 
-        name : moduleData.name,
-        created_by : creatorId,
-        created_by_username : creatorUsername,
-       });
       return result;
     } catch (error) {
       throw error;

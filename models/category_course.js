@@ -29,15 +29,16 @@ const Categories = {
       throw error;
     }
   },
-  updateCategories: async (categoriesId, categoriesData) => {
+  updateCategories: async (categoriesId, categoriesData, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE categories
           SET
           name = ?,
-          updated_at = NOW()
+          updated_at = NOW(),
+          updated_by = ?
           WHERE id =?`,
-        [categoriesData.name, categoriesId]
+        [categoriesData.name, userId, categoriesId]
       );
       return result;
     } catch (error) {

@@ -6,7 +6,11 @@ async function createModules(req, res) {
   const data = req.body;
   const {email: userEmail}= req.user;
   try {
-    await modulePermission.createModule(data, userEmail);
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await modulePermission.createModule(isUserExists.email, data);
     return res.status(201).json({
       message: "Module created successfully",
     });

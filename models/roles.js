@@ -3,14 +3,8 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Roles = {
-  createRole: async (data, creatorEmail) => {
+  createRole: async (data) => {
     try {
-      const creatorRole = await Users.getUserByEmail(creatorEmail);
-      if(creatorRole === undefined || creatorRole === null){
-        throw new Error ('Creator not found');
-      }
-      creatorId = creatorRole.id;
-      creatorUsername = creatorRole.username;
       const id = uuid();
 
       const result = await lmsManagement(
@@ -20,15 +14,9 @@ const Roles = {
         name,
         created_by
         ) VALUES (?,?,?)`,
-        [id, data.name, creatorId]
+        [id, data.name, userId]
       );
- console.log("role created : ", {
-  id, 
-  name : data.name,
-  created_by : creatorId,
-  created_by_username : creatorUsername,
- });
- return result.insertId;
+    return result;
     } catch (error) {
       throw error;
     }
@@ -64,10 +52,14 @@ const Roles = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await lmsManagement(`UPDATE users SET role_id = ? WHERE id = ? `, [
+      const result = await lmsManagement(`UPDATE users SET role_id = ?, updated_by = ?  WHERE id = ? `, [
         roleId,
+        updated_by,
         userId,
       ]);
+      if (result.affectedRows === 0) {
+        throw new Error('User not found');
+      }
       return result;
     } catch (error) {
       throw error;

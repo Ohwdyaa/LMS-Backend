@@ -3,16 +3,8 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Genders = {
-  createGender: async (genderData, creatorEmail) => {
+  createGender: async (genderData, userId) => {
     try {
-      const creator = await Users.getUserByEmail(creatorEmail);
-      if(creator === undefined || creator=== null){
-        throw new Error ('Creator not found');
-      }
-      creatorId = creator.id;
-      creatorUsername = creator.username;
-  
-      
       const id = uuid();
       const result = await lmsManagement(
         `
@@ -21,14 +13,8 @@ const Genders = {
         name,
         created_by
         ) VALUES (?,?,?)`,
-        [id, genderData.name, creatorId]
+        [id, genderData.name, userId]
       );
-      console.log("gender created : ", {
-        id, 
-        name : genderData.name,
-        created_by : creatorId,
-        created_by_username : creatorUsername,
-       });
       return result;
     } catch (error) {
       throw error;

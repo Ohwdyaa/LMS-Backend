@@ -1,18 +1,10 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const Users = require("../models/users");
+
 
 const Course = {
-  createCourse: async (courseData, creatorEmail) => {
+  createCourse: async (courseData, userId) => {
     try {
-      const creator = await Users.getUserByEmail(creatorEmail);
-      if(creator === undefined || creator=== null){
-        throw new Error ('Creator not found');
-      }
-      creatorId = creator.id;
-      creatorUsername = creator.username;
-  
-
       const id = uuid();
       const result = await lmsManagement(
         `INSERT INTO course(
@@ -34,23 +26,22 @@ const Course = {
           courseData.thumbnail,
           courseData.enrollment_key,
           courseData.start_date.courseData.end_date,
-          creatorId,
+          userId,
           courseData.subCategoryId,
         ]
       );
-      console.log("course created : ", {
-        id, 
-        name : courseData.title,
-        created_by : creatorId,
-        created_by_username : creatorUsername,
-       });
       return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  updateCourse: async (courseId, courseData) => {
+  updateCourse: async (courseId, courseData, updaterEmail) => {
     try {
+      const updater = await Users.getUserByEmail(updaterEmail);
+      if (updater === undefined || updater === null) {
+        throw new Error('Updater not found'); 
+      }
+      const updatedBy = updater.id; 
       const result = await lmsManagement(
         `UPDATE course SET title = ?, 
         description = ?, 
@@ -60,6 +51,7 @@ const Course = {
         end_date = ?, 
         sub_category_id = ?,
         updated_at = NOW(),
+        updated_by = ?,
         WHERE id = ?`,
         [
           courseData.title,
@@ -68,6 +60,7 @@ const Course = {
           courseData.enrollment_key,
           courseData.start_date.courseData.end_date,
           courseData.subCategoryId,
+          updatedBy,
           courseId,
         ]
       );

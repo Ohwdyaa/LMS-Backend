@@ -96,9 +96,9 @@ const roleSchema = z.object({
 
 const updateRoleSchema = z.object({
   params: z.object({
-    id: z
-      .string()
-      .uuid("Invalid UUID format")
+    // id: z
+    //   .string()
+    //   .uuid("Invalid UUID format")
   }),
   body: z.object({
     name: z
@@ -157,11 +157,15 @@ const permissionSchema = z.object({
 
 function validateMiddleware(schema) {
   return (req, res, next) => {
+    console.log("Request Params:", req.params);
+    console.log("Request Body:", req.body);
+
     try {
       schema.parse({
         params: req.params,
         body: req.body
       });
+     
       next();
     } catch (error) {
       if (error instanceof ZodError) {

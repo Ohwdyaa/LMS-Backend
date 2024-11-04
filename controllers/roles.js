@@ -6,7 +6,11 @@ async function createRoles(req, res) {
   const data = req.body;
   const {email: userEmail}= req.user;
   try {
-    await Roles.createRole(data, userEmail);
+    const isUserExists = await Users.getUserByEmail(userEmail);
+    if (isUserExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Roles.createRole(isUserExists.email, data);
     return res.status(201).json({
       message: "Role created successfully",       
     });

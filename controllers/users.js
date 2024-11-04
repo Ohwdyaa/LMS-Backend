@@ -5,21 +5,15 @@ const { err } = require("../utils/custom_error");
 
 async function createUsers(req, res) {
   const data = req.body;
-  const {email : userEmail} = req.user;
+  const { id:userId } = req.user;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
     const password = "112233"; 
     const hash = await hashPassword(password);
     const userData = {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData, isUserExists.email);
-    console.log(`User created by: ID = ${creatorId}, Username = ${creatorUsername}`);
-
+    await Users.createUser(userData, userId);
     return res.status(201).json({
       message: "User created successfully",
     });

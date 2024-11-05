@@ -42,7 +42,7 @@ async function updateUsers(req, res) {
 }
 
 async function deleteUsers(req, res) {
-  const {id: userId} = req.params;
+  const { id: userId } = req.params;
   try {
     const isUserExists = await Users.getUserById(userId);
     if (isUserExists === undefined) {
@@ -53,7 +53,7 @@ async function deleteUsers(req, res) {
     return res.status(200).json({
       message: "User deleted successfully",
     });
-  } catch (error) { 
+  } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,
       error: error.message,

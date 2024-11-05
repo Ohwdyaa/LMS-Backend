@@ -7,6 +7,7 @@ const Categories = {
     try {
       const id = uuid();
       const result = await lmsManagement(
+<<<<<<< HEAD
         `INSERT INTO categories(
           id, 
           name,
@@ -14,6 +15,11 @@ const Categories = {
         ) 
         VALUES (?,?,?)`,
         [id, categoriesData.name, userId]
+=======
+        `INSERT INTO categories(id, name) 
+        VALUES(?,?)`,
+        [id, categoriesData.name]
+>>>>>>> b52f5cf9914297a6abf9b44ac03b1d9348b39a26
       );
       return result.insertId;
     } catch (error) {

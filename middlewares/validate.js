@@ -89,7 +89,7 @@ const roleSchema = z.object({
   body: z.object({
     name: z
       .string()
-      .regex(/^[a-zA-Z0-9]+$/, "Role name should contain only alphabets")
+      .regex(/^[a-zA-Z0-9]+$/, "Role name should not contain by symbols")
       .min(1, "Role cannot be empty")
   })
 });
@@ -99,6 +99,9 @@ const updateRoleSchema = z.object({
     // id: z
     //   .string()
     //   .uuid("Invalid UUID format")
+    id: z
+      .string()
+      .uuid("Invalid UUID format")
   }),
   body: z.object({
     name: z
@@ -374,6 +377,3 @@ module.exports = {
 //   deleteRoleSchema,
 //   permissionSchema,
 // };
-
-
-

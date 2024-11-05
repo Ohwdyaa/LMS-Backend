@@ -73,32 +73,35 @@ const Course = {
   getAllCourse: async () => {
     try {
       const result = await lmsManagement(
-        `SELECT course.id, 
-        course.title, 
-        course.description, 
-        course.thumbnail, 
-        course.start_date, 
-        course.end_date, 
-        sub_category_id, sub_categories AS subCategories 
-        FROM course 
-        LEFT JOIN sub_categories ON course.sub_category_id = sub_categories.id`
+        `SELECT 
+          id, 
+          title, 
+          description, 
+          thumbnail, 
+          start_date, 
+          end_date
+        FROM courses`
       );
       return result;
     } catch (error) {throw error}
   },
-  getCourseById: async (courseId) => {
+  getCourseById: async (id) => {
     try {
-      const result = await lmsManagement(`SELECT course.id, 
-        course.title, 
-        course.description, 
-        course.thumbnail, 
-        course.start_date, 
-        course.end_date, 
-        sub_category_id, sub_categories AS subCategories 
-        FROM course 
-        LEFT JOIN sub_categories ON course.sub_category_id = sub_categories.id
-        WHERE course.id = ?`,[courseId]);
-        return result;
+      console.log("id", id)
+      const [result] = await lmsManagement(
+        `SELECT 
+          id, 
+          title, 
+          'description', 
+          thumbnail, 
+          start_date, 
+          end_date
+        FROM courses
+        WHERE id = ?`,
+        [id]
+      );
+        console.log("result", result)
+        return result; 
     } catch (error) {
       throw error;
     }

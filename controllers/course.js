@@ -17,8 +17,13 @@ async function createCourse(req, res) {
 async function updateCourse(req, res) {
   const {id: courseId} = req.params;
   const data = req.body;
- try{
-    await Course.updateCourse(id, data);
+  try {
+    const isCourseExist = await Course.getCourseById(courseId);
+    if (isCourseExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+
+    await Course.updateCourse(isCourseExist.id, data);
     return res.status(201).json({
       message: "Course updated successfully",
     });

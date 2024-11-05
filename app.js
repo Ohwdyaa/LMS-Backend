@@ -34,5 +34,5 @@ app.use(passport.initialize());
 app.use(routes);
 
 app.listen(3000, () => {
-  console.log('Server berjalan di port 3000');
+  console.log('Server running on port 3000');
 });

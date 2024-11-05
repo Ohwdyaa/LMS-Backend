@@ -16,6 +16,7 @@ async function createCourse(req, res) {
 }
 async function updateCourse(req, res) {
   const {id: courseId} = req.params;
+  const data = req.body;
  try{
     await Course.updateCourse(id, data);
     return res.status(201).json({

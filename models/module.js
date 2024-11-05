@@ -33,25 +33,5 @@ const modulePermission = {
       throw error;
     }
   }, 
-  updateModule : async (name, userId, module_id) => {
-    try {
-      console.log("User ID:", userId); 
-      const result = await lmsModule(
-       `UPDATE module
-        SET name = ?, 
-          updated_at = NOW(),
-          updated_by = ?
-        WHERE id = ?`,
-        [name, userId, module_id]
-      );
-      if (result.affectedRows === 0) {
-        throw { statusCode: 404, message: "Modul not found or no changes made" };
-      }
-      console.log(result)
-    }catch (error) {
-      console.error("Error updating Module:", error.message);
-      throw error;
-    }
-    },
 };
 module.exports = modulePermission;

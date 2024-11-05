@@ -21,27 +21,6 @@ const Religions = {
         throw error;
       }
   },
-  updateReligion : async (religion_id, name, userId) => {
-  try {
-    console.log("User ID:", userId); 
-    const result = await lmsManagement(
-      `UPDATE religions 
-      SET name = ?, 
-        updated_at = NOW(),
-        updated_by = ?
-      WHERE id = ?`,
-      [ name, userId, religion_id]
-    );
-    if (result.affectedRows === 0) {
-      throw { statusCode: 404, message: "Religion not found or no changes made" };
-    }
-    console.log(result)
-    return result.insertId;
-  }catch (error) {
-    console.error("Error updating religion:", error.message);
-    throw error;
-  }
-  },
   getAllReligion: async () => {
     try {
       const result = await lmsManagement("SELECT name FROM religions WHERE is_deleted = 0");

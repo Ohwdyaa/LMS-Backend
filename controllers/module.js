@@ -40,25 +40,8 @@ async function getAllModules(req, res) {
     });
   }
 }
-async function updateModule(req, res) {
-  const { id: userId } = req.user;
-  const {module_id} = req.params;
-  const {name} = req.body;
-  try {
-    await modulePermission.updateModule(name, userId, module_id);
-    return res.status(200).json({
-      message: "Module updated successfully",
-    });
-  } catch (error) {
-    return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
-    });
-  }
-}
-
 module.exports = {
   createModules,
   getAllModules,
-  updateModule
+
 };

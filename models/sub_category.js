@@ -2,23 +2,23 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const subCategories = {
-  createSubCategory: async (subData) => {
+  createSubCategory: async (subData, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO sub_categories (id, name, category_id) VALUES (?,?,?)`,
-        [id, subData.name, subData.categoriesId]
+        `INSERT INTO sub_categories (id, name, created_by, category_id) VALUES (?,?,?)`,
+        [id, subData.name, userId, subData.categoriesId]
       );
       return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  updateSubCategory: async (subId, subData) => {
+  updateSubCategory: async (subId, subData, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE sub_categories SET name = ?, categories_id = ?`,
-        [subData.name, subId]
+        `UPDATE sub_categories SET name = ?, updated_by, categories_id = ?`,
+        [subData.name, subId, userId]
       );
       return result;
     } catch (error) {

@@ -2,11 +2,11 @@ const modulePermission = require("../models/module");
 const { err } = require("../utils/custom_error");
 
 async function createModules(req, res) {
-  const moduleData = req.body;
+  const data = req.body;
   const {id : userId}= req.user;
   try {
 
-    await modulePermission.createModule(moduleData, userId);
+    await modulePermission.createModule(data, userId);
     return res.status(201).json({
       message: "Module created successfully",
     });

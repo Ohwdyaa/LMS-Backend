@@ -38,7 +38,7 @@ const Course = {
   updateCourse: async (courseId, courseData, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE course SET title = ?, 
+        `UPDATE courses SET title = ?, 
         description = ?, 
         thumbnail = ?, 
         enrollment_key = ?, 
@@ -64,7 +64,7 @@ const Course = {
   },
   deleteCourse: async (courseId) => {
     try {
-      const result = await lmsManagement(`DELETE FROM course WHERE id=?`, courseId);
+      const result = await lmsManagement(`DELETE FROM courses WHERE id=?`, courseId);
       return result;
     } catch (error) {
       throw error;

@@ -3,30 +3,20 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Categories = {
-  createCategories: async (userId, categoriesData) => {
+  createCategories: async (categoriesData, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
-<<<<<<< HEAD
-        `INSERT INTO categories(
-          id, 
-          name,
-          created_by
-        ) 
-        VALUES (?,?,?)`,
+        `INSERT INTO categories(id, name, created_by) 
+        VALUES(?,?,?)`,
         [id, categoriesData.name, userId]
-=======
-        `INSERT INTO categories(id, name) 
-        VALUES(?,?)`,
-        [id, categoriesData.name]
->>>>>>> b52f5cf9914297a6abf9b44ac03b1d9348b39a26
       );
       return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  updateCategories: async ( categoriesData, userId, categories_id) => {
+  updateCategories: async ( categoriesId, categoriesData, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE categories
@@ -35,7 +25,7 @@ const Categories = {
           updated_at = NOW(),
           updated_by = ?
           WHERE id =?`,
-        [categoriesData.name, userId, categories_id]
+        [categoriesData.name, userId, categoriesId]
       );
       return result;
     } catch (error) {

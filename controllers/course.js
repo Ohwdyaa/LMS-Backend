@@ -2,8 +2,9 @@ const { err } = require("../utils/custom_error");
 const Course = require("../models/course");
 async function createCourse(req, res) {
   const data = req.body;
+  const {id: userId} = req.params;
   try {
-    await Course.createCourse(data);
+    await Course.createCourse(data, userId);
     return res.status(201).json({
       message: "Course created successfully",
     });

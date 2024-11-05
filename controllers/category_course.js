@@ -2,11 +2,12 @@ const { err } = require("../utils/custom_error");
 const Categories = require("../models/category_course");
 
 
+
 async function createCategories(req, res) {
-  const categoriesData = req.body;
+  const data = req.body;
   const {id: userId}= req.user;
   try {
-    await Categories.createCategories(userId, categoriesData);
+    await Categories.createCategories(data, userId);
     return res.status(201).json({
       message: "Category created successfully"
     });
@@ -17,6 +18,7 @@ async function createCategories(req, res) {
     });
   }
 }
+
 module.exports = {
   createCategories,
 };

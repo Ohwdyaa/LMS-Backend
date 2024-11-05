@@ -20,7 +20,6 @@ const moduleCategory = {
       throw error;
     }
   },
-  
 };
 
 module.exports = moduleCategory;

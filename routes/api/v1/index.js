@@ -8,7 +8,6 @@ const religionRoutes = require("./religions");
 const genderRoutes = require("./genders");
 const modulePermission = require("./module");
 const moduleCategory = require("./category_module");
-const courseCategory = require("./category_course");
 const permissions = require("./permissions");
 const course = require("./course");
 const subCategories = require("./sub_category");
@@ -22,7 +21,6 @@ router.use(genderRoutes);
 
 router.use(modulePermission);
 router.use(moduleCategory);
-router.use(courseCategory);
 router.use(permissions);
 
 router.use(course);

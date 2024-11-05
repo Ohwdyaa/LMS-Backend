@@ -6,25 +6,23 @@ const Course = {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO course(
-        id, 
-        title, 
-        description, 
-        thumbnail, 
-        enrollment_key,   
-        start_date, 
-        end_date, 
-        sub_category_id) 
-        VALUES 
-        (?,?,?,?,?,?,?,?)`,
+        `INSERT INTO courses(
+          id, 
+          title, 
+          description, 
+          thumbnail, 
+          enrollment_key,   
+          start_date, 
+          end_date) 
+        VALUES (?,?,?,?,?,?,?)`,
         [
           id,
           courseData.title,
           courseData.description,
           courseData.thumbnail,
           courseData.enrollment_key,
-          courseData.start_date.courseData.end_date,
-          courseData.subCategoryId,
+          courseData.start_date,
+          courseData.end_date
         ]
       );
       return result.insertId;
@@ -35,22 +33,23 @@ const Course = {
   updateCourse: async (courseId, courseData) => {
     try {
       const result = await lmsManagement(
-        `UPDATE course SET title = ?, 
-        description = ?, 
-        thumbnail = ?, 
-        enrollment_key = ?, 
-        start_date = ?, 
-        end_date = ?, 
-        sub_category_id = ?,
-        updated_at = NOW(),
+        `UPDATE 
+          courses 
+        SET title = ?, 
+          description = ?, 
+          thumbnail = ?, 
+          enrollment_key = ?, 
+          start_date = ?, 
+          end_date = ?, 
+          updated_at = NOW()
         WHERE id = ?`,
         [
           courseData.title,
           courseData.description,
           courseData.thumbnail,
           courseData.enrollment_key,
-          courseData.start_date.courseData.end_date,
-          courseData.subCategoryId,
+          courseData.start_date,
+          courseData.end_date,
           courseId,
         ]
       );
@@ -59,7 +58,7 @@ const Course = {
   },
   deleteCourse: async (courseId) => {
     try {
-      const result = await lmsManagement(`DELETE FROM course WHERE id=?`, courseId);
+      const result = await lmsManagement(`DELETE FROM courses WHERE id=?`, courseId);
       return result;
     } catch (error) {
       throw error;
@@ -68,32 +67,35 @@ const Course = {
   getAllCourse: async () => {
     try {
       const result = await lmsManagement(
-        `SELECT course.id, 
-        course.title, 
-        course.description, 
-        course.thumbnail, 
-        course.start_date, 
-        course.end_date, 
-        sub_category_id, sub_categories AS subCategories 
-        FROM course 
-        LEFT JOIN sub_categories ON course.sub_category_id = sub_categories.id`
+        `SELECT 
+          id, 
+          title, 
+          description, 
+          thumbnail, 
+          start_date, 
+          end_date
+        FROM courses`
       );
       return result;
     } catch (error) {throw error}
   },
-  getCourseById: async (courseId) => {
+  getCourseById: async (id) => {
     try {
-      const result = await lmsManagement(`SELECT course.id, 
-        course.title, 
-        course.description, 
-        course.thumbnail, 
-        course.start_date, 
-        course.end_date, 
-        sub_category_id, sub_categories AS subCategories 
-        FROM course 
-        LEFT JOIN sub_categories ON course.sub_category_id = sub_categories.id
-        WHERE course.id = ?`,[courseId]);
-        return result;
+      console.log("id", id)
+      const [result] = await lmsManagement(
+        `SELECT 
+          id, 
+          title, 
+          'description', 
+          thumbnail, 
+          start_date, 
+          end_date
+        FROM courses
+        WHERE id = ?`,
+        [id]
+      );
+        console.log("result", result)
+        return result; 
     } catch (error) {
       throw error;
     }

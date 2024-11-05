@@ -17,7 +17,7 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        const isUserExists = await Users.getUserByEmail(jwtPayload.email);
+        const isUserExists = await Users.getUserById(jwtPayload.u);
         if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });
         }

@@ -1,18 +1,13 @@
 const moduleCategory = require("../models/category_module");
 const { err } = require("../utils/custom_error");
 
-
 async function createCategories(req, res) {
   const data = req.body;
-  const {email: userEmail}= req.user;
+  const { id: userId } = req.user;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await moduleCategory.createCategory(isUserExists.email, data);
+    await moduleCategory.createCategory(data, userId);
     return res.status(201).json({
-      message: "Module created successfully",
+      message: "Module Category created successfully",
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
@@ -21,5 +16,21 @@ async function createCategories(req, res) {
     });
   }
 }
+async function updateCategories(req, res) {
+  const { id: userId } = req.user;
+  const { module_category_id } = req.params;
+  const { name } = req.body;
+  try {
+    await moduleCategory.updateCategory(name, userId, module_category_id);
+    return res.status(200).json({
+      message: "Modul Category updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
+    });
+  }
+}
 
-module.exports = { createCategories };
+module.exports = { createCategories, updateCategories };

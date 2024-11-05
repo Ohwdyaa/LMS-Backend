@@ -86,7 +86,8 @@ const Users = {
           userData.date_of_birth,
           userData.genderId,
           userData.religionId,
-          userEmail,
+          userId,
+          userId,
         ]
       );
       return result;

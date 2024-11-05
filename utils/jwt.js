@@ -13,11 +13,10 @@ const publicKey = fs.readFileSync(
 
 dotenv.config();
 
-function generateJWT(user, permission) {
+async function generateJWT(user, permission) {
   console.log("jwt", user, permission)
   const payload = {
-    username: user.username,
-    email: user.email,
+    u : user.id,
     fullname: user.fullname,
     roleId: user.role_id,
     permission: permission,

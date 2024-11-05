@@ -3,33 +3,24 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Categories = {
-  createCategories: async (categoriesData, creatorEmail) => {
+  createCategories: async (userId, categoriesData) => {
     try {
-      const creator = await Users.getUserByEmail(creatorEmail);
-      if(creator === undefined || creator=== null){
-        throw new Error ('Creator not found');
-      }
-      creatorId = creator.id;
-      creatorUsername = creator.username;
-  
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO categories(id, name, created_by) 
-        VALUES(?,?,?)`,
-        [id, categoriesData.name, creatorId]
+        `INSERT INTO categories(
+          id, 
+          name,
+          created_by
+        ) 
+        VALUES (?,?,?)`,
+        [id, categoriesData.name, userId]
       );
-      console.log("category course created : ", {
-        id, 
-        name : categoriesData.name,
-        created_by : creatorId,
-        created_by_username : creatorUsername,
-       });
-      return result;
+      return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  updateCategories: async (categoriesId, categoriesData, userId) => {
+  updateCategory: async ( categoriesData, userId, categories_id) => {
     try {
       const result = await lmsManagement(
         `UPDATE categories
@@ -38,7 +29,7 @@ const Categories = {
           updated_at = NOW(),
           updated_by = ?
           WHERE id =?`,
-        [categoriesData.name, userId, categoriesId]
+        [categoriesData.name, userId, categories_id]
       );
       return result;
     } catch (error) {

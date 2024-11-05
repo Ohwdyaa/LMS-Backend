@@ -12,7 +12,7 @@ const Genders = {
         id,
         name,
         created_by
-        ) VALUES (?,?,?)`,
+        ) VALUES (?, ?, ?)`,
         [id, genderData.name, userId]
       );
       return result;
@@ -28,6 +28,27 @@ const Genders = {
       throw error;
     }
   },
+  updateGender : async (name, userId, gender_id) => {
+    try {
+      console.log("User ID:", userId); 
+      const result = await lmsManagement(
+        `UPDATE genders
+        SET name = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [ name, userId, gender_id]
+      );
+      if (result.affectedRows === 0) {
+        throw { statusCode: 404, message: "Gender not found or no changes made" };
+      }
+      console.log(result)
+      return result.insertId;
+    }catch (error) {
+      console.error("Error updating religion:", error.message);
+      throw error;
+    }
+}
 };
 
 module.exports = Genders;

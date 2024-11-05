@@ -4,13 +4,9 @@ const { err } = require("../utils/custom_error");
 
 async function createRoles(req, res) {
   const data = req.body;
-  const {email: userEmail}= req.user;
+  const { id:userId } = req.user;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await Roles.createRole(isUserExists.email, data);
+    await Roles.createRole(data, userId);
     return res.status(201).json({
       message: "Role created successfully",       
     });
@@ -26,11 +22,7 @@ async function changeUserRoles(req, res) {
   const { id: userId } = req.params;
   const { roleId: newRoleId } = req.body;
   try {
-    const isUserExists = await Users.getUserById(userId);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await Roles.changeUserRole(isUserExists.id, newRoleId);
+    await Roles.changeUserRole(userId, newRoleId);
     return res.status(200).json({
       message: "User role updated successfully",
     });

@@ -1,19 +1,10 @@
 const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const Users = require("../models/users");
 
 const modulePermission = {
-  createModule: async (moduleData, creatorEmail) => {
+  createModule: async (moduleData, userId) => {
     try {
-      const creator = await Users.getUserByEmail(creatorEmail);
-      if(creator === undefined || creator=== null){
-        throw new Error ('Creator not found');
-      }
-      creatorId = creator.id;
-      creatorUsername = creator.username;
-  
-      
-      const uuidModule = uuid();
+      const id = uuid();
       const result = await lmsModule(
         `
             INSERT INTO module (
@@ -24,7 +15,7 @@ const modulePermission = {
             ) 
                 VALUES (?, ?, ?, ?)
             `,
-        [uuidModule, moduleData.name, userId, moduleData.categoryId]
+        [id, moduleData.name, userId, moduleData.categoryId]
       );
       return result;
     } catch (error) {
@@ -41,23 +32,26 @@ const modulePermission = {
     } catch (error) {
       throw error;
     }
-  },
-  getAllModule: async () => {
+  }, 
+  updateModule : async (name, userId, module_id) => {
     try {
-      const result = await lmsModule(`
-        SELECT 
-          m.id, 
-          m.uuid, 
-          m.name, 
-          m.category_module_id, 
-          cm.name as categoryModule
-        FROM module m
-        LEFT JOIN category_module cm
-        ON m.category_module_id = cm.id`);
-      return result;    
-    } catch (error) {
+      console.log("User ID:", userId); 
+      const result = await lmsModule(
+       `UPDATE module
+        SET name = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [name, userId, module_id]
+      );
+      if (result.affectedRows === 0) {
+        throw { statusCode: 404, message: "Modul not found or no changes made" };
+      }
+      console.log(result)
+    }catch (error) {
+      console.error("Error updating Module:", error.message);
       throw error;
     }
-  }, 
+    },
 };
 module.exports = modulePermission;

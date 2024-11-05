@@ -3,10 +3,9 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Roles = {
-  createRole: async (data) => {
+  createRole: async (data, userId) => {
     try {
       const id = uuid();
-
       const result = await lmsManagement(
         `
         INSERT INTO roles (
@@ -52,9 +51,9 @@ const Roles = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await lmsManagement(`UPDATE users SET role_id = ?, updated_by = ?  WHERE id = ? `, [
+      const result = await lmsManagement(`UPDATE users SET role_id = ?, updated_at = NOW() , updated_by = ? WHERE id = ? `, [
         roleId,
-        updated_by,
+        userId,
         userId,
       ]);
       if (result.affectedRows === 0) {

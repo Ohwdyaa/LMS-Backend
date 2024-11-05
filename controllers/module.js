@@ -3,14 +3,11 @@ const { err } = require("../utils/custom_error");
 
 
 async function createModules(req, res) {
-  const data = req.body;
-  const {email: userEmail}= req.user;
+  const moduleData = req.body;
+  const {id : userId}= req.user;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await modulePermission.createModule(isUserExists.email, data);
+
+    await modulePermission.createModule(moduleData, userId);
     return res.status(201).json({
       message: "Module created successfully",
     });
@@ -43,8 +40,25 @@ async function getAllModules(req, res) {
     });
   }
 }
+async function updateModule(req, res) {
+  const { id: userId } = req.user;
+  const {module_id} = req.params;
+  const {name} = req.body;
+  try {
+    await modulePermission.updateModule(name, userId, module_id);
+    return res.status(200).json({
+      message: "Module updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   createModules,
   getAllModules,
+  updateModule
 };

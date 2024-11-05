@@ -20,7 +20,7 @@ const Categories = {
       throw error;
     }
   },
-  updateCategory: async ( categoriesData, userId, categories_id) => {
+  updateCategories: async ( categoriesData, userId, categories_id) => {
     try {
       const result = await lmsManagement(
         `UPDATE categories

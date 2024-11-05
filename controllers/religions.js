@@ -33,5 +33,4 @@ async function getAllReligions(req, res) {
 module.exports = {
   createReligion,
   getAllReligions,
-  updateReligion,
 };

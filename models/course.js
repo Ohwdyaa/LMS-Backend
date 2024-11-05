@@ -35,13 +35,8 @@ const Course = {
       throw error;
     }
   },
-  updateCourse: async (courseId, courseData, updaterEmail) => {
+  updateCourse: async (courseId, courseData, userId) => {
     try {
-      const updater = await Users.getUserByEmail(updaterEmail);
-      if (updater === undefined || updater === null) {
-        throw new Error('Updater not found'); 
-      }
-      const updatedBy = updater.id; 
       const result = await lmsManagement(
         `UPDATE course SET title = ?, 
         description = ?, 
@@ -60,7 +55,7 @@ const Course = {
           courseData.enrollment_key,
           courseData.start_date.courseData.end_date,
           courseData.subCategoryId,
-          updatedBy,
+          userId,
           courseId,
         ]
       );

@@ -34,5 +34,4 @@ async function getAllGenders(req, res) {
 module.exports = {
   createGenders,
   getAllGenders,
-  updateGender
 };

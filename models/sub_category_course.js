@@ -17,7 +17,7 @@ const subCategories = {
   updateSubCategories: async (subId, subData, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE sub_categories SET name = ?, updatedffff_by = ?,  categories_id = ? WHERE id = ?`,
+        `UPDATE sub_categories SET name = ?, updated_by = ?,  categories_id = ? WHERE id = ?`,
         [subData.name, userId, subData.categories_id, subId]
       );
       return result;

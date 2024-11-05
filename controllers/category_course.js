@@ -17,24 +17,6 @@ async function createCategories(req, res) {
     });
   }
 }
-async function updateCategories(req, res){
-  const { id: userId } = req.user;
-  const { categories_id } = req.params;
-  const categoriesData = req.body;
-  try {
-    await Categories.updateCategory(categoriesData, userId, categories_id);
-    return res.status(200).json({
-      message: "Modul Category updated successfully",
-    });
-  } catch (error) {
-    return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
-    });
-   }
-  }
-
 module.exports = {
   createCategories,
-  updateCategories
 };

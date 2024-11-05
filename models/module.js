@@ -33,5 +33,23 @@ const modulePermission = {
       throw error;
     }
   }, 
+  getAllModule: async () => {
+    try {
+      const result = await lmsModule(`
+        SELECT 
+          m.id, 
+          m.uuid, 
+          m.name, 
+          m.category_module_id, 
+          cm.name as categoryModule
+        FROM module m
+        LEFT JOIN category_module cm
+        ON m.category_module_id = cm.id`);
+      return result;    
+    } catch (error) {
+      throw error;
+    }
+  }, 
+
 };
 module.exports = modulePermission;

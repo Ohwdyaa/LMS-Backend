@@ -1,9 +1,9 @@
 const { err } = require("../utils/custom_error");
-const Categories = require("../models/category_course");
-async function createCategories(req, res) {
+const subCategory = require("../models/sub_category");
+async function createSubCategory(req, res) {
   const data = req.body;
   try {
-    await Categories.createCategories(data);
+    await subCategory.createSubCategory(data);
     return res.status(201).json({
       message: "Categories created successfully"
     });
@@ -16,5 +16,5 @@ async function createCategories(req, res) {
 }
 
 module.exports = {
-  createCategories,
+  createSubCategory,
 };

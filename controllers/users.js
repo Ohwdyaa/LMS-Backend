@@ -4,19 +4,14 @@ const { err } = require("../utils/custom_error");
 
 async function createUsers(req, res) {
   const data = req.body;
-  const { email: userEmail } = req.user;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
     const password = "112233";
     const hash = await hashPassword(password);
     const userData = {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData, isUserExists.id);
+    await Users.createUser(userData);
 
     return res.status(201).json({
       message: "User created successfully",
@@ -30,15 +25,15 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {
-  const { email: userEmail } = req.user; //dari jwt
+  const { id: userId } = req.user; //dari jwt
   const userData = req.body;
   try {
-    const isUserExists = await Users.getUserByEmail(userEmail);
+    const isUserExists = await Users.getUserById(userId);
     if (isUserExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.updateUser(isUserExists.email, userData);
+    await Users.updateUser(isUserExists.id, userData);
     return res.status(200).json({
       message: "User updated successfully",
     });

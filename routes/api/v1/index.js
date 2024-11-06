@@ -12,6 +12,9 @@ const permissions = require("./permissions");
 const course = require("./course");
 const subCategories = require("./sub_category");
 const categories = require("./category_course");
+const modulesCourse = require("./modules_course");
+const contentType = require("./content_types");
+const subModuleCourse = require("./sub_modules_course");
 
 router.use(userRoutes);
 router.use(forgetPasswordRoutes);
@@ -24,7 +27,10 @@ router.use(moduleCategory);
 router.use(permissions);
 
 router.use(course);
+router.use(modulesCourse);
 router.use(categories);
 router.use(subCategories);
+router.use(subModuleCourse);
+router.use(contentType);
 
 module.exports = router;

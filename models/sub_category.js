@@ -1,7 +1,7 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-const subCategories = {
+const subCategory = {
   createSubCategory: async (subData, userId) => {
     try {
       const id = uuid();

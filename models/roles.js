@@ -33,7 +33,6 @@ const Roles = {
       const result = await lmsManagement(
         "SELECT id, name FROM roles WHERE is_deleted = 0"
       );
-
       return result;
     } catch (error) {
       throw error;

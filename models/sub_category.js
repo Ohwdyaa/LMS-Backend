@@ -1,7 +1,7 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-const subCategories = {
+const subCategory = {
   createSubCategory: async (subData) => {
     try {
       const id = uuid();
@@ -66,4 +66,4 @@ const subCategories = {
     }
   },
 };
-module.exports = subCategories;
+module.exports = subCategory;

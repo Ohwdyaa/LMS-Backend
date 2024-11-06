@@ -32,7 +32,7 @@ const Categories = {
       throw error;
     }
   },
-  deleteCategory: async (categoriesId) => {
+  deleteCategories: async (categoriesId) => {
     try {
       const result = await lmsManagement(`DELETE FROM categories WHERE id = ?`, categoriesId);
       return result;

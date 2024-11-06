@@ -24,10 +24,9 @@ const Course = {
           courseData.title,
           courseData.description,
           courseData.thumbnail,
-          courseData.enrollment_key,
-          courseData.start_date.courseData.end_date,
-          userId,
-          courseData.subCategoryId,
+          courseData.enrollmentKey,
+          courseData.startDate,
+          courseData.endDate
         ]
       );
       return result.insertId;
@@ -52,10 +51,9 @@ const Course = {
           courseData.title,
           courseData.description,
           courseData.thumbnail,
-          courseData.enrollment_key,
-          courseData.start_date.courseData.end_date,
-          courseData.subCategoryId,
-          userId,
+          courseData.enrollmentKey,
+          courseData.startDate,
+          courseData.endDate,
           courseId,
         ]
       );

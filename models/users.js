@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
-  createUser: async (userData, userId) => {
+  createUser: async (userData, id) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -30,13 +30,13 @@ const Users = {
           userData.username,
           userData.email,
           userData.password,
-          userData.profile_image,
+          userData.profileImage,
           userData.fullname,
-          userData.phone_number,
+          userData.phoneNumber,
           userData.address,
           userData.institute,
-          userData.date_of_birth,
-          userId,
+          userData.dateOfBirth,
+          id,
           userData.roleId,
           userData.genderId,
           userData.religionId,
@@ -53,9 +53,6 @@ const Users = {
         `UPDATE users SET password = ? where id = ?`,
         [hashedPassword, userId]
       );
-      if (result.affectedRows === 0) {
-        throw new Error("No user found with the given ID.");
-      }
       return result;
     } catch (error) {
      error;
@@ -64,7 +61,8 @@ const Users = {
   updateUser: async (userId, userData) => {
     try {
       const result = await lmsManagement(
-        `UPDATE users
+        ` UPDATE 
+            users
           SET 
           username = ?,
           profile_image = ?,
@@ -79,11 +77,11 @@ const Users = {
           WHERE id = ?`,
         [
           userData.username,
-          userData.profile_image,
-          userData.phone_number,
+          userData.profileImage,
+          userData.phoneNumber,
           userData.address,
           userData.institute,
-          userData.date_of_birth,
+          userData.dateOfBirth,
           userData.genderId,
           userData.religionId,
           userId,
@@ -97,7 +95,10 @@ const Users = {
   },
   deleteUser: async (userId) => {
     try {
-      const result = await lmsManagement(`DELETE FROM users WHERE id = ?`, userId);
+      const result = await lmsManagement(
+        `DELETE FROM users WHERE id = ?`,
+        userId
+      );
       return result;
     } catch (error) {
       throw error;
@@ -130,14 +131,14 @@ const Users = {
     try {
       const [result] = await lmsManagement(
         `SELECT 
-        users.id,
-        users.username, 
-          users.email, 
-          users.fullname, 
-          users.role_id, roles.name as role
-          FROM users
-          LEFT JOIN roles ON users.role_id = roles.id
-          WHERE users.id = ?`,
+          u.id,
+          u.username, 
+          u.email, 
+          u.fullname, 
+          u.role_id, r.name as role
+          FROM users u
+        LEFT JOIN roles r ON u.role_id = r.id
+        WHERE u.id = ?`,
         [id]
       );
       return result;
@@ -148,14 +149,15 @@ const Users = {
   getUserByEmail: async (email) => {
     try {
       const [result] = await lmsManagement(
-        `SELECT users.id, 
-        users.username, 
-        users.email, 
-        users.password, 
-        users.fullname, 
-        users.role_id, roles.name as role 
-        FROM users 
-        LEFT JOIN roles ON users.role_id = roles.id WHERE email = ?`,
+        `SELECT 
+          u.id, 
+          u.username, 
+          u.email, 
+          u.password, 
+          u.fullname, 
+          u.role_id, r.name as role 
+        FROM users u
+        LEFT JOIN roles r ON u.role_id = r.id WHERE email = ?`,
         [email]
       );
       return result;

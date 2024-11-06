@@ -66,4 +66,4 @@ const subCategories = {
     }
   },
 };
-module.exports = subCategories;
+module.exports = subCategory;

@@ -5,7 +5,7 @@ async function createModules(req, res) {
   const data = req.body;
   try {
 
-    await modulePermission.createModule(data, userId);
+    await modulePermission.createModule(data);
     return res.status(201).json({
       message: "Module created successfully",
     });

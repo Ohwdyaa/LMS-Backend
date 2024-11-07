@@ -10,7 +10,6 @@ const modulesCourse = {
           id, 
           title, 
           description, 
-          created_at = NOW(),
           created_by
           course_id) 
         VALUES (?,?,?,?)`,

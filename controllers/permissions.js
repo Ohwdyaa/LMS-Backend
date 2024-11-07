@@ -20,8 +20,7 @@ async function updatePermissions(req, res) {
         listModules[i];
       const isExists = await Permissions.getPermissionByRoleAndModule(
         roleId,
-        moduleId, 
-        userId
+        moduleId,
       );
       if (isExists !== undefined) {
         // update query for existing role and module
@@ -31,7 +30,7 @@ async function updatePermissions(req, res) {
           canEdit,
           canDelete,
         };
-        await Permissions.updatePermission(roleId, moduleId, updateData);
+        await Permissions.updatePermission(roleId, moduleId, updateData, userId);
       }
       if (isExists === undefined) {
         // insert new permission role and module if not exists
@@ -41,6 +40,7 @@ async function updatePermissions(req, res) {
           canRead,
           canEdit,
           canDelete,
+          UserId,
           roleId,
           moduleId,
         ]);
@@ -50,7 +50,7 @@ async function updatePermissions(req, res) {
       // in here we do inserting bulk query
       await Permissions.createBulkPermission(
         `INSERT INTO role_permissions ( 
-          id, can_create, can_read, can_edit, can_delete, role_id,  module_id
+          id, can_create, can_read, can_edit, can_delete, created_by, role_id,  module_id
         ) VALUES ?`,
         [newValue]
       );

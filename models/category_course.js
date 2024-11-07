@@ -22,7 +22,6 @@ const Categories = {
         `UPDATE categories
           SET
           name = ?,
-          updated_at = NOW(),
           updated_by = ?
           WHERE id =?`,
         [categoriesData.name, userId, categoriesId]

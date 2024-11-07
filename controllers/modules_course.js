@@ -19,7 +19,6 @@ async function updateModulesCourse(req, res) {
   const data = req.body;
   try {
     const isModuleExist = await modulesCourse.getModulesById(moduleId);
-    console.log(isModuleExist)
     if (isModuleExist === undefined) {
       return res.status(400).json({ message: "Course not found" });
     }

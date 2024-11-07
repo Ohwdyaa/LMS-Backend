@@ -94,8 +94,7 @@ const Permissions = {
         can_create = ?,
         can_read = ?, 
         can_edit = ?, 
-        can_delete = ?, 
-        updated_at = NOW(),
+        can_delete = ?,
         updated_by = ?
         WHERE role_id = ? AND module_id = ?`,
         [

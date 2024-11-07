@@ -30,7 +30,7 @@ const Categories = {
       throw error;
     }
   },
-  deleteCategories: async (categoriesId) => {
+  deleteCategory: async (categoriesId) => { // ubah variabel name
     try {
       const result = await lmsManagement(`DELETE FROM categories WHERE id = ?`, categoriesId);
       return result;

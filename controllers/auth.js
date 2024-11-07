@@ -11,7 +11,7 @@ async function login(req, res) {
   try {
     const verifiedUser = await verifyUser(email, password);
     if (verifiedUser === undefined) {
-      return res.status(400).json({ message: "Incorrect username or password!" });
+      return res.status(400).json({ message: "Incorrect email or password!" });
     }
     const userPermissions = await Permissions.getPermissions(verifiedUser);
     if (userPermissions === undefined) {

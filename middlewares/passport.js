@@ -5,6 +5,7 @@ const publicKey = fs.readFileSync(
   "D:/Data Magang Infinite/lms_superadmin_be/keys/public.pem",
   "utf8"
 );
+const Users = require("../models/users");
 
 passport.use(
   new Strategy(
@@ -12,10 +13,10 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: publicKey,
     },
-    async function (jwtPayload, cb) {
+    async function (jwtPayload, cb) { //
       try {
         const user = {
-          email: jwtPayload.email,
+          u: jwtPayload.id,
           fullname: jwtPayload.fullname,
           roleId: jwtPayload.roleId,
           permission: jwtPayload.permission,
@@ -32,7 +33,7 @@ passport.use(
   )
 );
 
-function validatePermission(token){
+async function validatePermission(token){
   const permission = token.permission;
   let access = false;
 

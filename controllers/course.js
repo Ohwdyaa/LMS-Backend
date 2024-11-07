@@ -2,7 +2,7 @@ const { err } = require("../utils/custom_error");
 const Course = require("../models/course");
 async function createCourse(req, res) {
   const data = req.body;
-  const {id: userId} = req.params;
+  const {id: userId} = req.user;
   try {
     await Course.createCourse(data, userId);
     return res.status(201).json({
@@ -17,6 +17,7 @@ async function createCourse(req, res) {
 }
 async function updateCourse(req, res) {
   const {id: courseId} = req.params;
+  const {id: userId} = req.user;
   const data = req.body;
   try {
     const isCourseExist = await Course.getCourseById(courseId);
@@ -24,7 +25,7 @@ async function updateCourse(req, res) {
       return res.status(400).json({ message: "Course not found" });
     }
 
-    await Course.updateCourse(isCourseExist.id, data);
+    await Course.updateCourse(isCourseExist.id, data, userId);
     return res.status(201).json({
       message: "Course updated successfully",
     });

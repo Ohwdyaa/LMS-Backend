@@ -94,8 +94,7 @@ const Permissions = {
         can_create = ?,
         can_read = ?, 
         can_edit = ?, 
-        can_delete = ?, 
-        updated_at = NOW(),
+        can_delete = ?,
         updated_by = ?
         WHERE role_id = ? AND module_id = ?`,
         [
@@ -114,12 +113,8 @@ const Permissions = {
     }
   },
 
-  createBulkPermission: async (query, array, userId) => {
-    const updatedArray = array.map(permission => ({
-      ...permission, 
-      created_by : userId
-    }));
-    const formatQuery = await formatBulkQuery1(query, updatedArray);
+  createBulkPermission: async (query, array) => {
+    const formatQuery = await formatBulkQuery1(query, array);
     await lmsManagement(formatQuery);
   },
 };

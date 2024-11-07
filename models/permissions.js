@@ -114,8 +114,12 @@ const Permissions = {
     }
   },
 
-  createBulkPermission: async (query, array) => {
-    const formatQuery = await formatBulkQuery1(query, array);
+  createBulkPermission: async (query, array, userId) => {
+    const updatedArray = array.map(permission => ({
+      ...permission, 
+      created_by : userId
+    }));
+    const formatQuery = await formatBulkQuery1(query, updatedArray);
     await lmsManagement(formatQuery);
   },
 };

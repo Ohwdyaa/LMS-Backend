@@ -10,7 +10,6 @@ const subModules = {
           id, 
           title, 
           description, 
-          created_at = NOW(),
           created_by,
           module_course_id,
           content_type_id) 

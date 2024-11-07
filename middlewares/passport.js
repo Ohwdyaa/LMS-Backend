@@ -7,7 +7,7 @@ const publicKey = fs.readFileSync(
 
   "utf8"
 );
-const Users = require("../models/users")
+const Users = require("../models/users");
 
 passport.use(
   new Strategy(
@@ -15,7 +15,7 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: publicKey,
     },
-    async function (jwtPayload, cb) {
+    async function (jwtPayload, cb) { //
       try {
         const isUserExists = await Users.getUserById(jwtPayload.u);
         if (isUserExists === undefined) {
@@ -29,7 +29,7 @@ passport.use(
   )
 );
 
-function validatePermission(token){
+async function validatePermission(token){
   const permission = token.permission;
   let access = false;
 

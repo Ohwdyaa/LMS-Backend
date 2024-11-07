@@ -14,7 +14,6 @@ const publicKey = fs.readFileSync(
 dotenv.config();
 
 async function generateJWT(user, permission) {
-  console.log("jwt", user, permission)
   const payload = {
     u : user.id,
     fullname: user.fullname,
@@ -30,11 +29,11 @@ async function generateJWT(user, permission) {
     algorithm: "RS256",
   };
 
-  const token = jwt.sign(payload, privateKey, signOptions);
+  const token = await jwt.sign(payload, privateKey, signOptions);
   return token;
 }
 
-function verifyJWT(token) {
+async function verifyJWT(token) {
   var verifyOptions = {
     issuer: config.issuer,
     audience: config.audience,
@@ -48,7 +47,7 @@ function verifyJWT(token) {
   }
 }
 
-function generateResetToken(user) {
+async function generateResetToken(user) {
   const payload = {
     user: user.email,
   };

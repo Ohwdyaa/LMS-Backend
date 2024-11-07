@@ -92,7 +92,8 @@ const Course = {
           'description', 
           thumbnail, 
           start_date, 
-          end_date
+          end_date,
+          created_at
         FROM courses
         WHERE id = ?`,
         [id]

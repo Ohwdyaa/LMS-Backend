@@ -1,7 +1,7 @@
 const moduleCategory = require("../models/category_module");
 const { err } = require("../utils/custom_error");
 
-async function createCategories(req, res) {
+async function createCategoryModule(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
   try {
@@ -16,4 +16,5 @@ async function createCategories(req, res) {
     });
   }
 }
-module.exports = { createCategories};
+
+module.exports = { createCategoryModule };

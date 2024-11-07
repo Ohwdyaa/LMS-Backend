@@ -2,8 +2,9 @@ const { err } = require("../utils/custom_error");
 const subModules = require("../models/sub_modules_course");
 async function createSubModules(req, res) {
   const data = req.body;
+  const {id : userId} = req.user;
   try {
-    await subModules.createSubModules(data);
+    await subModules.createSubModules(data, userId);
     return res.status(201).json({
       message: "Module course created successfully",
     });
@@ -17,13 +18,14 @@ async function createSubModules(req, res) {
 async function updateSubModules(req, res) {
   const { id: subModuleId } = req.params;
   const data = req.body;
+  const { id: userId } = req.user;
   try {
     const isSubModuleExist = await subModules.getByIdSubModules(subModuleId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "Sub modules not found" });
     }
 
-    await subModules.updateSubModules(isSubModuleExist.id, data);
+    await subModules.updateSubModules(isSubModuleExist.id, data, userId);
     return res.status(201).json({
       message: "Sub modules updated successfully",
     });

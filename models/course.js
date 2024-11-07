@@ -45,7 +45,7 @@ const Course = {
         end_date = ?, 
         sub_category_id = ?,
         updated_at = NOW(),
-        updated_by = ?,
+        updated_by = ?
         WHERE id = ?`,
         [
           courseData.title,
@@ -54,6 +54,7 @@ const Course = {
           courseData.enrollmentKey,
           courseData.startDate,
           courseData.endDate,
+          userId,
           courseId,
         ]
       );

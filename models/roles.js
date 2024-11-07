@@ -1,19 +1,21 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const Users = require("../models/users");
 
 const Roles = {
-  createRole: async (data) => {
+  createRole: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
         `
         INSERT INTO roles (
         id,
-        name
-        ) VALUES (?,?)`,
-        [id, data.name]
+        name,
+        created_by
+        ) VALUES (?,?,?)`,
+        [id, data.name, userId]
       );
-      return result;
+    return result;
     } catch (error) {
       throw error;
     }
@@ -48,10 +50,14 @@ const Roles = {
   },
   changeUserRole: async (userId, roleId) => {
     try {
-      const result = await lmsManagement(`UPDATE users SET role_id = ? WHERE id = ? `, [
+      const result = await lmsManagement(`UPDATE users SET role_id = ?, updated_at = NOW() , updated_by = ? WHERE id = ? `, [
         roleId,
         userId,
+        userId,
       ]);
+      if (result.affectedRows === 0) {
+        throw new Error('User not found');
+      }
       return result;
     } catch (error) {
       throw error;

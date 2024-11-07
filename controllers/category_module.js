@@ -3,10 +3,11 @@ const { err } = require("../utils/custom_error");
 
 async function createCategories(req, res) {
   const data = req.body;
+  const { id: userId } = req.user;
   try {
-    await moduleCategory.createCategory(data);
+    await moduleCategory.createCategory(data, userId);
     return res.status(201).json({
-      message: "Module created successfully",
+      message: "Module Category created successfully",
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
@@ -15,5 +16,4 @@ async function createCategories(req, res) {
     });
   }
 }
-
-module.exports = { createCategories };
+module.exports = { createCategories};

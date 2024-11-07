@@ -1,17 +1,19 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const Users = require("../models/users");
 
 const Genders = {
-  createGender: async (genderData) => {
+  createGender: async (genderData, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
         `
         INSERT INTO genders (
         id,
-        name
-        ) VALUES (?,?)`,
-        [id, genderData.name]
+        name,
+        created_by
+        ) VALUES (?, ?, ?)`,
+        [id, genderData.name, userId]
       );
       return result;
     } catch (error) {

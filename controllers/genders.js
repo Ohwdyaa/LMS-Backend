@@ -3,8 +3,9 @@ const { err } = require("../utils/custom_error");
 
 async function createGenders(req, res) {
   const genderData = req.body;
+  const {id : userId}= req.user;
   try {
-    await Genders.createGender(genderData);
+    await Genders.createGender(genderData, userId);
     return res.status(201).json({
       message: "Gender created successfully",
     });
@@ -19,7 +20,9 @@ async function createGenders(req, res) {
 async function getAllGenders(req, res) {
   try {
     const gender = await Genders.getAllGenders();
-    return gender;
+    return res.status(200).json({
+      data: gender,
+    });
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
       message: err.errorSelect.message,

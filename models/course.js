@@ -1,20 +1,24 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
+
 const Course = {
-  createCourse: async (courseData) => {
+  createCourse: async (courseData, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO courses(
-          id, 
-          title, 
-          description, 
-          thumbnail, 
-          enrollment_key,   
-          start_date, 
-          end_date) 
-        VALUES (?,?,?,?,?,?,?)`,
+        `INSERT INTO course(
+        id, 
+        title, 
+        description, 
+        thumbnail, 
+        enrollment_key,   
+        start_date, 
+        end_date, 
+        created_by,
+        sub_category_id) 
+        VALUES 
+        (?,?,?,?,?,?,?,?,?)`,
         [
           id,
           courseData.title,
@@ -30,18 +34,18 @@ const Course = {
       throw error;
     }
   },
-  updateCourse: async (courseId, courseData) => {
+  updateCourse: async (courseId, courseData, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE 
-          courses 
-        SET title = ?, 
-          description = ?, 
-          thumbnail = ?, 
-          enrollment_key = ?, 
-          start_date = ?, 
-          end_date = ?, 
-          updated_at = NOW()
+        `UPDATE courses SET title = ?, 
+        description = ?, 
+        thumbnail = ?, 
+        enrollment_key = ?, 
+        start_date = ?, 
+        end_date = ?, 
+        sub_category_id = ?,
+        updated_at = NOW(),
+        updated_by = ?,
         WHERE id = ?`,
         [
           courseData.title,

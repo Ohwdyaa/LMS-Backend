@@ -1,22 +1,25 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
+const Users = require("../models/users");
 
 const Religions = {
-  createReligion: async (data) => {
+  createReligion: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
         `
         INSERT INTO religions (
         id,
-        name
-        ) VALUES (?,?)`,
-        [id, data.name]
+        name,
+        created_by
+        ) VALUES (?,?,?)`,
+        [id, data.name, userId]
       );
-      return result;
-    } catch (error) {
-      throw error;
-    }
+      return result.insertId;
+      }catch (error) {
+        console.error("Error creating religion:", error.message);
+        throw error;
+      }
   },
   getAllReligion: async () => {
     try {

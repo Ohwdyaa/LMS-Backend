@@ -2,9 +2,12 @@ const passport = require("passport");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/public.pem",
+  
+  "C:/Users/lenovo/Downloads/lms-backend/keys/public_key.pem",
+
   "utf8"
 );
+const Users = require("../models/users")
 
 passport.use(
   new Strategy(
@@ -14,17 +17,11 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        const user = {
-          email: jwtPayload.email,
-          fullname: jwtPayload.fullname,
-          roleId: jwtPayload.roleId,
-          permission: jwtPayload.permission,
-        };
-
-        if (user === undefined) {
+        const isUserExists = await Users.getUserById(jwtPayload.u);
+        if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });
         }
-        return cb(null, user);
+        return cb(null, isUserExists);
       } catch (error) {
         return error;
       }
@@ -48,6 +45,7 @@ function validatePermission(token){
   }
   return "Access granted";
 }
+
 module.exports = {
   passport,
   validatePermission

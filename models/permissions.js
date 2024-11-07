@@ -87,7 +87,7 @@ const Permissions = {
       throw error;
     }
   },
-  updatePermission: async (roleId, moduleId, update) => {
+  updatePermission: async (roleId, moduleId, update, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE role_permissions SET 
@@ -95,13 +95,15 @@ const Permissions = {
         can_read = ?, 
         can_edit = ?, 
         can_delete = ?, 
-        updated_at = NOW()
+        updated_at = NOW(),
+        updated_by = ?
         WHERE role_id = ? AND module_id = ?`,
         [
           update.canCreate,
           update.canRead,
           update.canEdit,
           update.canDelete,
+          userId,
           roleId,
           moduleId,
         ]

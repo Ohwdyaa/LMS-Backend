@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  createCategories,
+  createCategories, 
 } = require("../../../controllers/category_module");
 const router = express.Router();
 

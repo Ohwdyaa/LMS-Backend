@@ -10,8 +10,9 @@ async function login(req, res) {
   const { email, password } = req.body;
   try {
     const verifiedUser = await verifyUser(email, password);
+    console.log(verifiedUser)
     if (verifiedUser === undefined) {
-      return res.status(400).json({ message: "Incorrect username or password!" });
+      return res.status(400).json({ message: "Incorrect email or password!" });
     }
     const userPermissions = await Permissions.getPermissions(verifiedUser);
     if (userPermissions === undefined) {

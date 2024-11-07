@@ -3,20 +3,20 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const config = require("../config/config");
 const privateKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/private.pem",
+  "C:/Users/lenovo/Downloads/lms-backend/keys/private_key.pem",
   "utf8"
 );
 const publicKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/public.pem",
+  "C:/Users/lenovo/Downloads/lms-backend/keys/public_key.pem",
   "utf8"
 );
 
 dotenv.config();
 
-function generateJWT(user, permission) {
+async function generateJWT(user, permission) {
+  console.log("jwt", user, permission)
   const payload = {
-    username: user.username,
-    email: user.email,
+    u : user.id,
     fullname: user.fullname,
     roleId: user.role_id,
     permission: permission,

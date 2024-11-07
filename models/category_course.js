@@ -3,7 +3,7 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Categories = {
-  createCategories: async (categoriesData, userId) => {
+  createCategory: async (categoriesData, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -16,7 +16,7 @@ const Categories = {
       throw error;
     }
   },
-  updateCategories: async ( categoriesId, categoriesData, userId) => {
+  updateCategory: async ( categoriesId, categoriesData, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE categories
@@ -32,13 +32,28 @@ const Categories = {
       throw error;
     }
   },
-  deleteCategory: async (categoriesId) => { // ubah variabel name
+  deleteCategory: async (categoryId) => { 
     try {
-      const result = await lmsManagement(`DELETE FROM categories WHERE id = ?`, categoriesId);
+      const result = await lmsManagement(`DELETE FROM categories WHERE id = ?`, categoryId);
       return result;
     } catch (error) {
       throw error;
     }
-  }
+  },
+  getByIdCategory: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          id, 
+          name 
+        FROM categories 
+        WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 module.exports = Categories;

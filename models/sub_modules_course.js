@@ -32,7 +32,7 @@ const subModules = {
           content_type_id = ?, 
           updated_at = NOW()
         WHERE id = ?`,
-        [data.title, data.description, , data.moduleCourseId, data.contentTypeId, id]
+        [data.title, data.description, data.moduleCourseId, data.contentTypeId, id]
       );
       console.log(result)
       return result;

@@ -7,6 +7,7 @@ const { uuid } = require("../utils/tools");
 async function updatePermissions(req, res) {
   const { id: roleId } = req.params;
   const { listModules } = req.body;
+  const { id: userId } = req.user;
   let newValue = [];
   try {
     const isRoleExists = await Roles.getRoleById(roleId);
@@ -19,7 +20,8 @@ async function updatePermissions(req, res) {
         listModules[i];
       const isExists = await Permissions.getPermissionByRoleAndModule(
         roleId,
-        moduleId
+        moduleId, 
+        userId
       );
       if (isExists !== undefined) {
         // update query for existing role and module

@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const subModules = {
-  createSubModules: async (data) => {
+  createSubModules: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -10,17 +10,19 @@ const subModules = {
           id, 
           title, 
           description, 
+          created_at = NOW(),
+          created_by,
           module_course_id,
           content_type_id) 
         VALUES (?,?,?,?,?)`,
-        [id, data.title, data.description, data.moduleCourseId, data.contentTypeId]
+        [id, data.title, data.description, userId, data.moduleCourseId, data.contentTypeId]
       );
       return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  updateSubModules: async (id, data) => {
+  updateSubModules: async (id, data, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -30,9 +32,10 @@ const subModules = {
           description = ?, 
           module_course_id = ?,
           content_type_id = ?, 
-          updated_at = NOW()
+          updated_at = NOW(),
+          updated_by = ?
         WHERE id = ?`,
-        [data.title, data.description, data.moduleCourseId, data.contentTypeId, id]
+        [data.title, data.description, , data.moduleCourseId, data.contentTypeId, userId, id]
       );
       console.log(result)
       return result;

@@ -81,7 +81,6 @@ const Course = {
   },
   getCourseById: async (id) => {
     try {
-      console.log("id", id)
       const [result] = await lmsManagement(
         `SELECT 
           id, 
@@ -94,7 +93,6 @@ const Course = {
         WHERE id = ?`,
         [id]
       );
-        console.log("result", result)
         return result; 
     } catch (error) {
       throw error;

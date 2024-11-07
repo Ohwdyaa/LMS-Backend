@@ -1,9 +1,8 @@
 const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const Users = require("../models/users");
 
 const moduleCategory = {
-  createCategory: async (data) => {
+  createCategory: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsModule(
@@ -12,7 +11,7 @@ const moduleCategory = {
           name,
         ) 
         VALUES (?,?,?)`,
-        [id, data.name]
+        [id, data.name, userId]
       );
       return result.insertId;
     } catch (error) {

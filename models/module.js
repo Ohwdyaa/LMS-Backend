@@ -2,7 +2,7 @@ const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const modulePermission = {
-  createModule: async (moduleData) => {
+  createModule: async (data) => {
     try {
       const uuidModule = uuid();
       const result = await lmsModule(
@@ -12,9 +12,9 @@ const modulePermission = {
                 name,
                 category_module_id
             ) 
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?)
             `,
-        [uuidModule, moduleData.name, userId, moduleData.categoryId]
+        [uuidModule, data.name, data.categoryId]
       );
       return result;
     } catch (error) {

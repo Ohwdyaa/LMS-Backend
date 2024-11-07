@@ -3,7 +3,6 @@ const { err } = require("../utils/custom_error");
 
 async function createCategoryModule(req, res) {
   const data = req.body;
-  const { id: userId } = req.user;
   try {
     await moduleCategory.createCategory(data, userId);
     return res.status(201).json({

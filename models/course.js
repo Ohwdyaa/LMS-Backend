@@ -8,17 +8,15 @@ const Course = {
       const id = uuid();
       const result = await lmsManagement(
         `INSERT INTO course(
-        id, 
-        title, 
-        description, 
-        thumbnail, 
-        enrollment_key,   
-        start_date, 
-        end_date, 
-        created_by,
-        sub_category_id) 
-        VALUES 
-        (?,?,?,?,?,?,?,?,?)`,
+          id, 
+          title, 
+          description, 
+          thumbnail, 
+          enrollment_key,   
+          start_date, 
+          end_date, 
+          created_by) 
+        VALUES (?,?,?,?,?,?,?,?)`,
         [
           id,
           courseData.title,
@@ -26,7 +24,8 @@ const Course = {
           courseData.thumbnail,
           courseData.enrollmentKey,
           courseData.startDate,
-          courseData.endDate
+          courseData.endDate,
+          userId
         ]
       );
       return result.insertId;
@@ -37,15 +36,17 @@ const Course = {
   updateCourse: async (courseId, courseData, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE courses SET title = ?, 
-        description = ?, 
-        thumbnail = ?, 
-        enrollment_key = ?, 
-        start_date = ?, 
-        end_date = ?, 
-        sub_category_id = ?,
-        updated_at = NOW(),
-        updated_by = ?
+        `UPDATE 
+          courses 
+        SET 
+          title = ?, 
+          description = ?, 
+          thumbnail = ?, 
+          enrollment_key = ?, 
+          start_date = ?, 
+          end_date = ?, 
+          updated_at = NOW(),
+          updated_by = ?
         WHERE id = ?`,
         [
           courseData.title,
@@ -90,7 +91,7 @@ const Course = {
         `SELECT 
           id, 
           title, 
-          'description', 
+          description, 
           thumbnail, 
           start_date, 
           end_date,

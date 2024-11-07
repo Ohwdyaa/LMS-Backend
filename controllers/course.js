@@ -69,7 +69,9 @@ async function getAllCourses(req, res) {
       const courseObj = new Object();
       courseObj.id = course.id;
       courseObj.title = course.title;
+      courseObj.description = course.description;
       courseObj.thumbnail = course.thumbnail;
+      courseObj.enrollment_key = course.enrollment_key;
       courseObj.start_date = course.start_date;
       courseObj.end_date = course.end_date;
       courseList.push(courseObj);

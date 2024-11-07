@@ -2,7 +2,6 @@ const Religions = require("../models/religions");
 const { err } = require("../utils/custom_error");
 
 async function createReligion(req, res) {
-  const { id: userId } = req.user;
   const data = req.body;
   try {
     await Religions.createReligion(data, userId);

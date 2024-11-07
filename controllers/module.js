@@ -3,10 +3,9 @@ const { err } = require("../utils/custom_error");
 
 async function createModules(req, res) {
   const data = req.body;
-  const {id : userId}= req.user;
   try {
 
-    await modulePermission.createModule(data, userId);
+    await modulePermission.createModule(data);
     return res.status(201).json({
       message: "Module created successfully",
     });
@@ -42,5 +41,4 @@ async function getAllModules(req, res) {
 module.exports = {
   createModules,
   getAllModules,
-
 };

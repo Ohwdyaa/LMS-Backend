@@ -3,17 +3,16 @@ const { uuid } = require("../utils/tools");
 const Users = require("../models/users");
 
 const Religions = {
-  createReligion: async (data, userId) => {
+  createReligion: async (data) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
         `
         INSERT INTO religions (
         id,
-        name,
-        created_by
-        ) VALUES (?,?,?)`,
-        [id, data.name, userId]
+        name
+        ) VALUES (?,?)`,
+        [id, data.name]
       );
       return result.insertId;
       }catch (error) {

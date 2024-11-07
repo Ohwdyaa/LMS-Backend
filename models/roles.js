@@ -1,6 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
-const Users = require("../models/users");
 
 const Roles = {
   createRole: async (data, userId) => {

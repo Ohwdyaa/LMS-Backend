@@ -40,7 +40,7 @@ async function updatePermissions(req, res) {
           canRead,
           canEdit,
           canDelete,
-          UserId,
+          userId,
           roleId,
           moduleId,
         ]);

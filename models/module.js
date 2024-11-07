@@ -2,7 +2,7 @@ const { lmsModule } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const modulePermission = {
-  createModule: async (moduleData) => {
+  createModule: async (moduleData, userId) => {
     try {
       const uuidModule = uuid();
       const result = await lmsModule(
@@ -10,11 +10,12 @@ const modulePermission = {
             INSERT INTO module (
                 uuid, 
                 name,
+                created_by,
                 category_module_id
             ) 
-                VALUES (?, ?, ?)
+                VALUES (?, ?, ?, ?)
             `,
-        [uuidModule, moduleData.name, moduleData.categoryId]
+        [uuidModule, moduleData.name, userId, moduleData.categoryId]
       );
       return result;
     } catch (error) {

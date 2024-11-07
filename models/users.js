@@ -55,7 +55,7 @@ const Users = {
       );
       return result;
     } catch (error) {
-      throw error;
+     error;
     }
   },
   updateUser: async (userId, userData) => {
@@ -64,15 +64,16 @@ const Users = {
         ` UPDATE 
             users
           SET 
-            username = ?,
-            profile_image = ?,
-            phone_number = ?,
-            address = ?,
-            institute = ?,
-            date_of_birth = ?,
-            gender_id = ?,
-            religion_id = ?,
-            updated_at = NOW() 
+          username = ?,
+          profile_image = ?,
+          phone_number = ?,
+          address = ?,
+          institute = ?,
+          date_of_birth = ?,
+          gender_id = ?,
+          religion_id = ?,
+          updated_by = ?,
+          updated_at = NOW() 
           WHERE id = ?`,
         [
           userData.username,
@@ -83,6 +84,7 @@ const Users = {
           userData.dateOfBirth,
           userData.genderId,
           userData.religionId,
+          userId,
           userId,
         ]
       );

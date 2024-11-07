@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   createReligion,
-  getAllReligions
+  getAllReligions,
 } = require("../../../controllers/religions");
 const router = express.Router();
 

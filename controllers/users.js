@@ -2,17 +2,18 @@ const Users = require("../models/users");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
+
 async function createUsers(req, res) {
   const data = req.body;
+  const { id:userId } = req.user;
   try {
-    const password = "112233";
+    const password = "112233"; 
     const hash = await hashPassword(password);
     const userData = {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData);
-
+    await Users.createUser(userData, userId);
     return res.status(201).json({
       message: "User created successfully",
     });
@@ -24,16 +25,11 @@ async function createUsers(req, res) {
   }
 }
 
-async function updateUsers(req, res) {
-  const { id: userId } = req.user; //dari jwt
+async function updateUsers(req, res) {  
+  const { id: userId } = req.user;
   const userData = req.body;
   try {
-    const isUserExists = await Users.getUserById(userId);
-    if (isUserExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-
-    await Users.updateUser(isUserExists.id, userData);
+    await Users.updateUser(userId, userData); 
     return res.status(200).json({
       message: "User updated successfully",
     });

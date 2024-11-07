@@ -67,9 +67,7 @@ async function getAllCourses(req, res) {
       const courseObj = new Object();
       courseObj.id = course.id;
       courseObj.title = course.title;
-      courseObj.description = course.description;
       courseObj.thumbnail = course.thumbnail;
-      courseObj.enrollment_key = course.enrollment_key;
       courseObj.start_date = course.start_date;
       courseObj.end_date = course.end_date;
       courseList.push(courseObj);
@@ -85,9 +83,28 @@ async function getAllCourses(req, res) {
   }
 }
 
+async function getCourseById(req, res) {
+  const {id: courseId} = req.params;
+  try {
+    const isCourseExist = await Course.getCourseById(courseId);
+    if (isCourseExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+    return res.status(200).json({
+      data: isCourseExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   createCourse,
   updateCourse,
   deleteCourse,
-  getAllCourses
+  getAllCourses,
+  getCourseById
 };

@@ -30,7 +30,7 @@ const modulesCourse = {
           course_id = ?, 
           updated_at = NOW()
         WHERE id = ?`,
-        [data.title, data.description, , data.courseId, id]
+        [data.title, data.description, data.courseId, id]
       );
       return result;
     } catch (error) {}

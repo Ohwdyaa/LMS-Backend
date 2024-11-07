@@ -15,6 +15,7 @@ const categoryCourse = require("./category_course");
 const modulesCourse = require("./modules_course");
 const contentType = require("./content_types");
 const subModuleCourse = require("./sub_modules_course");
+const materials = require("./materials");
 
 router.use(userRoutes);
 router.use(forgetPasswordRoutes);
@@ -32,5 +33,6 @@ router.use(categoryCourse);
 router.use(subCategory);
 router.use(subModuleCourse);
 router.use(contentType);
+router.use(materials);
 
 module.exports = router;

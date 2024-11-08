@@ -27,12 +27,11 @@ const modulesCourse = {
           module_courses 
         SET 
           title = ?, 
-          description = ?, 
-          course_id = ?, 
+          description = ?,  
           updated_at = NOW(),
           updated by = ?
         WHERE id = ?`,
-        [data.title, data.description, , data.courseId, userId, id]
+        [data.title, data.description, userId, id]
       );
       return result;
     } catch (error) {}

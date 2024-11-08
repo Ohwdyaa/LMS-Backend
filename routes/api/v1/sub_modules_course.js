@@ -1,10 +1,17 @@
 const express = require("express");
-const { createSubModules, updateSubModules, deleteSubModules, getAllSubModules } = require("../../../controllers/sub_modules_course");
+const {
+  createSubModule,
+  updateSubModule,
+  deleteSubModule,
+  getAllSubModules,
+  getSubModuleById,
+} = require("../../../controllers/sub_modules_course");
 const router = express.Router();
 
-router.post("/subModule", createSubModules);
-router.put("/subModule/:id", updateSubModules);
-router.delete("/subModule/:id", deleteSubModules);
+router.post("/subModule", createSubModule);
+router.put("/subModule/:id", updateSubModule);
+router.delete("/subModule/:id", deleteSubModule);
 router.get("/subModule", getAllSubModules);
+router.get("/subModule/:id", getSubModuleById);
 
 module.exports = router;

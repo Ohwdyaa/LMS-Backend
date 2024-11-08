@@ -69,6 +69,7 @@ const modulesCourse = {
         `SELECT 
           mc.id, 
           mc.title, 
+          mc.description,
           mc.course_id,
           c.title as course
         FROM module_courses mc

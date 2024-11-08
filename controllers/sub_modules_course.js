@@ -101,10 +101,29 @@ async function getSubModuleById(req, res) {
   }
 }
 
+async function getSubModuleByModuleCourse(req, res) {
+  const { id: moduleId } = req.params;
+  try {
+    const isSubModuleExist = await subModules.getSubModuleByModuleCourse(moduleId);
+    if (isSubModuleExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+    return res.status(200).json({
+      data: isSubModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   createSubModule,
   updateSubModule,
   deleteSubModule,
   getAllSubModules,
-  getSubModuleById
+  getSubModuleById,
+  getSubModuleByModuleCourse
 };

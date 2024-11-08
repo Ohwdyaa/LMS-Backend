@@ -93,6 +93,21 @@ const subModules = {
       throw error;
     }
   },
+  getSubModuleByModuleCourse: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          id, 
+          title
+        FROM sub_modules
+        WHERE module_course_id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = subModules;

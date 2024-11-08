@@ -29,7 +29,7 @@ const modulesCourse = {
           title = ?, 
           description = ?,  
           updated_at = NOW(),
-          updated by = ?
+          updated_by = ?
         WHERE id = ?`,
         [data.title, data.description, userId, id]
       );

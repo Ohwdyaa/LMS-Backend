@@ -101,10 +101,29 @@ async function getModuleById(req, res) {
   }
 }
 
+async function getModuleByCourse(req, res) {
+  const { id: courseId } = req.params;
+  try {
+    const isModuleExist = await modulesCourse.getModuleByCourse(courseId);
+    if (isModuleExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+    return res.status(200).json({
+      data: isModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   createModuleCourse,
   updateModuleCourse,
   deleteModuleCourse,
   getAllModulesCourse,
-  getModuleById
+  getModuleById,
+  getModuleByCourse
 };

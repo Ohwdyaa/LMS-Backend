@@ -47,22 +47,6 @@ const modulesCourse = {
       throw error;
     }
   },
-  getAllModulesCourse: async () => {
-    try {
-      const result = await lmsManagement(
-        `SELECT 
-          mc.id, 
-          mc.title, 
-          mc.course_id,
-          c.title as course
-        FROM module_courses mc
-        LEFT JOIN courses c ON mc.course_id = c.id`
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
   getModuleById: async (id) => {
     try {
       const [result] = await lmsManagement(

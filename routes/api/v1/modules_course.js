@@ -12,6 +12,6 @@ router.post("/moduleCourse", createModuleCourse);
 router.put("/moduleCourse/:id", updateModuleCourse);
 router.delete("/moduleCourse/:id", deleteModuleCourse);
 router.get("/moduleCourse/:id", getModuleById);
-router.get("/moduleCourse/course/:id", getModuleByCourse);
+router.get("/course/:id/module", getModuleByCourse);
 
 module.exports = router;

@@ -12,6 +12,6 @@ router.post("/subModule", createSubModule);
 router.put("/subModule/:id", updateSubModule);
 router.delete("/subModule/:id", deleteSubModule);
 router.get("/subModule/:id", getSubModuleById);
-router.get("/subModule/module/:id", getSubModuleByModuleCourse);
+router.get("/module/:id/subModule", getSubModuleByModuleCourse);
 
 module.exports = router;

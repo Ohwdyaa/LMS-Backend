@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const modulesCourse = {
-  createModulesCourse: async (data, userId) => {
+  createModuleCourse: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -20,7 +20,7 @@ const modulesCourse = {
       throw error;
     }
   }, 
-  updateModulesCourse: async (id, data, userId) => {
+  updateModuleCourse: async (id, data, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -37,7 +37,7 @@ const modulesCourse = {
       return result;
     } catch (error) {}
   },
-  deleteModulesCourse: async (id) => {
+  deleteModuleCourse: async (id) => {
     try {
       const result = await lmsManagement(
         `DELETE FROM module_courses WHERE id=?`,
@@ -64,7 +64,7 @@ const modulesCourse = {
       throw error;
     }
   },
-  getModulesById: async (id) => {
+  getModuleById: async (id) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 

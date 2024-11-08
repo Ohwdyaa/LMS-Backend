@@ -49,27 +49,6 @@ const subModules = {
       throw error;
     }
   },
-  getAllSubModules: async () => {
-    try {
-      const result = await lmsManagement(
-        `SELECT 
-          sm.id, 
-          sm.title, 
-          sm.description,
-          sm.passing_score,
-          sm.module_course_id,
-          sm.content_type_id,
-          mc.title as moduleCourse,
-          ct.name as contentType
-        FROM sub_modules sm
-        LEFT JOIN module_courses mc ON sm.module_course_id = mc.id
-        LEFT JOIN content_types ct ON sm.content_type_id = ct.id`
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
   getByIdSubModules: async (id) => {
     try {
       const [result] = await lmsManagement(

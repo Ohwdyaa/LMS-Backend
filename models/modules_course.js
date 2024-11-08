@@ -29,7 +29,7 @@ const modulesCourse = {
           title = ?, 
           description = ?,  
           updated_at = NOW(),
-          updated by = ?
+          updated_by = ?
         WHERE id = ?`,
         [data.title, data.description, userId, id]
       );
@@ -41,22 +41,6 @@ const modulesCourse = {
       const result = await lmsManagement(
         `DELETE FROM module_courses WHERE id=?`,
         id
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
-  getAllModulesCourse: async () => {
-    try {
-      const result = await lmsManagement(
-        `SELECT 
-          mc.id, 
-          mc.title, 
-          mc.course_id,
-          c.title as course
-        FROM module_courses mc
-        LEFT JOIN courses c ON mc.course_id = c.id`
       );
       return result;
     } catch (error) {

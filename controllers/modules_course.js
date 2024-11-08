@@ -57,32 +57,6 @@ async function deleteModuleCourse(req, res) {
   }
 }
 
-async function getAllModulesCourse(req, res) {
-  try {
-    const modules = await modulesCourse.getAllModulesCourse();
-    if (!modules || modules.length === 0) {
-      return res.status(400).json({ message: "No modules found" });
-    }
-    const modulesList = [];
-    for (let i = 0; i < modules.length; i++) {
-      const module = modules[i];
-      const moduleObj = new Object();
-      moduleObj.id = module.id;
-      moduleObj.title = module.title;
-      moduleObj.course_id = module.courseId;
-      modulesList.push(moduleObj);
-    }
-    return res.status(200).json({
-      data: modulesList,
-    });
-  } catch (error) {
-    return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
-
 async function getModuleById(req, res) {
   const {id: moduleId} = req.params;
   try {
@@ -123,7 +97,6 @@ module.exports = {
   createModuleCourse,
   updateModuleCourse,
   deleteModuleCourse,
-  getAllModulesCourse,
   getModuleById,
   getModuleByCourse
 };

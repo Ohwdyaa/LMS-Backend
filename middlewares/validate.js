@@ -160,9 +160,6 @@ const permissionSchema = z.object({
 
 function validateMiddleware(schema) {
   return (req, res, next) => {
-    console.log("Request Params:", req.params);
-    console.log("Request Body:", req.body);
-
     try {
       schema.parse({
         params: req.params,

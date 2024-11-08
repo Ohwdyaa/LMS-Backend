@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const subModules = {
-  createSubModules: async (data, userId) => {
+  createSubModule: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -13,7 +13,7 @@ const subModules = {
           created_by,
           module_course_id,
           content_type_id) 
-        VALUES (?,?,?,?,?)`,
+        VALUES (?,?,?,?,?,?)`,
         [id, data.title, data.description, userId, data.moduleCourseId, data.contentTypeId]
       );
       return result.insertId;
@@ -21,7 +21,7 @@ const subModules = {
       throw error;
     }
   },
-  updateSubModules: async (id, data, userId) => {
+  updateSubModule: async (id, data, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -29,18 +29,16 @@ const subModules = {
         SET 
           title = ?, 
           description = ?, 
-          module_course_id = ?,
-          content_type_id = ?, 
           updated_at = NOW(),
           updated_by = ?
         WHERE id = ?`,
-        [data.title, data.description, , data.moduleCourseId, data.contentTypeId, userId, id]
+        [data.title, data.description, userId, id]
       );
       console.log(result)
       return result;
     } catch (error) {}
   },
-  deleteSubModules: async (id) => {
+  deleteSubModule: async (id) => {
     try {
       const result = await lmsManagement(
         `DELETE FROM sub_modules WHERE id=?`,

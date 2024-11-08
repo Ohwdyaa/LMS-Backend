@@ -7,23 +7,24 @@ const Roles = {
       const id = uuid();
       const result = await lmsManagement(
         `
-        INSERT INTO roles (
-        id,
-        name,
-        created_by
-        ) VALUES (?,?,?)`,
+        INSERT INTO roles 
+          (id,
+          name,
+          created_by) 
+        VALUES (?,?,?)`,
         [id, data.name, userId]
       );
-    return result;
+      return result;
     } catch (error) {
       throw error;
     }
   },
-  getRoleById: async (roleId) => {
+  getRoleById: async (id) => {
     try {
-      const [result] = await lmsManagement("SELECT id, name FROM roles WHERE id = ?", [
-        roleId,
-      ]);
+      const [result] = await lmsManagement(
+        "SELECT id, name FROM roles WHERE id = ?",
+        [id]
+      );
       return result;
     } catch (error) {
       throw error;
@@ -39,28 +40,32 @@ const Roles = {
       throw error;
     }
   },
-  deleteRole: async (roleId) => {
+  deleteRole: async (id) => {
     try {
-      const result = await lmsManagement("DELETE FROM roles where id = ? ", [roleId]);
+      const result = await lmsManagement("DELETE FROM roles where id = ? ", 
+        [id]);
       return result;
     } catch (error) {
       throw error;
     }
   },
-  changeUserRole: async (userId, roleId) => {
+  changeUserRole: async (userId, id) => {
     try {
-      const result = await lmsManagement(`UPDATE users SET role_id = ?, updated_at = NOW() , updated_by = ? WHERE id = ? `, [
-        roleId,
-        userId,
-        userId,
-      ]);
-      if (result.affectedRows === 0) {
-        throw new Error('User not found');
-      }
+      const result = await lmsManagement(
+        `UPDATE 
+          users 
+        SET 
+          role_id = ?, 
+          updated_at = NOW(), 
+          updated_by = ? 
+        WHERE id = ? `,
+        [id, userId, userId]
+      );
       return result;
     } catch (error) {
       throw error;
     }
   },
 };
+
 module.exports = Roles;

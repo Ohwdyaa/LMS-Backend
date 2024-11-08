@@ -1,7 +1,6 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-
 const Materials = {
   createMaterial: async (data, userId) => {
     try {
@@ -58,7 +57,8 @@ const Materials = {
         `SELECT 
           id, 
           content,
-        FROM materials`
+        FROM materials 
+        WHERE is_deleted = 0`
       );
       return result;
     } catch (error) {throw error}
@@ -79,4 +79,5 @@ const Materials = {
     }
   }
 };
+
 module.exports = Materials;

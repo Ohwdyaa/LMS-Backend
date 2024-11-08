@@ -1,9 +1,8 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-
 const Course = {
-  createCourse: async (courseData, userId) => {
+  createCourse: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -19,12 +18,12 @@ const Course = {
         VALUES (?,?,?,?,?,?,?,?)`,
         [
           id,
-          courseData.title,
-          courseData.description,
-          courseData.thumbnail,
-          courseData.enrollmentKey,
-          courseData.startDate,
-          courseData.endDate,
+          data.title,
+          data.description,
+          data.thumbnail,
+          data.enrollmentKey,
+          data.startDate,
+          data.endDate,
           userId
         ]
       );
@@ -33,7 +32,7 @@ const Course = {
       throw error;
     }
   },
-  updateCourse: async (courseId, courseData, userId) => {
+  updateCourse: async (id, data, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -49,22 +48,22 @@ const Course = {
           updated_by = ?
         WHERE id = ?`,
         [
-          courseData.title,
-          courseData.description,
-          courseData.thumbnail,
-          courseData.enrollmentKey,
-          courseData.startDate,
-          courseData.endDate,
+          data.title,
+          data.description,
+          data.thumbnail,
+          data.enrollmentKey,
+          data.startDate,
+          data.endDate,
           userId,
-          courseId,
+          id,
         ]
       );
       return result;
     } catch (error) {}
   },
-  deleteCourse: async (courseId) => {
+  deleteCourse: async (id) => {
     try {
-      const result = await lmsManagement(`DELETE FROM courses WHERE id=?`, courseId);
+      const result = await lmsManagement(`DELETE FROM courses WHERE id=?`, id);
       return result;
     } catch (error) {
       throw error;
@@ -80,7 +79,8 @@ const Course = {
           thumbnail, 
           start_date, 
           end_date
-        FROM courses`
+        FROM courses 
+        WHERE is_deleted = 0`
       );
       return result;
     } catch (error) {throw error}
@@ -106,4 +106,5 @@ const Course = {
     }
   }
 };
+
 module.exports = Course;

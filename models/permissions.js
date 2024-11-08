@@ -66,7 +66,7 @@ const Permissions = {
       throw error;
     }
   },
-  getPermissionById: async (permissionId) => {
+  getPermissionById: async (id) => {
     try {
       const result = await lmsManagement(
         `SELECT 
@@ -80,14 +80,14 @@ const Permissions = {
           LEFT JOIN lms_db2.roles r ON rp.role_id = r.id
           LEFT JOIN lms_module.module m ON rp.module_id = m.id
         WHERE rp.id = ?`,
-        [permissionId]
+        [id]
       );
       return result;
     } catch (error) {
       throw error;
     }
   },
-  updatePermission: async (roleId, moduleId, update, userId) => {
+  updatePermission: async (roleId, moduleId, data, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE role_permissions SET 
@@ -98,10 +98,10 @@ const Permissions = {
         updated_by = ?
         WHERE role_id = ? AND module_id = ?`,
         [
-          update.canCreate,
-          update.canRead,
-          update.canEdit,
-          update.canDelete,
+          data.canCreate,
+          data.canRead,
+          data.canEdit,
+          data.canDelete,
           userId,
           roleId,
           moduleId,
@@ -118,4 +118,5 @@ const Permissions = {
     await lmsManagement(formatQuery);
   },
 };
+
 module.exports = Permissions;

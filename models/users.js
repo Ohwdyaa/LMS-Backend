@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Users = {
-  createUser: async (userData, id) => {
+  createUser: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -27,19 +27,19 @@ const Users = {
         `,
         [
           id,
-          userData.username,
-          userData.email,
-          userData.password,
-          userData.profileImage,
-          userData.fullname,
-          userData.phoneNumber,
-          userData.address,
-          userData.institute,
-          userData.dateOfBirth,
-          id,
-          userData.roleId,
-          userData.genderId,
-          userData.religionId,
+          data.username,
+          data.email,
+          data.password,
+          data.profileImage,
+          data.fullname,
+          data.phoneNumber,
+          data.address,
+          data.institute,
+          data.dateOfBirth,
+          userId,
+          data.roleId,
+          data.genderId,
+          data.religionId,
         ]
       );
       return result.insertId;
@@ -47,18 +47,18 @@ const Users = {
       throw error;
     }
   },
-  updatePassword: async (userId, hashedPassword) => {
+  updatePassword: async (id, hashedPassword) => {
     try {
       const result = await lmsManagement(
         `UPDATE users SET password = ? where id = ?`,
-        [hashedPassword, userId]
+        [hashedPassword, id]
       );
       return result;
     } catch (error) {
      error;
     }
   },
-  updateUser: async (userId, userData) => {
+  updateUser: async (id, data) => {
     try {
       const result = await lmsManagement(
         ` UPDATE 
@@ -76,16 +76,16 @@ const Users = {
           updated_at = NOW() 
           WHERE id = ?`,
         [
-          userData.username,
-          userData.profileImage,
-          userData.phoneNumber,
-          userData.address,
-          userData.institute,
-          userData.dateOfBirth,
-          userData.genderId,
-          userData.religionId,
-          userId,
-          userId,
+          data.username,
+          data.profileImage,
+          data.phoneNumber,
+          data.address,
+          data.institute,
+          data.dateOfBirth,
+          data.genderId,
+          data.religionId,
+          id,
+          id,
         ]
       );
       return result;
@@ -93,11 +93,11 @@ const Users = {
       throw error;
     }
   },
-  deleteUser: async (userId) => {
+  deleteUser: async (id) => {
     try {
       const result = await lmsManagement(
         `DELETE FROM users WHERE id = ?`,
-        userId
+        id
       );
       return result;
     } catch (error) {

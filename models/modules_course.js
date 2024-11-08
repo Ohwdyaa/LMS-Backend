@@ -83,4 +83,5 @@ const modulesCourse = {
     }
   },
 };
+
 module.exports = modulesCourse;

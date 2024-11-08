@@ -19,4 +19,5 @@ const contentTypes = {
     }
   },
 };
+
 module.exports = contentTypes;

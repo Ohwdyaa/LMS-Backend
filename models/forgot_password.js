@@ -6,7 +6,13 @@ const forgetPassword = {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO forget_password (id, reset_token, expired_date, is_used, user_id) VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO forget_password 
+          (id, 
+          reset_token, 
+          expired_date, 
+          is_used, 
+          user_id) 
+        VALUES (?, ?, ?, ?, ?)`,
         [id, resetToken, expiredDate, false, userId]
       );
       return result;
@@ -17,10 +23,14 @@ const forgetPassword = {
   getResetToken: async (resetToken) => {
     try {
       const result = await lmsManagement(
-        `SELECT forget_password.id, forget_password.expired_date, forget_password.user_id, users.fullname as user 
-            FROM forget_password 
-            LEFT JOIN users ON forget_password.user_id= users.id
-            WHERE reset_token = ? AND is_used = false`,
+        `SELECT 
+          fp.id, 
+          fp.expired_date, 
+          fp.user_id, 
+          u.fullname as user 
+        FROM forget_password fp
+        LEFT JOIN users u ON fp.user_id= u.id
+        WHERE reset_token = ? AND is_used = false`,
         [resetToken]
       );
       return result;
@@ -31,7 +41,11 @@ const forgetPassword = {
   tokenAsUsed: async (resetToken) => {
     try {
       await lmsManagement(
-        `UPDATE forget_password SET is_used = true WHERE reset_token = ?`,
+        `UPDATE 
+          forget_password 
+        SET 
+          is_used = true 
+        WHERE reset_token = ?`,
         [resetToken]
       );
     } catch (error) {

@@ -96,4 +96,5 @@ const subModules = {
     }
   },
 };
+
 module.exports = subModules;

@@ -83,7 +83,9 @@ const Course = {
         WHERE is_deleted = 0`
       );
       return result;
-    } catch (error) {throw error}
+    } catch (error) {
+      throw error;
+    }
   },
   getCourseById: async (id) => {
     try {
@@ -100,11 +102,11 @@ const Course = {
         WHERE id = ?`,
         [id]
       );
-        return result; 
+      return result;
     } catch (error) {
       throw error;
     }
-  }
+  },
 };
 
 module.exports = Course;

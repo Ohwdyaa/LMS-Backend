@@ -56,32 +56,6 @@ async function deleteSubModule(req, res) {
     });
   }
 }
-async function getAllSubModules(req, res) {
-  try {
-    const subModuleCourse = await subModules.getAllSubModules();
-    if (!subModuleCourse || subModuleCourse.length === 0) {
-      return res.status(400).json({ message: "No sub modules found" });
-    }
-    const subModuleList = [];
-    for (let i = 0; i < subModuleCourse.length; i++) {
-      const sub = subModuleCourse[i];
-      const subObj = new Object();
-      subObj.id = sub.id;
-      subObj.title = sub.title;
-      subObj.moduleCourseId = sub.moduleCourseId;
-      subObj.contentTypeId = sub.contentTypeId;
-      subModuleList.push(subObj);
-    }
-    return res.status(200).json({
-      data: subModuleList,
-    });
-  } catch (error) {
-    return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
 
 async function getSubModuleById(req, res) {
   const {id: subId} = req.params;
@@ -123,7 +97,6 @@ module.exports = {
   createSubModule,
   updateSubModule,
   deleteSubModule,
-  getAllSubModules,
   getSubModuleById,
   getSubModuleByModuleCourse
 };

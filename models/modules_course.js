@@ -10,16 +10,16 @@ const modulesCourse = {
           id, 
           title, 
           description, 
-          created_by
+          created_by,
           course_id) 
-        VALUES (?,?,?,?)`,
+        VALUES (?,?,?,?,?)`,
         [id, data.title, data.description, userId, data.courseId]
       );
       return result.insertId;
     } catch (error) {
       throw error;
     }
-  },
+  }, 
   updateModulesCourse: async (id, data, userId) => {
     try {
       const result = await lmsManagement(

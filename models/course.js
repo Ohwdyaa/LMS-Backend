@@ -6,7 +6,7 @@ const Course = {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO course(
+        `INSERT INTO courses(
           id, 
           title, 
           description, 

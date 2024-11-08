@@ -1,9 +1,10 @@
 const { err } = require("../utils/custom_error");
 const subModules = require("../models/sub_modules_course");
-async function createSubModules(req, res) {
+async function createSubModule(req, res) {
   const data = req.body;
+  const {id: userId} = req.user
   try {
-    await subModules.createSubModules(data);
+    await subModules.createSubModule(data, userId);
     return res.status(201).json({
       message: "Module course created successfully",
     });
@@ -14,16 +15,17 @@ async function createSubModules(req, res) {
     });
   }
 }
-async function updateSubModules(req, res) {
+async function updateSubModule(req, res) {
   const { id: subModuleId } = req.params;
+  const {id: userId} = req.user;
   const data = req.body;
   try {
-    const isSubModuleExist = await subModules.getByIdSubModules(subModuleId);
+    const isSubModuleExist = await subModules.getByIdSubModule(subModuleId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "Sub modules not found" });
     }
 
-    await subModules.updateSubModules(isSubModuleExist.id, data);
+    await subModules.updateSubModule(isSubModuleExist.id, data, userId);
     return res.status(201).json({
       message: "Sub modules updated successfully",
     });
@@ -35,15 +37,15 @@ async function updateSubModules(req, res) {
   }
 }
 
-async function deleteSubModules(req, res) {
+async function deleteSubModule(req, res) {
   const { id: subModuleId } = req.params;
   try {
-    const isSubModuleExist = await subModules.getByIdSubModules(subModuleId);
+    const isSubModuleExist = await subModules.getByIdSubModule(subModuleId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await subModules.deleteSubModules(isSubModuleExist.id);
+    await subModules.deleteSubModule(isSubModuleExist.id);
     return res.status(200).json({
       message: "Sub module deleted successfully",
     });
@@ -66,7 +68,6 @@ async function getAllSubModules(req, res) {
       const subObj = new Object();
       subObj.id = sub.id;
       subObj.title = sub.title;
-      subObj.description = sub.description;
       subObj.moduleCourseId = sub.moduleCourseId;
       subObj.contentTypeId = sub.contentTypeId;
       subModuleList.push(subObj);
@@ -82,9 +83,47 @@ async function getAllSubModules(req, res) {
   }
 }
 
+async function getSubModuleById(req, res) {
+  const {id: subId} = req.params;
+  try {
+    const isSubModuleExist = await subModules.getByIdSubModules(subId);
+    if (isSubModuleExist === undefined) {
+      return res.status(400).json({ message: "Sub modules not found" });
+    }
+    return res.status(200).json({
+      data: isSubModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
+async function getSubModuleByModuleCourse(req, res) {
+  const { id: moduleId } = req.params;
+  try {
+    const isSubModuleExist = await subModules.getSubModuleByModuleCourse(moduleId);
+    if (isSubModuleExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+    return res.status(200).json({
+      data: isSubModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
-  createSubModules,
-  updateSubModules,
-  deleteSubModules,
-  getAllSubModules
+  createSubModule,
+  updateSubModule,
+  deleteSubModule,
+  getAllSubModules,
+  getSubModuleById,
+  getSubModuleByModuleCourse
 };

@@ -5,13 +5,15 @@ const {
   deleteModuleCourse,
   getAllModulesCourse,
   getModuleById,
+  getModuleByCourse,
 } = require("../../../controllers/modules_course");
 const router = express.Router();
 
-router.post("/module", createModuleCourse);
-router.put("/module/:id", updateModuleCourse);
-router.delete("/module/:id", deleteModuleCourse);
-router.get("/module", getAllModulesCourse);
-router.get("/module/:id", getModuleById);
+router.post("/moduleCourse", createModuleCourse);
+router.put("/moduleCourse/:id", updateModuleCourse);
+router.delete("/moduleCourse/:id", deleteModuleCourse);
+router.get("/moduleCourse", getAllModulesCourse);
+router.get("/moduleCourse/:id", getModuleById);
+router.get("/moduleCourse/course/:id", getModuleByCourse);
 
 module.exports = router;

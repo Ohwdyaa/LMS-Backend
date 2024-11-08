@@ -6,7 +6,7 @@ const Materials = {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `INSERT INTO course(
+        `INSERT INTO materials(
           id, 
           content,  
           created_by,
@@ -45,7 +45,7 @@ const Materials = {
   },
   deleteMaterial: async (id) => {
     try {
-      const result = await lmsManagement(`DELETE FROM courses WHERE id = ?`, id);
+      const result = await lmsManagement(`DELETE FROM materials WHERE id = ?`, id);
       return result;
     } catch (error) {
       throw error;
@@ -68,7 +68,7 @@ const Materials = {
       const [result] = await lmsManagement(
         `SELECT 
           id, 
-          content,
+          content
         FROM materials
         WHERE id = ?`,
         [id]

@@ -69,11 +69,27 @@ const modulesCourse = {
         `SELECT 
           mc.id, 
           mc.title, 
+          mc.description,
           mc.course_id,
           c.title as course
         FROM module_courses mc
         LEFT JOIN courses c ON mc.course_id = c.id
         WHERE mc.id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getModuleByCourse: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          id, 
+          title
+        FROM module_courses
+        WHERE course_id = ?`,
         [id]
       );
       return result;

@@ -49,7 +49,7 @@ const subModules = {
       throw error;
     }
   },
-  getByIdSubModules: async (id) => {
+  getSubModulesById: async (id) => { // name terbalik
     try {
       const [result] = await lmsManagement(
         `SELECT 

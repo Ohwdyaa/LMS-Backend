@@ -60,7 +60,7 @@ async function deleteSubModule(req, res) {
 async function getSubModuleById(req, res) {
   const {id: subId} = req.params;
   try {
-    const isSubModuleExist = await subModules.getByIdSubModules(subId);
+    const isSubModuleExist = await subModules.getSubModulesById(subId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "Sub modules not found" });
     }

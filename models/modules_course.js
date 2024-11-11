@@ -68,7 +68,7 @@ const modulesCourse = {
   },
   getModuleByCourse: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const result = await lmsManagement(
         `SELECT 
           id, 
           title

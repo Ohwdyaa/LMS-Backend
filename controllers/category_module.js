@@ -4,7 +4,7 @@ const { err } = require("../utils/custom_error");
 async function createCategoryModule(req, res) {
   const data = req.body;
   try {
-    await moduleCategory.createCategory(data);
+    await moduleCategory.createCategoryModule(data);
     return res.status(201).json({
       message: "Module Category created successfully",
     });

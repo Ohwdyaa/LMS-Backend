@@ -158,6 +158,12 @@ const permissionSchema = z.object({
   })
 });
 
+const courseSchema = z.object({
+  body: z.object({
+    
+  })
+})
+
 function validateMiddleware(schema) {
   return (req, res, next) => {
     try {

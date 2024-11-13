@@ -9,6 +9,7 @@ const moduleCategory = {
         `INSERT INTO category_module(
           uuid, 
           name,
+          created_by
         ) 
         VALUES (?,?,?)`,
         [id, data.name, userId]

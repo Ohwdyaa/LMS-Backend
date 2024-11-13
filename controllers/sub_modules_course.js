@@ -20,7 +20,7 @@ async function updateSubModule(req, res) {
   const {id: userId} = req.user;
   const data = req.body;
   try {
-    const isSubModuleExist = await subModules.getByIdSubModule(subModuleId);
+    const isSubModuleExist = await subModules.getSubModulesById(subModuleId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "Sub modules not found" });
     }
@@ -40,12 +40,12 @@ async function updateSubModule(req, res) {
 async function deleteSubModule(req, res) {
   const { id: subModuleId } = req.params;
   try {
-    const isSubModuleExist = await subModules.getByIdSubModule(subModuleId);
+    const isSubModuleExist = await subModules.getSubModulesById(subModuleId);
     if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await subModules.deleteSubModule(isSubModuleExist.id);
+    await subModules.deleteSubModule(isSubModuleExist.id); 
     return res.status(200).json({
       message: "Sub module deleted successfully",
     });

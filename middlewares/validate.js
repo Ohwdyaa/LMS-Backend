@@ -193,7 +193,7 @@ const deleteSubCourseCategorySchema = z.object({
 
 const courseSchema = z.object({
   body: z.object({
-    name: z
+    title : z
       .string()
       .min(3, "Course name should be at least 3 characters")
       .max(200, "Course name cannot exceed 200 characters")
@@ -314,11 +314,10 @@ const deleteSubModuleCourseSchema = z.object({
 
 const materialsSchema = z.object({
   body: z.object({
-    name: z
+    content: z
       .string()
-      .min(3, "Material name should be at least 3 characters")
-      .max(50, "Material name cannot exceed 50 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Material name should not contain by symbols"),
+      .min(10, "Content should be at least 10 characters")  
+      .max(7000, "Content cannot exceed 7000 characters"),
   }),
 });
 

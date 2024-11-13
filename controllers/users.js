@@ -3,7 +3,7 @@ const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function createUsers(req, res) {
-  const data = req.body; 
+  const data = req.body;
   const { id: userId } = req.user;
   try {
     const password = "112233";
@@ -67,7 +67,17 @@ async function deleteUsers(req, res) {
 }
 
 async function getAllUsers(req, res) {
+  const { role } = req.query;
   try {
+    if(role){
+      const isUsersExist = await Users.getUserByRole(role);
+      if (isUsersExist === undefined) {
+        return res.status(400).json({ message: "Users not found" });
+      }
+      return res.status(200).json({
+        data: isUsersExist,
+      });
+    }
     const users = await Users.getAllUser();
     if (!users || users.length === 0) {
       return res.status(400).json({ message: "No users found" });
@@ -95,28 +105,28 @@ async function getAllUsers(req, res) {
   }
 }
 
-async function getUsersByRole(req, res) {
-  const { id: roleId } = req.params;
-  try {
-    const isUsersExist = await Users.getUserByRole(roleId);
-    if (isUsersExist === undefined) {
-      return res.status(400).json({ message: "Users not found" });
-    }
-    return res.status(200).json({
-      data: isUsersExist,
-    });
-  } catch (error) {
-    return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
-    });
-  }
-}
+// async function getUsersByRole(req, res) {
+//   const { id: roleId } = req.params;
+//   try {
+//     const isUsersExist = await Users.getUserByRole(roleId);
+//     if (isUsersExist === undefined) {
+//       return res.status(400).json({ message: "Users not found" });
+//     }
+//     return res.status(200).json({
+//       data: isUsersExist,
+//     });
+//   } catch (error) {
+//     return res.status(err.errorSelect.statusCode).json({
+//       message: err.errorSelect.message,
+//       error: error.message,
+//     });
+//   }
+// }
 
 module.exports = {
   createUsers,
   updateUsers,
   deleteUsers,
   getAllUsers,
-  getUsersByRole
+  // getUsersByRole,
 };

@@ -165,7 +165,26 @@ const Users = {
       throw error;
     }
   },
-
+  getUserByRole: async (id) => {
+    try {
+      const result = await lmsManagement(
+        `SELECT 
+          u.id, 
+          u.username, 
+          u.email, 
+          u.password, 
+          u.fullname, 
+          r.name as role 
+        FROM users u
+        LEFT JOIN roles r ON u.role_id = r.id 
+        WHERE u.role_id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
   logoutUser: async (token) => {
     try {
       const result = await lmsManagement(

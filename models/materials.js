@@ -77,6 +77,23 @@ const Materials = {
     } catch (error) {
       throw error;
     }
+  },
+  getMaterialBySubModule: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          m.id, 
+          m.content, 
+          sm.title as subModule 
+        FROM materials m
+        LEFT JOIN sub_modules sm ON m.sub_modules_id = sm.id 
+        WHERE m.sub_modules_id = ?`,
+        [id]
+      );
+        return result; 
+    } catch (error) {
+      throw error;
+    }
   }
 };
 

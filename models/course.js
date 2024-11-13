@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Course = {
-  createCourse: async (data, userId) => {
+  createCourse: async (data, userId, enrollmentKey) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -21,7 +21,7 @@ const Course = {
           data.title,
           data.description,
           data.thumbnail,
-          data.enrollmentKey,
+          enrollmentKey,
           data.startDate,
           data.endDate,
           userId

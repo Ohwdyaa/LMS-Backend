@@ -1,3 +1,5 @@
-var nanoid = require("nanoid");
+const { nanoid } = require('nanoid');
 
-var ID = nanoid();
+const enrollmentId = () => nanoid(8);
+
+module.exports = enrollmentId;

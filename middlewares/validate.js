@@ -200,8 +200,8 @@ const courseSchema = z.object({
       .regex(/^[a-zA-Z0-9\s]+$/, "Course name should not contain by symbols"),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
-      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters"),
+      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
+      .optional(),
   }),
 });
 
@@ -218,9 +218,8 @@ const updateCourseSchema = z.object({
       .optional(), 
     description: z
       .string()
-      .min(1, "Description cannot be empty")
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
-      .optional()
+      .optional(),
   }).partial() 
 });
 
@@ -241,8 +240,8 @@ const moduleCourseSchema = z.object({
       .regex(/^[a-zA-Z0-9\s]+$/, "Module title should not contain symbols"),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
-      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters"),
+      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
+      .optional(),
   }),
 });
 
@@ -255,8 +254,7 @@ const updateModuleCourseSchema = z.object({
       .string()
       .min(3, "Module title should be at least 3 characters")
       .max(200, "Module title cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Module title should not contain symbols")
-      .optional(),
+      .regex(/^[a-zA-Z0-9\s]+$/, "Module title should not contain symbols"),
     description: z
       .string()
       .min(1, "Description cannot be empty")
@@ -316,7 +314,7 @@ const materialsSchema = z.object({
   body: z.object({
     content: z
       .string()
-      .min(10, "Content should be at least 10 characters")  
+      .min(3, "Content should be at least 3 characters")  
       .max(7000, "Content cannot exceed 7000 characters"),
   }),
 });

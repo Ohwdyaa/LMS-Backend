@@ -79,8 +79,8 @@ async function getSubModuleByModuleCourse(req, res) {
   const { id: moduleId } = req.params;
   try {
     const isSubModuleExist = await subModules.getSubModuleByModuleCourse(moduleId);
-    if (isSubModuleExist === undefined) {
-      return res.status(400).json({ message: "Course not found" });
+    if (isSubModuleExist <= 0) {
+      return res.status(400).json({ message: "Sub module not found" });
     }
     return res.status(200).json({
       data: isSubModuleExist,

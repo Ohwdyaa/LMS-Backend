@@ -79,7 +79,7 @@ async function getModuleByCourse(req, res) {
   const { id: courseId } = req.params;
   try {
     const isModuleExist = await modulesCourse.getModuleByCourse(courseId);
-    if (isModuleExist === undefined) {
+    if (isModuleExist.length <= 0) {
       return res.status(400).json({ message: "Course not found" });
     }
     return res.status(200).json({

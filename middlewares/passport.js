@@ -14,7 +14,6 @@ passport.use(
       secretOrKey: publicKey,
     },
     async function (jwtPayload, cb) {
-      //
       try {
         const isUserExists = await Users.getUserById(jwtPayload.u);
         if (isUserExists === undefined) {

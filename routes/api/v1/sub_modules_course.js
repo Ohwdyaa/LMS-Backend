@@ -6,11 +6,12 @@ const {
   getSubModuleById,
   getSubModuleByModuleCourse,
 } = require("../../../controllers/sub_modules_course");
+const {validateMiddleware, subModuleCourseSchema, updateModuleCourseSchema, deleteSubModuleCourseSchema} = require ("../../../middlewares/validate")
 const router = express.Router();
 
-router.post("/subModule", createSubModule);
-router.put("/subModule/:id", updateSubModule);
-router.delete("/subModule/:id", deleteSubModule);
+router.post("/subModule", validateMiddleware(subModuleCourseSchema), createSubModule);
+router.put("/subModule/:id", validateMiddleware(updateModuleCourseSchema), updateSubModule);
+router.delete("/subModule/:id", validateMiddleware(deleteSubModuleCourseSchema), deleteSubModule);
 router.get("/subModule/:id", getSubModuleById);
 router.get("/module/:id/subModule", getSubModuleByModuleCourse);
 

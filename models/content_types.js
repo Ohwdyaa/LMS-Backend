@@ -18,6 +18,20 @@ const contentTypes = {
       throw error;
     }
   },
+  getAllContentTypes: async () => {
+    try {
+      const result = await lmsManagement(
+        `SELECT 
+          id, 
+          name,
+          description
+        FROM content_types`
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = contentTypes;

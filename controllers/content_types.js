@@ -14,6 +14,19 @@ async function createContentTypes(req, res) {
     });
   }
 }
+async function getAllContentTypes(req, res) {
+  try {
+    const data = await contentTypes.getAllContentTypes();
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
 module.exports = {
   createContentTypes,
+  getAllContentTypes
 };

@@ -1,6 +1,7 @@
 const { err } = require("../utils/custom_error");
 const Course = require("../models/course");
 const generateEnrollmentId = require("../utils/nanoid");
+const Enrollment = require("../models/enrollment");
 async function createCourse(req, res) {
   const data = req.body;
   const {id: userId} = req.user;
@@ -106,11 +107,30 @@ async function getCourseById(req, res) {
     });
   }
 }
+async function getCourseParticipants(req, res) {
+  const {id: courseId} = req.params;
+  try {
+    const isUserExist = await Enrollment.getCourseParticipants(courseId);
+    if (isUserExist === undefined) {
+      return res.status(400).json({ message: "Users not found" });
+    }
+    return res.status(200).json({
+      data: isUserExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
 
 module.exports = {
   createCourse,
   updateCourse,
   deleteCourse,
   getAllCourses,
-  getCourseById
+  getCourseById,
+  getCourseParticipants
 };

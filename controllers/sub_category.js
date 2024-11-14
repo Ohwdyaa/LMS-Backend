@@ -2,7 +2,7 @@ const { err } = require("../utils/custom_error");
 const subCategory = require("../models/sub_category");
 async function createSubCategory(req, res) {
   const data = req.body;
-  const { id: userId } = req.params;
+  const { id: userId } = req.user;
   try {
     await subCategory.createSubCategory(data, userId);
     return res.status(201).json({

@@ -159,7 +159,7 @@ const courseCategorySchema = z.object({
   body: z.object({
     name: z
       .string()
-      .min(3, "Category name should be at least 3 characters")
+      .min(1, "Category cannot be empty")
       .max(100, "Category name cannot exceed 100 characters")
       .regex(/^[a-zA-Z0-9\s]+$/, "Category name should not contain by symbols"),
   }),
@@ -177,9 +177,12 @@ const subCourseCategorySchema = z.object({
   body: z.object({
     name: z
       .string()
-      .min(3, "Subcategory name should be at least 3 characters")
+      .min(1, "Subcategory name cannot be empty")
       .max(100, "Subcategory name cannot exceed 100 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Subcategory name should not contain by symbols"),
+      .regex(/^[a-zA-Z0-9\s]+$/, "Subcategory name should not contain symbols"),
+    categoriesId: z
+      .string()
+      .uuid("Invalid UUID format for categoriesId"),
   }),
 });
 
@@ -193,15 +196,15 @@ const deleteSubCourseCategorySchema = z.object({
 
 const courseSchema = z.object({
   body: z.object({
-    name: z
+    title : z
       .string()
-      .min(3, "Course name should be at least 3 characters")
+      .min(1, "Course name cann be empty")
       .max(200, "Course name cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Course name should not contain by symbols"),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
-      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters"),
+      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
+      .optional(),
   }),
 });
 
@@ -212,15 +215,14 @@ const updateCourseSchema = z.object({
   body: z.object({
     name: z
       .string()
-      .min(3, "Course name should be at least 3 characters")
+      .min(1, "Course name cannot be empty")
       .max(200, "Course name cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Course name should not contain symbols")
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters")
       .optional(), 
     description: z
       .string()
-      .min(1, "Description cannot be empty")
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
-      .optional()
+      .optional(),
   }).partial() 
 });
 
@@ -236,13 +238,13 @@ const moduleCourseSchema = z.object({
   body: z.object({
     title: z
       .string()
-      .min(3, "Module title should be at least 3 characters")
+      .min(1, "Module title cannot be empty")
       .max(200, "Module title cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Module title should not contain symbols"),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
-      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters"),
+      .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
+      .optional(),
   }),
 });
 
@@ -253,10 +255,9 @@ const updateModuleCourseSchema = z.object({
   body: z.object({
     title: z
       .string()
-      .min(3, "Module title should be at least 3 characters")
+      .min(1, "Module title cannot be empty")
       .max(200, "Module title cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Module title should not contain symbols")
-      .optional(),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
     description: z
       .string()
       .min(1, "Description cannot be empty")
@@ -277,12 +278,13 @@ const subModuleCourseSchema = z.object({
   body: z.object({
     title: z
       .string()
-      .min(3, "Sub-module title should be at least 3 characters")
-      .max(20, "Sub-module title cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Sub-module title should not contain by symbols"),
+      .min(1, "Sub-module title cannot be empty")
+      .max(200, "Sub-module title cannot exceed 200 characters")
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
     description: z
       .string()
-      .max(16000, "Description cannot exceed 16000 characters"),
+      .max(16000, "Description cannot exceed 16000 characters")
+      .optional(),
   }),
 });
 
@@ -293,9 +295,9 @@ const updateSubModuleCourseSchema = z.object({
   body: z.object({
     title: z
       .string()
-      .min(3, "Sub-module title should be at least 3 characters")
+      .min(1, "Sub-module title cannot be empty")
       .max(200, "Sub-module title cannot exceed 200 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Sub-module title should not contain symbols")
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters")
       .optional(),
     description: z
       .string()
@@ -314,11 +316,11 @@ const deleteSubModuleCourseSchema = z.object({
 
 const materialsSchema = z.object({
   body: z.object({
-    name: z
+    content: z
       .string()
-      .min(3, "Material name should be at least 3 characters")
-      .max(50, "Material name cannot exceed 50 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Material name should not contain by symbols"),
+      .min(1, "Content cannot be empty")  
+      .max(7000, "Content cannot exceed 7000 characters")
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
   }),
 });
 
@@ -329,7 +331,6 @@ const updateMaterialSchema = z.object({
   body: z.object({
     content: z
       .string()
-      .min(1, "Content cannot be empty")
       .optional() 
   })
 });

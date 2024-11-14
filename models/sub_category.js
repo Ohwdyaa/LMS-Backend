@@ -11,7 +11,7 @@ const subCategory = {
           name, 
           created_by, 
           category_id) 
-          VALUES (?,?,?)`,
+          VALUES (?,?,?,?)`,
         [id, data.name, userId, data.categoriesId]
       );
       return result.insertId;

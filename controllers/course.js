@@ -1,10 +1,12 @@
 const { err } = require("../utils/custom_error");
 const Course = require("../models/course");
+const generateEnrollmentId = require("../utils/nanoid");
 async function createCourse(req, res) {
   const data = req.body;
   const {id: userId} = req.user;
   try {
-    await Course.createCourse(data, userId);
+    const enrollmentKey = generateEnrollmentId();
+    await Course.createCourse(data, userId, enrollmentKey);
     return res.status(201).json({
       message: "Course created successfully",
     });

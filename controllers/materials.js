@@ -1,40 +1,33 @@
 const { err } = require("../utils/custom_error");
 const Materials = require("../models/materials");
-
-async function createMaterial(req, res) {
-  const data = req.body;
-  const { id: userId } = req.user;
-  try {
-    await Materials.createMaterial(data, userId);
-    return res.status(201).json({
-      message: "Material created successfully",
-    });
-  } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
-    });
-  }
-}
+const subModule = require("../models/sub_modules_course");
 
 async function updateMaterial(req, res) {
-  const { id: materialId } = req.params;
+  const { id } = req.params;
   const { id: userId } = req.user;
   const data = req.body;
   try {
-    const isMaterialExist = await Materials.getMaterialById(materialId);
-    if (isMaterialExist === undefined) {
-      return res.status(400).json({ message: "Material not found" });
+    const isSubModuleExist = await subModule.getSubModulesById(id);
+    if (isSubModuleExist === undefined) {
+      return res.status(400).json({ message: "Sub module not found" });
     }
-
-    await Materials.updateMaterial(isMaterialExist.id, data, userId);
-    return res.status(201).json({
-      message: "Material updated successfully",
-    });
+    const isExists = await Materials.getMaterialBySubModule(id);
+    if(isExists){
+      await Materials.updateMaterial(isExists.id, data, userId);
+      return res.status(201).json({
+        message: "Material updated successfully",
+      });
+    }
+    if (isExists === undefined) {
+      await Materials.createMaterial(data, userId);
+      return res.status(201).json({
+        message: "Material created successfully",
+      });
+    }
   } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
     });
   }
 }
@@ -77,7 +70,6 @@ async function getMaterialById(req, res) {
   }
 }
 module.exports = {
-  createMaterial,
   updateMaterial,
   deleteMaterial,
   getMaterialById

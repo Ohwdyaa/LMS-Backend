@@ -61,6 +61,20 @@ const Categories = {
       throw error;
     }
   },
+  getAllCategories: async () => {
+    try {
+      const result =
+        await lmsManagement(`
+          SELECT 
+            id, 
+            name 
+          FROM categories 
+          WHERE is_deleted = 0`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = Categories;

@@ -52,15 +52,15 @@ async function deleteMaterial(req, res) {
   }
 }
 
-async function getMaterialById(req, res) {
-  const { id: materialId } = req.params;
+async function getMaterialBySubModule(req, res) {
+  const { id: subModuleId } = req.params;
   try {
-    const isMaterialExist = await Materials.getMaterialById(materialId);
-    if (isMaterialExist === undefined) {
+    const isSubModuleExist = await subModule.getSubModulesById(subModuleId);
+    if (isSubModuleExist === undefined) {
       return res.status(400).json({ message: "Material not found" });
     }
     return res.status(200).json({
-      data: isMaterialExist,
+      data: isSubModuleExist,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
@@ -72,5 +72,5 @@ async function getMaterialById(req, res) {
 module.exports = {
   updateMaterial,
   deleteMaterial,
-  getMaterialById
+  getMaterialBySubModule
 };

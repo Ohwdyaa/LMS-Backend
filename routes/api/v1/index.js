@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const userRoutes = require("./users");
+const mentorRoutes = require("./mentors");
 const forgetPasswordRoutes = require("./forgot_password");
 const roleRoutes = require("./roles");
 const religionRoutes = require("./religions");
@@ -19,6 +20,7 @@ const materials = require("./materials");
 const enrollment = require("./enrollment");
 
 router.use(userRoutes);
+router.use(mentorRoutes);
 router.use(forgetPasswordRoutes);
 router.use(roleRoutes);
 router.use(religionRoutes);

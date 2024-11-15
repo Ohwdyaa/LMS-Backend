@@ -1,0 +1,119 @@
+const MimeNode = require("nodemailer/lib/mime-node");
+const Mentors = require("../models/mentors");
+const { hashPassword } = require("../utils/bcrypt");
+const { err } = require("../utils/custom_error");
+
+async function createMentor(req, res) {
+  const data = req.body;
+  const { id: userId } = req.user;
+  try {
+    const password = "112233";
+    const hash = await hashPassword(password);
+    const mentorData = {
+      ...data,
+      password: hash,
+    };
+    await Mentors.createMentor(mentorData, userId);
+    return res.status(201).json({
+      message: "Mentor created successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorCreate.statusCode).json({
+      message: err.errorCreate.message,
+      error: error.message,
+    });
+  }
+}
+
+async function updateMentor(req, res) {
+  const { id: mentorId } = req.params; //masih dari params
+  const data = req.body;
+  try {
+    const isMentorExists = await Mentors.getMentorById(mentorId);
+    if (isMentorExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Mentors.updateMentor(isMentorExists.id, data);
+    return res.status(200).json({
+      message: "Mentor updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
+    });
+  }
+}
+
+async function deleteMentor(req, res) {
+  const { id: mentorId } = req.params;
+  try {
+    const isMentorExists = await Mentors.getMentorById(mentorId);
+    if (isMentorExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    await Mentors.deleteMentor(isMentorExists.id);
+    return res.status(200).json({
+      message: "Mentor deleted successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorDelete.statusCode).json({
+      message: err.errorDelete.message,
+      error: error.message,
+    });
+  }
+}
+
+async function getAllMentors(req, res) {
+  try {
+    const mentors = await Mentors.getAllMentors();
+    if (!mentors || mentors.length === 0) {
+      return res.status(400).json({ message: "No mentors found" });
+    }
+    const mentorList = [];
+    for (let i = 0; i < mentors.length; i++) {
+      const mentor = mentors[i];
+      const mentorObj = new Object();
+      mentorObj.id = mentor.id;
+      mentorObj.fullname = mentor.fullname;
+      mentorObj.email = mentor.email;
+      mentorObj.subCategory = mentor.subCategory;
+      mentorList.push(mentorObj);
+    }
+    return res.status(200).json({
+      data: mentorList,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
+async function getMentorBySubCategory(req, res) {
+  const { id: subCategoryId } = req.params;
+  try {
+    const isSubCategoryExist = await Mentors.getMentorsBySubCategory(subCategoryId);
+    if (isSubCategoryExist === undefined) {
+      return res.status(400).json({ message: "Mentor not found" });
+    }
+    return res.status(200).json({
+      data: isSubCategoryExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
+
+module.exports = {
+  createMentor,
+  updateMentor,
+  deleteMentor,
+  getAllMentors,
+  getMentorBySubCategory
+};

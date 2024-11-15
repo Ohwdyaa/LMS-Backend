@@ -30,6 +30,9 @@ async function unEnroll(req, res) {
       return res.status(400).json({ message: "Enrollment not found" });
     }
     await Enrollment.unEnroll(isEnrollExist.id);
+    return res.status(200).json({
+      message: "Un enroll successfully",
+    });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
       message: err.errorDelete.message,

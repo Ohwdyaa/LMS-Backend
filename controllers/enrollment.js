@@ -10,7 +10,7 @@ async function enrollMentor(req, res) {
     if(isMentorExist === undefined){
       return res.status(400).json({ message: "Mentor not found" });
     }
-    await Enrollment.enrollMentor(data, userId);
+    await Enrollment.enrollMentor(data.courseId, isMentorExist.id, userId);
     return res.status(201).json({
       message: "Enroll mentor successfully",
     });

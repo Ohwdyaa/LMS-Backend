@@ -24,19 +24,19 @@ const Enrollment = {
       throw error;
     }
   },
-  existingEnroll: async(userId, courseId) => {
+  existingEnroll: async(id) => {
     try {
-      const result = await lmsManagement(
+      const [result] = await lmsManagement(
         `SELECT 
           e.id, 
           u.id as userId,
           u.fullname as name, 
-          c.title as course,
+          c.title as course
         FROM enrollments e
-        LEFT JOIN users u ON e.user_id = u.id 
+        LEFT JOIN users u ON e.user_id = u.id
         LEFT JOIN courses c ON e.course_id = c.id 
-        WHERE e.user_id = ? AND e.course_id = ? AND is_deleted = 0`,
-        [userId, courseId]
+        WHERE e.id = ?`,
+        [id]
       );
       return result;
     } catch (error) {
@@ -49,9 +49,11 @@ const Enrollment = {
         `SELECT 
           e.id, 
           u.id as userId,
-          u.fullname as name 
+          u.fullname as name,
+          r.name as role
         FROM enrollments e
         LEFT JOIN users u ON e.user_id = u.id 
+        LEFT JOIN roles r ON u.role_id = r.id 
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.course_id = ? AND e.is_deleted = 0`,
         [courseId]
@@ -61,11 +63,11 @@ const Enrollment = {
       throw error;
     }
   },
-  unEnrollUser: async(userId, courseId) => {
+  unEnroll: async(id) => {
     try {
       const result = await lmsManagement(
-        `UPDATE enrollments SET is_deleted = 1 WHERE user_id = ? AND course_id = ?`,
-        [userId, courseId]
+        `DELETE FROM enrollments where id = ?`,
+        [id]
       );
       return result;
     } catch (error) {

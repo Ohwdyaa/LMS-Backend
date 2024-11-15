@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Enrollment = {
-  enrollMentor: async (data, userId) => {
+  enrollMentor: async (courseId, mentorId, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -15,8 +15,8 @@ const Enrollment = {
         [
           id,
           userId,
-          data.userId,
-          data.courseId,
+          mentorId,
+          courseId,
         ]
       );
       return result.insertId;

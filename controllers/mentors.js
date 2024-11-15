@@ -1,4 +1,3 @@
-const MimeNode = require("nodemailer/lib/mime-node");
 const Mentors = require("../models/mentors");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");

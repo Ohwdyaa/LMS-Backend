@@ -26,7 +26,7 @@ async function createUsers(req, res) {
 }
 
 async function updateUsers(req, res) {
-  const { id: userId } = req.user; //dari jwt
+  const { id: userId } = req.user; 
   const userData = req.body;
   try {
     const isUserExists = await Users.getUserById(userId);
@@ -105,28 +105,9 @@ async function getAllUsers(req, res) {
   }
 }
 
-// async function getUsersByRole(req, res) {
-//   const { id: roleId } = req.params;
-//   try {
-//     const isUsersExist = await Users.getUserByRole(roleId);
-//     if (isUsersExist === undefined) {
-//       return res.status(400).json({ message: "Users not found" });
-//     }
-//     return res.status(200).json({
-//       data: isUsersExist,
-//     });
-//   } catch (error) {
-//     return res.status(err.errorSelect.statusCode).json({
-//       message: err.errorSelect.message,
-//       error: error.message,
-//     });
-//   }
-// }
-
 module.exports = {
   createUsers,
   updateUsers,
   deleteUsers,
   getAllUsers,
-  // getUsersByRole,
 };

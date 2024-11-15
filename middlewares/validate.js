@@ -261,7 +261,6 @@ const updateModuleCourseSchema = z.object({
       .optional(),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
       .optional(),
   })

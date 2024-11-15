@@ -16,7 +16,6 @@ async function createCategory(req, res) {
     });
   }
 }
-
 async function updateCategory(req, res) {
   const {id: categoryId} = req.params;
   const {id: userId} = req.user;
@@ -58,9 +57,34 @@ async function deleteCategory(req, res) {
     });
   }
 }
+async function getAllCategories(req, res) {
+  try {
+    const categories = await Category.getAllCategories();
+    if (!categories || categories.length === 0) {
+      return res.status(400).json({ message: "No category found" });
+    }
+    const categoryList = [];
+    for (let i = 0; i < categories.length; i++) {
+      const category = categories[i];
+      const categoryObj = new Object();
+      categoryObj.id = category.id;
+      categoryObj.name = category.name;
+      categoryList.push(categoryObj);
+    }
+    return res.status(200).json({
+      data: categoryList,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getAllCategories
 };

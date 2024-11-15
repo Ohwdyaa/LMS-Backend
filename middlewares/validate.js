@@ -161,7 +161,7 @@ const courseCategorySchema = z.object({
       .string()
       .min(1, "Category cannot be empty")
       .max(100, "Category name cannot exceed 100 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Category name should not contain by symbols"),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
   }),
 });
 
@@ -179,7 +179,7 @@ const subCourseCategorySchema = z.object({
       .string()
       .min(1, "Subcategory name cannot be empty")
       .max(100, "Subcategory name cannot exceed 100 characters")
-      .regex(/^[a-zA-Z0-9\s]+$/, "Subcategory name should not contain symbols"),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
     categoriesId: z
       .string()
       .uuid("Invalid UUID format for categoriesId"),
@@ -261,7 +261,6 @@ const updateModuleCourseSchema = z.object({
       .optional(),
     description: z
       .string()
-      .min(1, "Description cannot be empty")
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
       .optional(),
   })

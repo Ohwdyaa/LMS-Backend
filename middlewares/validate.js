@@ -223,7 +223,7 @@ const updateCourseSchema = z.object({
       .string()
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
       .optional(),
-  }).partial() 
+  })
 });
 
 const deleteCourseSchema = z.object({
@@ -257,13 +257,14 @@ const updateModuleCourseSchema = z.object({
       .string()
       .min(1, "Module title cannot be empty")
       .max(200, "Module title cannot exceed 200 characters")
-      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
+      .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters")
+      .optional(),
     description: z
       .string()
       .min(1, "Description cannot be empty")
       .max(65535, "Description cannot exceed the TEXT limit of 65535 characters")
       .optional(),
-  }).partial(),
+  })
 });
 
 const deleteModuleCourseSchema = z.object({
@@ -303,7 +304,7 @@ const updateSubModuleCourseSchema = z.object({
       .string()
       .max(16000, "Description cannot exceed 16000 characters")
       .optional()
-  }).partial(),
+  })
 });
 
 const deleteSubModuleCourseSchema = z.object({

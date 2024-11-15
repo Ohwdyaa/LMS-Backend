@@ -27,13 +27,12 @@ const subCategory = {
         SET 
           name = ?, 
           updated_at = NOW(), 
-          updated_by, 
-          categories_id = ?
+          updated_by = ?
         WHERE id = ?`,
         [data.name, userId, id]
       );
       return result;
-    } catch (error) {
+    } catch (error) { 
       throw error;
     }
   },
@@ -66,14 +65,14 @@ const subCategory = {
   },
   getSubCategoryById: async (id) => {
     try {
-      const result = await lmsManagement(
+      const [result] = await lmsManagement(
         `SELECT 
           sc.id, 
           sc.name, 
-          sc.categories_id, 
+          sc.category_id, 
           c.name as categories 
         FROM sub_categories sc
-        LEFT JOIN categories c ON sc.categories_id = c.id
+        LEFT JOIN categories c ON sc.category_id = c.id
         WHERE sc.id =?`,
         [id]
       );

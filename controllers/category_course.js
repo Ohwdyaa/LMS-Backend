@@ -17,6 +17,28 @@ async function createCategory(req, res) {
   }
 }
 
+async function updateCategory(req, res) {
+  const {id: categoryId} = req.params;
+  const {id: userId} = req.user;
+  const data = req.body;
+  try {
+    const isCategoryExist = await Category.getCategoryById(categoryId);
+    if (isCategoryExist === undefined) {
+      return res.status(400).json({ message: "Course not found" });
+    }
+
+    await Category.updateCategory(isCategoryExist.id, data, userId);
+    return res.status(201).json({
+      message: "Category updated successfully",
+    });
+  } catch (error) {
+    return res.status(error.statusCode || err.errorCreate.statusCode).json({
+      message: error.message || err.errorCreate.message,
+      details: error.details || null,
+    });
+  }
+}
+
 async function deleteCategory(req, res) {
   const { id: categoryId } = req.params;
   try {
@@ -39,5 +61,6 @@ async function deleteCategory(req, res) {
 
 module.exports = {
   createCategory,
+  updateCategory,
   deleteCategory
 };

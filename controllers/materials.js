@@ -19,7 +19,7 @@ async function updateMaterial(req, res) {
       });
     }
     if (isExists === undefined) {
-      await Materials.createMaterial(data, userId);
+      await Materials.createMaterial(data, userId, id);
       return res.status(201).json({
         message: "Material created successfully",
       });

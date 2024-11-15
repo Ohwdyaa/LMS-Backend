@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
 const Materials = {
-  createMaterial: async (data, userId) => {
+  createMaterial: async (data, userId, subModulesId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -16,7 +16,7 @@ const Materials = {
           id,
           data.content,
           userId,
-          data.subModulesId,
+          subModulesId,
         ]
       );
       return result.insertId;

@@ -15,7 +15,26 @@ async function createSubCategory(req, res) {
     });
   }
 }
-
+async function updateSubCategory(req, res) {
+  const {id: subCategoryId} = req.params;
+  const {id: userId} = req.user;
+  const data = req.body;
+  try {
+    const isSubCategoryExist = await subCategory.getSubCategoryById(subCategoryId);
+    if (isSubCategoryExist === undefined) {
+      return res.status(400).json({ message: "Sub category not found" });
+    }
+    await subCategory.updateSubCategory(isSubCategoryExist.id, data, userId);
+    return res.status(201).json({
+      message: "Sub category updated successfully",
+    });
+  } catch (error) {
+    return res.status(error.statusCode || err.errorCreate.statusCode).json({
+      message: error.message || err.errorCreate.message,
+      details: error.details || null,
+    });
+  }
+}
 async function deleteSubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   try {
@@ -38,5 +57,6 @@ async function deleteSubCategory(req, res) {
 
 module.exports = {
   createSubCategory,
+  updateSubCategory,
   deleteSubCategory
 };

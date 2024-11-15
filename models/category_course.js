@@ -46,7 +46,7 @@ const Categories = {
       throw error;
     }
   },
-  getByIdCategory: async (id) => {
+  getCategoryById: async (id) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 

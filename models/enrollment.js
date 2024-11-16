@@ -9,7 +9,7 @@ const Enrollment = {
         `INSERT INTO enrollments(
               id, 
               created_by,
-              user_id,
+              mentors_id,
               course_id) 
             VALUES (?,?,?,?)`,
         [
@@ -29,11 +29,11 @@ const Enrollment = {
       const [result] = await lmsManagement(
         `SELECT 
           e.id, 
-          u.id as userId,
-          u.fullname as name, 
+          m.id as mentorId,
+          m.fullname as name, 
           c.title as course
         FROM enrollments e
-        LEFT JOIN users u ON e.user_id = u.id
+        LEFT JOIN mentors m ON e.mentors_id = m.id
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.id = ?`,
         [id]
@@ -48,11 +48,11 @@ const Enrollment = {
       const result = await lmsManagement(
         `SELECT 
           e.id, 
-          u.id as userId,
-          u.fullname as name,
+          m.id as mentorId,
+          m.fullname as name,
           r.name as role
         FROM enrollments e
-        LEFT JOIN users u ON e.user_id = u.id 
+        LEFT JOIN mentors m ON e.mentors_id = m.id
         LEFT JOIN roles r ON u.role_id = r.id 
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.course_id = ? AND e.is_deleted = 0`,

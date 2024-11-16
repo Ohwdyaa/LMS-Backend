@@ -4,7 +4,7 @@ const { err } = require("../utils/custom_error");
 async function createGenders(req, res) {
   const genderData = req.body;
   try {
-    await Genders.createGender(genderData, userId);
+    await Genders.createGender(genderData);
     return res.status(201).json({
       message: "Gender created successfully",
     });

@@ -1,0 +1,201 @@
+const { lmsManagement } = require("../config/db/db");
+const { uuid } = require("../utils/tools");
+
+const Mentors = {
+  createMentor: async (data, userId) => {
+    try {
+      const id = uuid();
+      const result = await lmsManagement(
+        `
+        INSERT INTO mentors (
+            id,
+            fullname, 
+            username, 
+            email,
+            phone_number,
+            date_of_birth,
+            nik,
+            linkendin,
+            password,  
+            bpjs_kesehatan, 
+            bpjs_tk,
+            cv,
+            profile_image, 
+            npwp,
+            contract,
+            contract_start,
+            contract_end,
+            created_by
+            role_id, 
+            sub_categories_id
+        ) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
+        [
+          id,
+          data.fullname,
+          data.username,
+          data.email,
+          data.phoneNumber,
+          data.dateOfBirth,
+          data.nik,
+          data.linkendin,
+          data.password,
+          data.bpjsKesehatan,
+          data.bpjsTenagakerja,
+          data.cv,
+          data.profileImage,
+          data.npwp,
+          data.contract,
+          data.contractStart,
+          data.contractEnd,
+          userId,
+          data.roleId,
+          data.subCategoriesId
+        ]
+      );
+      return result.insertId;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updatePassword: async (id, hashedPassword) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE mentors SET password = ? where id = ?`,
+        [hashedPassword, id]
+      );
+      return result;
+    } catch (error) {
+      error;
+    }
+  },
+  updateMentor: async (id, data) => {
+    try {
+      const result = await lmsManagement(
+        ` UPDATE 
+            mentors
+          SET 
+            fullname = ?, 
+            email = ?,
+            phone_number = ?,
+            date_of_birth = ?,
+            nik = ?,
+            linkendin = ?, 
+            bpjs_kesehatan = ?,
+            bpjs_tk = ?,
+            cv = ?,
+            profile_image = ?, 
+            npwp = ?,
+            genders_id = ?,
+            updated_by = ? 
+          WHERE id = ?`,
+        [
+          data.fullname,
+          data.email,
+          data.phoneNumber,
+          data.dateOfBirth,
+          data.nik,
+          data.linkendin,
+          data.bpjsKesehatan,
+          data.bpjsTenagakerja,
+          data.cv,
+          data.profileImage,
+          data.npwp,
+          data.genderId,
+          id,
+          id,
+        ]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteMentor: async (id) => {
+    try {
+      const result = await lmsManagement(
+        `DELETE FROM mentors WHERE id = ?`,
+        id
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllMentors: async () => {
+    try {
+      const result = await lmsManagement(
+        `SELECT 
+            m.id, 
+            m.fullname, 
+            m.username, 
+            m.email, 
+            r.name as role, 
+            g.name as gender, 
+            sc.name as subCategory
+        FROM mentors m
+        LEFT JOIN roles r ON m.role_id = r.id
+        LEFT JOIN genders g ON m.genders_id = g.id
+        LEFT JOIN sub_categories sc ON m.sub_categories_id = sc.id 
+        WHERE m.is_deleted = 0`
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMentorById: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          m.id,
+          m.fullname,
+          m.username, 
+          m.email, 
+          r.name as role
+        FROM mentors m
+        LEFT JOIN roles r ON m.role_id = r.id
+        WHERE m.id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMentorsBySubCategory: async (id) => {
+    try {
+      const result = await lmsManagement(
+        `SELECT 
+          m.id,  
+          m.fullname,
+          m.username, 
+          m.email, 
+          r.name as role, 
+          sc.name as subCategory 
+        FROM mentors m
+        LEFT JOIN roles r ON m.role_id = r.id 
+        LEFT JOIN sub_categories sc ON m.sub_categories_id = sc.id
+        WHERE sc.id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  logoutMentor: async (token) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE mentors SET refresh_token = NULL WHERE refresh_token = ?`,
+        token
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+};
+
+module.exports = Mentors;

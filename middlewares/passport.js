@@ -15,6 +15,7 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
+        // validasinya diganti
         const isUserExists = await Users.getUserById(jwtPayload.u);
         if (isUserExists === undefined) {
           return cb(null, false, { message: "User not found" });

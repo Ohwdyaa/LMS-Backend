@@ -47,17 +47,17 @@ const subCategory = {
       throw error;
     }
   },
-  getAllSubCategory: async () => {
+  getAllSubCategories: async () => {
     try {
       const result =
         await lmsManagement(`
           SELECT 
             sc.id, 
             sc.name, 
-            sc.categories_id, 
+            sc.category_id, 
             c.name as categories 
           FROM sub_categories sc
-          LEFT JOIN categories c ON sc.categories_id = c.id`);
+          LEFT JOIN categories c ON sc.category_id = c.id`);
       return result;
     } catch (error) {
       throw error;

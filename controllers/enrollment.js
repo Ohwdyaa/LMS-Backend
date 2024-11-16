@@ -1,16 +1,16 @@
 const Enrollment = require("../models/enrollment");
-const Users = require("../models/users");
+const Mentors = require("../models/mentors");
 const { err } = require("../utils/custom_error");
  
 async function enrollMentor(req, res) { 
-  const data = req.body;
+  const {mentorId, courseId} = req.body;
   const {id: userId} = req.user;
   try {
-    const isMentorExist = await Users.getUserById(data.userId);
+    const isMentorExist = await Mentors.getMentorById(mentorId);
     if(isMentorExist === undefined){
       return res.status(400).json({ message: "Mentor not found" });
     }
-    await Enrollment.enrollMentor(data.courseId, isMentorExist.id, userId);
+    await Enrollment.enrollMentor(courseId, isMentorExist.id, userId);
     return res.status(201).json({
       message: "Enroll mentor successfully",
     });

@@ -7,7 +7,7 @@ const Users = {
       const id = uuid();
       const result = await lmsManagement(
         `
-        INSERT INTO users (
+        INSERT INTO teams (
             id,
             username, 
             email,
@@ -50,7 +50,7 @@ const Users = {
   updatePassword: async (id, hashedPassword) => {
     try {
       const result = await lmsManagement(
-        `UPDATE users SET password = ? where id = ?`,
+        `UPDATE teams SET password = ? where id = ?`,
         [hashedPassword, id]
       );
       return result;
@@ -62,7 +62,7 @@ const Users = {
     try {
       const result = await lmsManagement(
         ` UPDATE 
-            users
+            teams
           SET 
           username = ?,
           profile_image = ?,
@@ -96,7 +96,7 @@ const Users = {
   deleteUser: async (id) => {
     try {
       const result = await lmsManagement(
-        `DELETE FROM users WHERE id = ?`,
+        `DELETE FROM teams WHERE id = ?`,
         id
       );
       return result;
@@ -117,7 +117,7 @@ const Users = {
         r.name as role, 
         g.name as gender, 
         rg.name as religion
-          FROM users u
+          FROM teams u
           LEFT JOIN roles r ON u.role_id = r.id
           LEFT JOIN genders g ON u.gender_id = g.id
           LEFT JOIN religions  rg ON u.religion_id = rg.id `
@@ -136,7 +136,7 @@ const Users = {
           u.email, 
           u.fullname, 
           u.role_id, r.name as role
-          FROM users u
+          FROM teams u
         LEFT JOIN roles r ON u.role_id = r.id
         WHERE u.id = ?`,
         [id]
@@ -156,7 +156,7 @@ const Users = {
           u.password, 
           u.fullname, 
           u.role_id, r.name as role 
-        FROM users u
+        FROM teams u
         LEFT JOIN roles r ON u.role_id = r.id WHERE email = ?`,
         [email]
       );
@@ -175,7 +175,7 @@ const Users = {
           u.password, 
           u.fullname, 
           r.name as role 
-        FROM users u
+        FROM teams u
         LEFT JOIN roles r ON u.role_id = r.id 
         WHERE u.role_id = ?`,
         [id]
@@ -188,7 +188,7 @@ const Users = {
   logoutUser: async (token) => {
     try {
       const result = await lmsManagement(
-        `UPDATE users SET refresh_token = NULL WHERE refresh_token = ?`,
+        `UPDATE teams SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );
       return result;

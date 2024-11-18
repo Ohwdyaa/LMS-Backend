@@ -22,8 +22,7 @@ passport.use(
           if(isUserExists === undefined){
             return cb(null, false, { message: "User not found" });
           }
-        }
-        console.log(isUserExists)
+        } 
         return cb(null, isUserExists);
       } catch (error) {
         return error;

@@ -6,6 +6,7 @@ const publicKey = fs.readFileSync(
   "utf8"
 );
 const Users = require("../models/users");
+const Mentors = require("../models/mentors");
 
 passport.use(
   new Strategy(
@@ -15,11 +16,14 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        // validasinya diganti
-        const isUserExists = await Users.getUserById(jwtPayload.u);
+        let isUserExists = await Users.getUserById(jwtPayload.u);
         if (isUserExists === undefined) {
-          return cb(null, false, { message: "User not found" });
+          isUserExists = await Mentors.getMentorById(jwtPayload.u);
+          if(isUserExists === undefined){
+            return cb(null, false, { message: "User not found" });
+          }
         }
+        console.log(isUserExists)
         return cb(null, isUserExists);
       } catch (error) {
         return error;

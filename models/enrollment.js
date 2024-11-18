@@ -9,22 +9,54 @@ const Enrollment = {
         `INSERT INTO enrollments(
               id, 
               created_by,
-              mentors_id,
-              course_id) 
+              course_id,
+              mentors_id) 
             VALUES (?,?,?,?)`,
-        [
-          id,
-          userId,
-          mentorId,
-          courseId,
-        ]
+        [id, userId, courseId, mentorId]
       );
+      
+    console.log(result)
       return result.insertId;
     } catch (error) {
       throw error;
     }
   },
-  existingEnroll: async(id) => {
+  updateEnroll: async (id) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          enrollments
+        SET 
+          is_deleted = 0,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  existingEntry: async (mentorId, courseId) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          e.id, 
+          m.fullname as name, 
+          c.title as course
+        FROM enrollments e
+        LEFT JOIN courses c ON e.course_id = c.id 
+        LEFT JOIN mentors m ON e.mentors_id = m.id
+        WHERE e.course_id = ? AND e.mentors_id = ?`,
+        [mentorId, courseId]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  existingEnroll: async (id) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -42,8 +74,8 @@ const Enrollment = {
     } catch (error) {
       throw error;
     }
-  }, 
-  getCourseParticipants: async(courseId) => {
+  },
+  getCourseParticipants: async (courseId) => {
     try {
       const result = await lmsManagement(
         `SELECT 
@@ -63,17 +95,23 @@ const Enrollment = {
       throw error;
     }
   },
-  unEnroll: async(id) => {
+  unEnroll: async (id, userId) => {
     try {
       const result = await lmsManagement(
-        `DELETE FROM enrollments where id = ?`,
-        [id]
+        `UPDATE 
+          enrollments
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
       );
       return result;
     } catch (error) {
       throw error;
     }
-  }
+  },
 };
 
 module.exports = Enrollment;

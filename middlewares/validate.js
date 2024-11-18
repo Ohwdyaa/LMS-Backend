@@ -355,6 +355,7 @@ function validateMiddleware(schema) {
     } catch (error) {
       if (error instanceof ZodError) {
         const errorMessages = error.errors.map((issue) => ({
+          field: issue.path[1],
           message: issue.message,
         }));
         res.status(400).json({ error: "Invalid data", details: errorMessages });

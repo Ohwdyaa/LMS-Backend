@@ -213,7 +213,7 @@ const updateCourseSchema = z.object({
     id: z.string().uuid("Invalid UUID format") 
   }),
   body: z.object({
-    name: z
+    title : z
       .string()
       .min(1, "Course name cannot be empty")
       .max(200, "Course name cannot exceed 200 characters")
@@ -355,7 +355,7 @@ function validateMiddleware(schema) {
     } catch (error) {
       if (error instanceof ZodError) {
         const errorMessages = error.errors.map((issue) => ({
-          field: issue.path[1],
+          field : issue.path[1],
           message: issue.message,
         }));
         res.status(400).json({ error: "Invalid data", details: errorMessages });

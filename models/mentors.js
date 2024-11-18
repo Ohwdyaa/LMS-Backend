@@ -27,7 +27,7 @@ const Mentors = {
             contract_end,
             created_by,
             role_id, 
-            sub_categories_id
+            sub_category_id
         ) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
@@ -51,7 +51,7 @@ const Mentors = {
           data.contractEnd,
           userId,
           data.roleId,
-          data.subCategoriesId
+          data.subCategoryId
         ]
       );
       return result.insertId;
@@ -81,7 +81,7 @@ const Mentors = {
             phone_number = ?,
             date_of_birth = ?,
             nik = ?,
-            linkendin = ?, 
+            linkedin = ?, 
             bpjs_kesehatan = ?,
             bpjs_tk = ?,
             cv = ?,
@@ -96,7 +96,7 @@ const Mentors = {
           data.phoneNumber,
           data.dateOfBirth,
           data.nik,
-          data.linkendin,
+          data.linkedin,
           data.bpjsKesehatan,
           data.bpjsTenagakerja,
           data.cv,
@@ -137,7 +137,7 @@ const Mentors = {
         FROM mentors m
         LEFT JOIN roles r ON m.role_id = r.id
         LEFT JOIN genders g ON m.genders_id = g.id
-        LEFT JOIN sub_categories sc ON m.sub_categories_id = sc.id 
+        LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
         WHERE m.is_deleted = 0`
       );
       return result;
@@ -197,7 +197,7 @@ const Mentors = {
           sc.name as subCategory 
         FROM mentors m
         LEFT JOIN roles r ON m.role_id = r.id 
-        LEFT JOIN sub_categories sc ON m.sub_categories_id = sc.id
+        LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id
         WHERE sc.id = ?`,
         [id]
       );

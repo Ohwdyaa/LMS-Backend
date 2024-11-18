@@ -10,12 +10,10 @@ const Enrollment = {
               id, 
               created_by,
               course_id,
-              mentors_id) 
+              mentor_id) 
             VALUES (?,?,?,?)`,
         [id, userId, courseId, mentorId]
       );
-      
-    console.log(result)
       return result.insertId;
     } catch (error) {
       throw error;
@@ -47,8 +45,8 @@ const Enrollment = {
           c.title as course
         FROM enrollments e
         LEFT JOIN courses c ON e.course_id = c.id 
-        LEFT JOIN mentors m ON e.mentors_id = m.id
-        WHERE e.course_id = ? AND e.mentors_id = ?`,
+        LEFT JOIN mentors m ON e.mentor_id = m.id
+        WHERE e.course_id = ? AND e.mentor_id = ?`,
         [mentorId, courseId]
       );
       return result;
@@ -65,7 +63,7 @@ const Enrollment = {
           m.fullname as name, 
           c.title as course
         FROM enrollments e
-        LEFT JOIN mentors m ON e.mentors_id = m.id
+        LEFT JOIN mentors m ON e.mentor_id = m.id
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.id = ?`,
         [id]
@@ -84,7 +82,7 @@ const Enrollment = {
           m.fullname as name,
           r.name as role
         FROM enrollments e
-        LEFT JOIN mentors m ON e.mentors_id = m.id
+        LEFT JOIN mentors m ON e.mentor_id = m.id
         LEFT JOIN roles r ON u.role_id = r.id 
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.course_id = ? AND e.is_deleted = 0`,

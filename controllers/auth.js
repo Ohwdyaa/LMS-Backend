@@ -1,10 +1,10 @@
 const Users = require("../models/users");
+const Mentors = require("../models/mentors");
 const Permissions = require("./permissions");
 const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
-
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -45,9 +45,14 @@ async function login(req, res) {
 
 async function verifyUser(email, password) {
   try {
-    const isUserExists = await Users.getUserByEmail(email);
+    let isUserExists = await Users.getUserByEmail(email);
     if (isUserExists === undefined) {
-      return res.status(400).json({ message: "no user with registered email" });
+      isUserExists = await Mentors.getMentorByEmail(email);
+      if (isUserExists === undefined) {
+        return res
+          .status(400)
+          .json({ message: "no user with registered email" });
+      }
     }
     const isValid = await verifyPassword(password, isUserExists.password);
     return isValid ? isUserExists : undefined;

@@ -25,7 +25,7 @@ const Mentors = {
             contract,
             contract_start,
             contract_end,
-            created_by
+            created_by,
             role_id, 
             sub_categories_id
         ) 
@@ -157,6 +157,27 @@ const Mentors = {
         FROM mentors m
         LEFT JOIN roles r ON m.role_id = r.id
         WHERE m.id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMentorByEmail: async (id) => {
+    try {
+      const [result] = await lmsManagement(
+        `SELECT 
+          m.id,
+          m.fullname,
+          m.username, 
+          m.email, 
+          m.password,
+          m.role_id,
+          r.name as role
+        FROM mentors m
+        LEFT JOIN roles r ON m.role_id = r.id
+        WHERE m.email = ?`,
         [id]
       );
       return result;

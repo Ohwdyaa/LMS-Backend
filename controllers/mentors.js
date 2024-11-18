@@ -25,7 +25,7 @@ async function createMentor(req, res) {
 }
 
 async function updateMentor(req, res) {
-  const { id: mentorId } = req.params; //masih dari params
+  const { id: mentorId } = req.user; 
   const data = req.body;
   try {
     const isMentorExists = await Mentors.getMentorById(mentorId);

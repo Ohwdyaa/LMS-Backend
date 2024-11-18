@@ -108,11 +108,29 @@ async function getMentorBySubCategory(req, res) {
     });
   }
 }
+async function getMentorById(req, res) {
+  const {id: mentorId} = req.params;
+  try {
+    const isMentorExist = await Mentors.getMentorById(mentorId);
+    if (isMentorExist === undefined) {
+      return res.status(400).json({ message: "Mentor not found" });
+    }
+    return res.status(200).json({
+      data: isMentorExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   createMentor,
   updateMentor,
   deleteMentor,
   getAllMentors,
-  getMentorBySubCategory
+  getMentorBySubCategory,
+  getMentorById
 };

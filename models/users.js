@@ -107,20 +107,21 @@ const Users = {
   getAllUser: async () => {
     try {
       const result = await lmsManagement(
-        `SELECT u.id, 
-        u.username, 
-        u.email, 
-        u.fullname, 
-        u.gender_id, 
-        u.role_id, 
-        u.religion_id, 
-        r.name as role, 
-        g.name as gender, 
-        rg.name as religion
-          FROM teams u
-          LEFT JOIN roles r ON u.role_id = r.id
-          LEFT JOIN genders g ON u.gender_id = g.id
-          LEFT JOIN religions  rg ON u.religion_id = rg.id `
+        `SELECT 
+          t.id, 
+          t.username, 
+          t.email, 
+          t.fullname, 
+          t.gender_id, 
+          t.role_id, 
+          t.religion_id, 
+          r.name as role, 
+          g.name as gender, 
+          rg.name as religion
+        FROM teams t
+        LEFT JOIN roles r ON t.role_id = r.id
+        LEFT JOIN genders g ON t.gender_id = g.id
+        LEFT JOIN religions  rg ON t.religion_id = rg.id `
       );
       return result;
     } catch (error) {
@@ -131,14 +132,14 @@ const Users = {
     try {
       const [result] = await lmsManagement(
         `SELECT 
-          u.id,
-          u.username, 
-          u.email, 
-          u.fullname, 
-          u.role_id, r.name as role
-          FROM teams u
-        LEFT JOIN roles r ON u.role_id = r.id
-        WHERE u.id = ?`,
+          t.id,
+          t.username, 
+          t.email, 
+          t.fullname, 
+          t.role_id, r.name as role
+          FROM teams t
+        LEFT JOIN roles r ON t.role_id = r.id
+        WHERE t.id = ?`,
         [id]
       );
       return result;
@@ -150,14 +151,14 @@ const Users = {
     try {
       const [result] = await lmsManagement(
         `SELECT 
-          u.id, 
-          u.username, 
-          u.email, 
-          u.password, 
-          u.fullname, 
-          u.role_id, r.name as role 
-        FROM teams u
-        LEFT JOIN roles r ON u.role_id = r.id WHERE email = ?`,
+          t.id, 
+          t.username, 
+          t.email, 
+          t.password, 
+          t.fullname, 
+          t.role_id, r.name as role 
+        FROM teams t
+        LEFT JOIN roles r ON t.role_id = r.id WHERE email = ?`,
         [email]
       );
       return result;
@@ -169,15 +170,15 @@ const Users = {
     try {
       const result = await lmsManagement(
         `SELECT 
-          u.id, 
-          u.username, 
-          u.email, 
-          u.password, 
-          u.fullname, 
+          t.id, 
+          t.username, 
+          t.email, 
+          t.password, 
+          t.fullname, 
           r.name as role 
-        FROM teams u
-        LEFT JOIN roles r ON u.role_id = r.id 
-        WHERE u.role_id = ?`,
+        FROM teams t
+        LEFT JOIN roles r ON t.role_id = r.id 
+        WHERE t.role_id = ?`,
         [id]
       );
       return result;

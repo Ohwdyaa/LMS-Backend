@@ -1,19 +1,30 @@
 const Enrollment = require("../models/enrollment");
-const Mentors = require("../models/mentors");
+const Course = require("../models/course");
 const { err } = require("../utils/custom_error");
- 
-async function enrollMentor(req, res) { 
-  const {mentorId, courseId} = req.body;
-  const {id: userId} = req.user;
+
+async function enrollMentor(req, res) {
+  const { mentorId, courseId } = req.body;
+  const { id: userId } = req.user;
   try {
-    const isMentorExist = await Mentors.getMentorById(mentorId);
-    if(isMentorExist === undefined){
-      return res.status(400).json({ message: "Mentor not found" });
+    const isCourseExist = await Course.getCourseById(courseId);
+    if (isCourseExist === undefined) {
+      return res.status(400).json({
+        message: "Invalid course ID",
+      });
     }
-    await Enrollment.enrollMentor(courseId, isMentorExist.id, userId);
-    return res.status(201).json({
-      message: "Enroll mentor successfully",
-    });
+    const isEnrollExist = await Enrollment.existingEntry(mentorId, isCourseExist.id);
+    if (isEnrollExist !== undefined) {
+      await Enrollment.updateEnroll(isEnrollExist.id);
+      return res.status(201).json({
+        message: "Mentor is active",
+      });
+    }
+    if (isEnrollExist === undefined) {
+      await Enrollment.enrollMentor(courseId, mentorId, userId);
+      return res.status(201).json({
+        message: "Enroll mentor successfully",
+      });
+    }
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
       message: error.message || err.errorCreate.message,
@@ -23,13 +34,14 @@ async function enrollMentor(req, res) {
 }
 
 async function unEnroll(req, res) {
-  const {id} = req.params;
+  const { id } = req.params;
+  const { id: userId } = req.user;
   try {
     const isEnrollExist = await Enrollment.existingEnroll(id);
-    if(isEnrollExist === undefined){
+    if (isEnrollExist === undefined) {
       return res.status(400).json({ message: "Enrollment not found" });
     }
-    await Enrollment.unEnroll(isEnrollExist.id);
+    await Enrollment.unEnroll(isEnrollExist.id, userId);
     return res.status(200).json({
       message: "Un enroll successfully",
     });
@@ -43,5 +55,5 @@ async function unEnroll(req, res) {
 
 module.exports = {
   enrollMentor,
-  unEnroll
+  unEnroll,
 };

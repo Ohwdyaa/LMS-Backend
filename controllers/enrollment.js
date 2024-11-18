@@ -1,5 +1,4 @@
 const Enrollment = require("../models/enrollment");
-const Mentors = require("../models/mentors");
 const Course = require("../models/course");
 const { err } = require("../utils/custom_error");
 

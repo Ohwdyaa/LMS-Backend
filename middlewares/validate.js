@@ -180,9 +180,9 @@ const subCourseCategorySchema = z.object({
       .min(1, "Subcategory name cannot be empty")
       .max(100, "Subcategory name cannot exceed 100 characters")
       .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
-    categoriesId: z
-      .string()
-      .uuid("Invalid UUID format for categoriesId"),
+    // categoriesId: z
+    //   .string()
+    //   .uuid("Invalid UUID format for categoriesId"),
   }),
 });
 

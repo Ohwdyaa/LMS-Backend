@@ -83,7 +83,7 @@ const Enrollment = {
           r.name as role
         FROM enrollments e
         LEFT JOIN mentors m ON e.mentor_id = m.id
-        LEFT JOIN roles r ON u.role_id = r.id 
+        LEFT JOIN roles r ON m.role_id = r.id 
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.course_id = ? AND e.is_deleted = 0`,
         [courseId]

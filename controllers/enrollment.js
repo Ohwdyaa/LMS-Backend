@@ -12,8 +12,8 @@ async function enrollMentor(req, res) {
       return res.status(400).json({
         message: "Invalid course ID",
       });
-    }
-    const isEnrollExist = await Enrollment.existingEntry(mentorId, isCourseExist.id);
+    }  
+    const isEnrollExist = await Enrollment.existingEntry(isCourseExist.id, mentorId);
     if (isEnrollExist !== undefined) {
       await Enrollment.updateEnroll(isEnrollExist.id, userId);
       return res.status(201).json({

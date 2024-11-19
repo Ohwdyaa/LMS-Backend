@@ -36,7 +36,7 @@ const Enrollment = {
       throw error;
     }
   },
-  existingEntry: async (mentorId, courseId) => {
+  existingEntry: async (courseId, mentorId) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -45,9 +45,10 @@ const Enrollment = {
           m.fullname as name, 
           c.title as course
         FROM enrollments e
-        LEFT JOIN mentors m ON e.mentor_id = m.id AND e.mentor_id = ?
-        LEFT JOIN courses c ON e.course_id = c.id AND e.course_id = ?`,
-        [mentorId, courseId]
+        LEFT JOIN mentors m ON e.mentor_id = m.id 
+        LEFT JOIN courses c ON e.course_id = c.id
+        WHERE e.course_id = ? AND e.mentor_id = ?`,
+        [courseId, mentorId]
       );
       return result;
     } catch (error) {

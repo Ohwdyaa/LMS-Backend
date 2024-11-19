@@ -43,7 +43,7 @@ const updateUserSchema = z.object({
       .min(1, "Fullname cannot be empty"),
     phone_number: z
       .string()
-      .regex(/^0\d{10,}$/, "Phone number must be 11 digits starting with 0"),
+      .regex(/^0\d{10,}$/, "Phone number must be at least 11 digits starting with 0"),
     address: z
       .string()
       .optional()
@@ -71,6 +71,152 @@ const deleteUserSchema = z.object({
       .uuid("Invalid UUID format")
   })
 });
+const mentorSchema = z.object({
+  body: z.object({
+    fullname: z
+      .string()
+      .regex(/^[a-zA-Z\s]+$/, "Fullname should contain only alphabets")
+      .min(1, "Fullname cannot be empty"),
+    username: z
+      .string()
+      .regex(/^[a-zA-Z0-9]+$/, "Username cannot contain symbols or spaces")
+      .min(3, "Username must be at least 3 characters long"),
+    email: z
+      .string()
+      .email("Invalid email format")
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
+    phoneNumber: z
+      .string()
+      .regex(/^0\d{10,13}$/, "Phone number must be at least 11 digits start with 0"),
+    dateOfBirth: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+    nik: z
+      .string()
+      .regex(/^\d{16}$/, "NIK must be exactly 16 digits"),
+    linkedin: z
+      .string()
+      .url("Invalid LinkedIn URL"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long"),
+    bpjsKesehatan: z
+      .string()
+      .regex(/^\d+$/, "BPJS Kesehatan number must contain only digits"),
+    bpjsTenagakerja: z
+      .string()
+      .regex(/^\d+$/, "BPJS Tenagakerja number must contain only digits"),
+    cv: z
+      .string(),
+    profileImage: z
+      .string()
+      .url("Invalid URL format"),
+    npwp: z
+      .string()
+      .regex(/^\d{15}$/, "NPWP must be exactly 15 digits"),
+    contract: z
+      .string(),
+    contractStart: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract start date must be in YYYY-MM-DD format"),
+    contractEnd: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract end date must be in YYYY-MM-DD format")
+      .optional(), // Optional field
+    roleId: z
+      .string()
+      .uuid("Invalid UUID format"),
+    subCategoryId: z
+      .string()
+      .uuid("Invalid UUID format")
+  }),
+});
+const updateMentorSchema = z.object({
+  body: z
+    .object({
+      fullname: z
+        .string()
+        .min(1, "Fullname cannot be empty")
+        .regex(/^[a-zA-Z\s]+$/, "Fullname should only contain letters and spaces")
+        .optional(),
+      username: z
+        .string()
+        .min(1, "Username cannot be empty")
+        .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters and numbers")
+        .optional(),
+      email: z
+        .string()
+        .email("Invalid email format")
+        .optional(),
+      phoneNumber: z
+        .string()
+        .regex(/^0\d{10,}$/, "Phone number must be at least 11 digits starting with 0")
+        .optional(),
+      dateOfBirth: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "Date of birth must be in YYYY-MM-DD format")
+        .optional(),
+      nik: z
+        .string()
+        .regex(/^\d{16}$/, "NIK must be 16 digits")
+        .optional(),
+      linkedin: z
+        .string()
+        .url("Invalid LinkedIn URL")
+        .optional(),
+      password: z
+        .string()
+        .min(6, "Password must be at least 6 characters")
+        .optional(),
+      bpjsKesehatan: z
+        .string()
+        .regex(/^\d+$/, "BPJS Kesehatan card number must be numeric")
+        .optional(),
+      bpjsTenagakerja: z
+        .string()
+        .regex(/^\d+$/, "BPJS Tenagakerja card number must be numeric")
+        .optional(),
+      cv: z
+        .string()
+        .url("Invalid CV URL")
+        .optional(),
+      profileImage: z
+        .string()
+        .url("Invalid Profile Image URL")
+        .optional(),
+      npwp: z
+        .string()
+        .regex(/^\d{15}$/, "NPWP must be 15 digits")
+        .optional(),
+      contract: z
+        .string()
+        .optional(),
+      contractStart: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract start date must be in YYYY-MM-DD format")
+        .optional(),
+      contractEnd: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract end date must be in YYYY-MM-DD format")
+        .optional(),
+      roleId: z
+        .string()
+        .uuid("Invalid UUID format for role ID")
+        .optional(),
+      subCategoryId: z
+        .string()
+        .uuid("Invalid UUID format for sub-category ID")
+        .optional(),
+    })
+});
+const deleteMentorSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .uuid("Invalid UUID format")
+  })
+});
+
 
 const changeRoleSchema = z.object({
   params: z.object({
@@ -394,5 +540,8 @@ module.exports = {
   deleteModuleCourseSchema,
   subModuleCourseSchema,
   updateSubModuleCourseSchema,
-  deleteSubModuleCourseSchema
+  deleteSubModuleCourseSchema,
+  mentorSchema, 
+  updateMentorSchema,
+  deleteMentorSchema
 };

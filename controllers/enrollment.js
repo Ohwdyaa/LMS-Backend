@@ -15,7 +15,7 @@ async function enrollMentor(req, res) {
     }
     const isEnrollExist = await Enrollment.existingEntry(mentorId, isCourseExist.id);
     if (isEnrollExist !== undefined) {
-      await Enrollment.updateEnroll(isEnrollExist.id);
+      await Enrollment.updateEnroll(isEnrollExist.id, userId);
       return res.status(201).json({
         message: "Mentor is active",
       });

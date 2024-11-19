@@ -83,11 +83,11 @@ async function getAllTeams(req, res) {
       return res.status(400).json({ message: "No users found" });
     }
     const teamList = [];
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < teams.length; i++) {
       const team = teams[i];
       const teamObj = new Object();
       teamObj.id = team.id;
-      teamObj.teamname = team.username;
+      teamObj.username = team.username;
       teamObj.email = team.email;
       teamObj.fullname = team.fullname;
       teamObj.roleId = team.role_id;

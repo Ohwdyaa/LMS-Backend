@@ -76,7 +76,9 @@ async function getAllMentors(req, res) {
       const mentorObj = new Object();
       mentorObj.id = mentor.id;
       mentorObj.fullname = mentor.fullname;
-      mentorObj.email = mentor.email;
+      mentorObj.username = mentor.username;
+      mentorObj.fullname = mentor.fullname;
+      mentorObj.role = mentor.role;
       mentorObj.subCategory = mentor.subCategory;
       mentorList.push(mentorObj);
     }
@@ -108,11 +110,29 @@ async function getMentorBySubCategory(req, res) {
     });
   }
 }
+async function getMentorById(req, res) {
+  const {id: mentorId} = req.params;
+  try {
+    const isMentorExist = await Mentors.getMentorById(mentorId);
+    if (isMentorExist === undefined) {
+      return res.status(400).json({ message: "Mentor not found" });
+    }
+    return res.status(200).json({
+      data: isMentorExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: err.errorSelect.message,
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   createMentor,
   updateMentor,
   deleteMentor,
   getAllMentors,
-  getMentorBySubCategory
+  getMentorBySubCategory,
+  getMentorById
 };

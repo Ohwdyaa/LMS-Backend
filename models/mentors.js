@@ -153,9 +153,13 @@ const Mentors = {
           m.fullname,
           m.username, 
           m.email, 
-          r.name as role
+          r.name as role,
+          g.name as gender,
+          sc.name as subCategory
         FROM mentors m
         LEFT JOIN roles r ON m.role_id = r.id
+        LEFT JOIN genders g ON m.genders_id = g.id
+        LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
         WHERE m.id = ?`,
         [id]
       );

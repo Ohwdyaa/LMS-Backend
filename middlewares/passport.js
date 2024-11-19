@@ -5,7 +5,7 @@ const publicKey = fs.readFileSync(
   "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
-const Users = require("../models/users");
+const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
 
 passport.use(
@@ -16,13 +16,13 @@ passport.use(
     },
     async function (jwtPayload, cb) {
       try {
-        let isUserExists = await Users.getUserById(jwtPayload.u);
+        let isUserExists = await Teams.getTeamById(jwtPayload.u);
         if (isUserExists === undefined) {
           isUserExists = await Mentors.getMentorById(jwtPayload.u);
-          if(isUserExists === undefined){
+          if (isUserExists === undefined) {
             return cb(null, false, { message: "User not found" });
           }
-        } 
+        }
         return cb(null, isUserExists);
       } catch (error) {
         return error;

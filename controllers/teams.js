@@ -1,10 +1,10 @@
-const Users = require("../models/users");
+const Teams = require("../models/teams");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
-async function createUsers(req, res) {
-  const data = req.body;
+async function createTeam(req, res) {
   const { id: userId } = req.user;
+  const data = req.body;
   try {
     const password = "112233";
     const hash = await hashPassword(password);
@@ -12,7 +12,7 @@ async function createUsers(req, res) {
       ...data,
       password: hash,
     };
-    await Users.createUser(userData, userId);
+    await Teams.createTeam(userData, userId);
 
     return res.status(201).json({
       message: "User created successfully",
@@ -25,16 +25,16 @@ async function createUsers(req, res) {
   }
 }
 
-async function updateUsers(req, res) {
-  const { id: userId } = req.user; 
-  const userData = req.body;
+async function updateTeam(req, res) {
+  const { id: userId } = req.user;
+  const data = req.body;
   try {
-    const isUserExists = await Users.getUserById(userId);
-    if (isUserExists === undefined) {
+    const isTeamExists = await Teams.getTeamById(userId);
+    if (isTeamExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.updateUser(isUserExists.id, userData);
+    await Teams.updateTeam(isTeamExists.id, data);
     return res.status(200).json({
       message: "User updated successfully",
     });
@@ -46,15 +46,15 @@ async function updateUsers(req, res) {
   }
 }
 
-async function deleteUsers(req, res) {
-  const { id: userId } = req.params;
+async function deleteTeam(req, res) {
+  const { id: teamId } = req.params;
   try {
-    const isUserExists = await Users.getUserById(userId);
-    if (isUserExists === undefined) {
+    const isTeamExists = await Teams.getTeamById(teamId);
+    if (isTeamExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Users.deleteUser(isUserExists.id);
+    await Teams.deleteTeam(isTeamExists.id);
     return res.status(200).json({
       message: "User deleted successfully",
     });
@@ -66,36 +66,36 @@ async function deleteUsers(req, res) {
   }
 }
 
-async function getAllUsers(req, res) {
+async function getAllTeams(req, res) {
   const { role } = req.query;
   try {
-    if(role){
-      const isUsersExist = await Users.getUserByRole(role);
-      if (isUsersExist === undefined) {
+    if (role !== undefined) {
+      const isTeamExists = await Teams.getTeamByRole(role);
+      if (isTeamExists === undefined) {
         return res.status(400).json({ message: "Users not found" });
       }
       return res.status(200).json({
-        data: isUsersExist,
+        data: isTeamExists,
       });
     }
-    const users = await Users.getAllUser();
-    if (!users || users.length === 0) {
+    const teams = await Teams.getAllTeams();
+    if (!teams || teams.length === 0) {
       return res.status(400).json({ message: "No users found" });
     }
-    const userList = [];
+    const teamList = [];
     for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      const userObj = new Object();
-      userObj.id = user.id;
-      userObj.username = user.username;
-      userObj.email = user.email;
-      userObj.fullname = user.fullname;
-      userObj.roleId = user.role_id;
-      userObj.role = user.role;
-      userList.push(userObj);
+      const team = teams[i];
+      const teamObj = new Object();
+      teamObj.id = team.id;
+      teamObj.teamname = team.username;
+      teamObj.email = team.email;
+      teamObj.fullname = team.fullname;
+      teamObj.roleId = team.role_id;
+      teamObj.role = team.role;
+      teamList.push(teamObj);
     }
     return res.status(200).json({
-      data: userList,
+      data: teamList,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
@@ -106,8 +106,8 @@ async function getAllUsers(req, res) {
 }
 
 module.exports = {
-  createUsers,
-  updateUsers,
-  deleteUsers,
-  getAllUsers,
+  createTeam,
+  updateTeam,
+  deleteTeam,
+  getAllTeams,
 };

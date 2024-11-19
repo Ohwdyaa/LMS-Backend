@@ -3,7 +3,8 @@ const Course = require("../models/course");
 const { err } = require("../utils/custom_error");
 
 async function enrollMentor(req, res) {
-  const { mentorId, courseId } = req.body;
+  const { id: courseId } = req.params;
+  const { mentorId } = req.body;
   const { id: userId } = req.user;
   try {
     const isCourseExist = await Course.getCourseById(courseId);
@@ -14,7 +15,7 @@ async function enrollMentor(req, res) {
     }
     const isEnrollExist = await Enrollment.existingEntry(mentorId, isCourseExist.id);
     if (isEnrollExist !== undefined) {
-      await Enrollment.updateEnroll(isEnrollExist.id);
+      await Enrollment.updateEnroll(isEnrollExist.id, userId);
       return res.status(201).json({
         message: "Mentor is active",
       });

@@ -1,4 +1,4 @@
-const Users = require("../models/users");
+const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
 const Permissions = require("./permissions");
 const { generateJWT, verifyJWT } = require("../utils/jwt");
@@ -13,18 +13,18 @@ async function login(req, res) {
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
-    const userPermissions = await Permissions.getPermissions(verifiedUser);
-    if (userPermissions === undefined) {
-      return res.status(400).json({ message: "No permissions found for user" });
+    const getAccess = await Permissions.getPermissions(verifiedUser);
+    if (getAccess === undefined) {
+      return res.status(400).json({ message: "No access rights found for user." });
     }
-    const token = await generateJWT(verifiedUser, userPermissions);
+    const token = await generateJWT(verifiedUser, getAccess);
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);
 
     if (validateAccess !== "Access granted") {
       return res
         .status(403)
-        .json({ message: "Access denied: No modules available for this user" });
+        .json({ message: "Access denied: No access rights are available for this user." });
     }
     return res.status(200).json({
       message: "Login successful",
@@ -45,7 +45,7 @@ async function login(req, res) {
 
 async function verifyUser(email, password) {
   try {
-    let isUserExists = await Users.getUserByEmail(email);
+    let isUserExists = await Teams.getTeamByEmail(email);
     if (isUserExists === undefined) {
       isUserExists = await Mentors.getMentorByEmail(email);
       if (isUserExists === undefined) {

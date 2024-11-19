@@ -1,8 +1,8 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-const Users = {
-  createUser: async (data, userId) => {
+const Teams = {
+  createTeam: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
@@ -58,7 +58,7 @@ const Users = {
      error;
     }
   },
-  updateUser: async (id, data) => {
+  updateTeam: async (id, data) => {
     try {
       const result = await lmsManagement(
         ` UPDATE 
@@ -93,7 +93,7 @@ const Users = {
       throw error;
     }
   },
-  deleteUser: async (id) => {
+  deleteTeam: async (id) => {
     try {
       const result = await lmsManagement(
         `DELETE FROM teams WHERE id = ?`,
@@ -104,7 +104,7 @@ const Users = {
       throw error;
     }
   },
-  getAllUser: async () => {
+  getAllTeams: async () => {
     try {
       const result = await lmsManagement(
         `SELECT 
@@ -128,7 +128,7 @@ const Users = {
       throw error;
     }
   },
-  getUserById: async (id) => {
+  getTeamById: async (id) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -147,7 +147,7 @@ const Users = {
       throw error;
     }
   },
-  getUserByEmail: async (email) => {
+  getTeamByEmail: async (email) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -166,7 +166,7 @@ const Users = {
       throw error;
     }
   },
-  getUserByRole: async (id) => {
+  getTeamByRole: async (id) => {
     try {
       const result = await lmsManagement(
         `SELECT 
@@ -186,7 +186,7 @@ const Users = {
       throw error;
     }
   },
-  logoutUser: async (token) => {
+  logoutTeam: async (token) => {
     try {
       const result = await lmsManagement(
         `UPDATE teams SET refresh_token = NULL WHERE refresh_token = ?`,
@@ -199,4 +199,4 @@ const Users = {
   },
 };
 
-module.exports = Users;
+module.exports = Teams;

@@ -19,7 +19,7 @@ const Enrollment = {
       throw error;
     }
   },
-  updateEnroll: async (id) => {
+  updateEnroll: async (id, userId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -29,7 +29,7 @@ const Enrollment = {
           updated_at = NOW(),
           updated_by = ?
         WHERE id = ?`,
-        [id]
+        [userId, id]
       );
       return result;
     } catch (error) {
@@ -41,12 +41,12 @@ const Enrollment = {
       const [result] = await lmsManagement(
         `SELECT 
           e.id, 
+          m.id as mentorId,
           m.fullname as name, 
           c.title as course
         FROM enrollments e
-        LEFT JOIN courses c ON e.course_id = c.id 
-        LEFT JOIN mentors m ON e.mentor_id = m.id
-        WHERE e.course_id = ? AND e.mentor_id = ?`,
+        LEFT JOIN mentors m ON e.mentor_id = m.id AND e.mentor_id = ?
+        LEFT JOIN courses c ON e.course_id = c.id AND e.course_id = ?`,
         [mentorId, courseId]
       );
       return result;

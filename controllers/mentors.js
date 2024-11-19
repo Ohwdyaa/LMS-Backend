@@ -76,7 +76,9 @@ async function getAllMentors(req, res) {
       const mentorObj = new Object();
       mentorObj.id = mentor.id;
       mentorObj.fullname = mentor.fullname;
-      mentorObj.email = mentor.email;
+      mentorObj.username = mentor.username;
+      mentorObj.fullname = mentor.fullname;
+      mentorObj.role = mentor.role;
       mentorObj.subCategory = mentor.subCategory;
       mentorList.push(mentorObj);
     }

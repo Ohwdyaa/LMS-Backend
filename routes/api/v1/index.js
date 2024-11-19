@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const userRoutes = require("./users");
+const teamRoutes = require("./teams");
 const mentorRoutes = require("./mentors");
 const forgetPasswordRoutes = require("./forgot_password");
 const roleRoutes = require("./roles");
@@ -19,7 +19,7 @@ const subModuleCourse = require("./sub_modules_course");
 const materials = require("./materials");
 const enrollment = require("./enrollment");
 
-router.use(userRoutes);
+router.use(teamRoutes);
 router.use(mentorRoutes);
 router.use(forgetPasswordRoutes);
 router.use(roleRoutes);

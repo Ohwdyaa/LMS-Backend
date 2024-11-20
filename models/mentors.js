@@ -88,6 +88,7 @@ const Mentors = {
             profile_image = ?, 
             npwp = ?,
             genders_id = ?,
+            updated_at = NOW(),
             updated_by = ? 
           WHERE id = ?`,
         [
@@ -112,11 +113,34 @@ const Mentors = {
       throw error;
     }
   },
-  deleteMentor: async (id) => {
+  activeMentor: async (id, userId) => {
     try {
       const result = await lmsManagement(
-        `DELETE FROM mentors WHERE id = ?`,
-        id
+        `UPDATE 
+          mentors
+        SET 
+          is_deleted = 0,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteMentor: async (id, userId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          mentors
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
       );
       return result;
     } catch (error) {

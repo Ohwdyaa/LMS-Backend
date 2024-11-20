@@ -58,7 +58,7 @@ async function getAllSubCategories(req, res) {
   try {
     const subCategories = await subCategory.getAllSubCategories();
     if (!subCategories || subCategories.length === 0) {
-      return res.status(400).json({ message: "No courses found" });
+      return res.status(400).json({ message: "No sub categories found" });
     }
     const subCategoryList = [];
     for (let i = 0; i < subCategories.length; i++) {

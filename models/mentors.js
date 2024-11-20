@@ -27,9 +27,10 @@ const Mentors = {
             contract_end,
             created_by,
             role_id, 
+            genders_id,
             sub_category_id
         ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
@@ -51,7 +52,8 @@ const Mentors = {
           data.contractEnd,
           userId,
           data.roleId,
-          data.subCategoryId
+          data.genderId,
+          data.subCategoryId,
         ]
       );
       return result.insertId;
@@ -177,6 +179,20 @@ const Mentors = {
           m.fullname,
           m.username, 
           m.email, 
+          m.phone_number as phoneNumber,
+          m.date_of_birth as dateOfBirth,
+          m.nik,
+          m.linkedin,
+          m.bpjs_kesehatan as bpjsKesehata,
+          m.bpjs_tk as bpjsTenagakerja,
+          m.cv,
+          m.npwp,
+          m.contract,
+          m.contract_start as contractStart,
+          m.contract_end as contractEnd,
+          m.role_id as roleId,
+          m.genders_id as genderId,
+          m.sub_category_id as subCategoryId,
           r.name as role,
           g.name as gender,
           sc.name as subCategory

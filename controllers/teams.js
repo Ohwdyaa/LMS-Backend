@@ -87,7 +87,7 @@ async function getAllTeams(req, res) {
       const team = teams[i];
       const teamObj = new Object();
       teamObj.id = team.id;
-      teamObj.teamname = team.username;
+      teamObj.username = team.username;
       teamObj.email = team.email;
       teamObj.fullname = team.fullname;
       teamObj.roleId = team.role_id;

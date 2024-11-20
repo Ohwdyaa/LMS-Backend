@@ -34,7 +34,7 @@ async function createMentor(req, res) {
 }
 
 async function updateMentor(req, res) {
-  const { id: mentorId } = req.user; 
+  const { id: mentorId } = req.user;
   const data = req.body;
   try {
     const isMentorExists = await Mentors.getMentorById(mentorId);
@@ -87,7 +87,7 @@ async function getAllMentors(req, res) {
       mentorObj.id = mentor.id;
       mentorObj.fullname = mentor.fullname;
       mentorObj.username = mentor.username;
-      mentorObj.fullname = mentor.fullname;
+      mentorObj.email = mentor.email;
       mentorObj.role = mentor.role;
       mentorObj.subCategory = mentor.subCategory;
       mentorList.push(mentorObj);
@@ -106,7 +106,9 @@ async function getAllMentors(req, res) {
 async function getMentorBySubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   try {
-    const isSubCategoryExist = await Mentors.getMentorsBySubCategory(subCategoryId);
+    const isSubCategoryExist = await Mentors.getMentorsBySubCategory(
+      subCategoryId
+    );
     if (isSubCategoryExist === undefined) {
       return res.status(400).json({ message: "Mentor not found" });
     }
@@ -121,7 +123,7 @@ async function getMentorBySubCategory(req, res) {
   }
 }
 async function getMentorById(req, res) {
-  const {id: mentorId} = req.params;
+  const { id: mentorId } = req.params;
   try {
     const isMentorExist = await Mentors.getMentorById(mentorId);
     if (isMentorExist === undefined) {
@@ -144,5 +146,5 @@ module.exports = {
   deleteMentor,
   getAllMentors,
   getMentorBySubCategory,
-  getMentorById
+  getMentorById,
 };

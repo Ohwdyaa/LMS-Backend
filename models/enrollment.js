@@ -111,6 +111,23 @@ const Enrollment = {
       throw error;
     }
   },
+  unEnrollByMentor: async (id, userId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          enrollments
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE mentor_id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = Enrollment;

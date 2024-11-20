@@ -1,4 +1,5 @@
 const Mentors = require("../models/mentors");
+const Enrollment = require("../models/enrollment");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
@@ -63,6 +64,7 @@ async function deleteMentor(req, res) {
     }
 
     await Mentors.deleteMentor(isMentorExists.id, userId);
+    await Enrollment.unEnrollByMentor(isMentorExists.id, userId);
     return res.status(200).json({
       message: "Mentor deleted successfully",
     });

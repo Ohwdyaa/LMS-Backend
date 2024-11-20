@@ -1,9 +1,8 @@
 const Permissions = require("../models/permissions");
 const Roles = require("../models/roles");
-const Module = require("../models/module")
+const Module = require("../models/module_permissions");
 const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
-
 async function updatePermissions(req, res) {
   const { id: roleId } = req.params;
   const { listModules } = req.body;
@@ -20,7 +19,7 @@ async function updatePermissions(req, res) {
         listModules[i];
       const isExists = await Permissions.getPermissionByRoleAndModule(
         roleId,
-        moduleId,
+        moduleId
       );
       if (isExists !== undefined) {
         const updateData = {
@@ -29,7 +28,12 @@ async function updatePermissions(req, res) {
           canEdit,
           canDelete,
         };
-        await Permissions.updatePermission(roleId, moduleId, updateData, userId);
+        await Permissions.updatePermission(
+          roleId,
+          moduleId,
+          updateData,
+          userId
+        );
       }
       if (isExists === undefined) {
         newValue.push([
@@ -62,7 +66,6 @@ async function updatePermissions(req, res) {
     });
   }
 }
-
 async function getPermissionByRole(req, res) {
   const { id: roleId } = req.params;
   try {

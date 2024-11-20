@@ -1,13 +1,12 @@
 const { err } = require("../utils/custom_error");
-const Category = require("../models/category_course");
-
+const Category = require("../models/categories");
 async function createCategory(req, res) {
   const data = req.body;
-  const {id: userId}= req.user;
+  const { id: userId } = req.user;
   try {
     await Category.createCategory(data, userId);
     return res.status(201).json({
-      message: "Category course created successfully"
+      message: "Category course created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -17,8 +16,8 @@ async function createCategory(req, res) {
   }
 }
 async function updateCategory(req, res) {
-  const {id: categoryId} = req.params;
-  const {id: userId} = req.user;
+  const { id: categoryId } = req.params;
+  const { id: userId } = req.user;
   const data = req.body;
   try {
     const isCategoryExist = await Category.getCategoryById(categoryId);
@@ -37,7 +36,6 @@ async function updateCategory(req, res) {
     });
   }
 }
-
 async function deleteCategory(req, res) {
   const { id: categoryId } = req.params;
   try {
@@ -81,10 +79,9 @@ async function getAllCategories(req, res) {
     });
   }
 }
-
 module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
-  getAllCategories
+  getAllCategories,
 };

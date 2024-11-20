@@ -4,7 +4,7 @@ const {
   deleteSubCategory,
   updateSubCategory,
   getAllSubCategories,
-} = require("../../../controllers/sub_category");
+} = require("../../../controllers/sub_categories");
 const {
   validateMiddleware,
   subCourseCategorySchema,

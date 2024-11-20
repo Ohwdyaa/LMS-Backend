@@ -7,17 +7,20 @@ const forgetPasswordRoutes = require("./forgot_password");
 const roleRoutes = require("./roles");
 const religionRoutes = require("./religions");
 const genderRoutes = require("./genders");
-const modulePermission = require("./module");
-const moduleCategory = require("./category_module");
+
+const categoryPermission = require("./category_permissions");
+const modulePermission = require("./module_permissions");
 const permissions = require("./permissions");
-const course = require("./course");
-const subCategory = require("./sub_category");
-const categoryCourse = require("./category_course");
-const modulesCourse = require("./modules_course");
-const contentType = require("./content_types");
-const subModuleCourse = require("./sub_modules_course");
+
+const categories = require("./categories");
+const subCategory = require("./sub_categories");
+
+const enrollments = require("./enrollments");
+const courses = require("./courses");
+const moduleCourses = require("./module_courses");
+const subModuleCourses = require("./sub_module_courses");
+const contentTypes = require("./content_types");
 const materials = require("./materials");
-const enrollment = require("./enrollment");
 
 router.use(teamRoutes);
 router.use(mentorRoutes);
@@ -26,17 +29,18 @@ router.use(roleRoutes);
 router.use(religionRoutes);
 router.use(genderRoutes);
 
+router.use(categoryPermission);
 router.use(modulePermission);
-router.use(moduleCategory);
 router.use(permissions);
 
-router.use(course);
-router.use(modulesCourse);
-router.use(categoryCourse);
+router.use(categories);
 router.use(subCategory);
-router.use(subModuleCourse);
-router.use(contentType);
+
+router.use(enrollments);
+router.use(courses);
+router.use(moduleCourses);
+router.use(subModuleCourses);
+router.use(contentTypes);
 router.use(materials);
-router.use(enrollment);
 
 module.exports = router;

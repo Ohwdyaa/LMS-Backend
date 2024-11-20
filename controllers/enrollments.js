@@ -1,27 +1,29 @@
-const Enrollment = require("../models/enrollment");
-const Course = require("../models/course");
+const Enrollments = require("../models/enrollments");
+const Courses = require("../models/courses");
 const { err } = require("../utils/custom_error");
-
 async function enrollMentor(req, res) {
   const { id: courseId } = req.params;
   const { mentorId } = req.body;
   const { id: userId } = req.user;
   try {
-    const isCourseExist = await Course.getCourseById(courseId);
+    const isCourseExist = await Courses.getCourseById(courseId);
     if (isCourseExist === undefined) {
       return res.status(400).json({
         message: "Invalid course ID",
       });
-    }  
-    const isEnrollExist = await Enrollment.existingEntry(isCourseExist.id, mentorId);
+    }
+    const isEnrollExist = await Enrollments.existingEntry(
+      isCourseExist.id,
+      mentorId
+    );
     if (isEnrollExist !== undefined) {
-      await Enrollment.updateEnroll(isEnrollExist.id, userId);
+      await Enrollments.updateEnroll(isEnrollExist.id, userId);
       return res.status(201).json({
         message: "Mentor is active",
       });
     }
     if (isEnrollExist === undefined) {
-      await Enrollment.enrollMentor(courseId, mentorId, userId);
+      await Enrollments.enrollMentor(courseId, mentorId, userId);
       return res.status(201).json({
         message: "Enroll mentor successfully",
       });
@@ -33,16 +35,15 @@ async function enrollMentor(req, res) {
     });
   }
 }
-
 async function unEnroll(req, res) {
   const { id } = req.params;
   const { id: userId } = req.user;
   try {
-    const isEnrollExist = await Enrollment.existingEnroll(id);
+    const isEnrollExist = await Enrollments.existingEnroll(id);
     if (isEnrollExist === undefined) {
       return res.status(400).json({ message: "Enrollment not found" });
     }
-    await Enrollment.unEnroll(isEnrollExist.id, userId);
+    await Enrollments.unEnroll(isEnrollExist.id, userId);
     return res.status(200).json({
       message: "Un enroll successfully",
     });
@@ -53,7 +54,6 @@ async function unEnroll(req, res) {
     });
   }
 }
-
 module.exports = {
   enrollMentor,
   unEnroll,

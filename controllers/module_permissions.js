@@ -1,10 +1,8 @@
-const modulePermission = require("../models/module");
+const modulePermission = require("../models/module_permissions");
 const { err } = require("../utils/custom_error");
-
 async function createModules(req, res) {
   const data = req.body;
   try {
-
     await modulePermission.createModule(data);
     return res.status(201).json({
       message: "Module created successfully",
@@ -16,7 +14,6 @@ async function createModules(req, res) {
     });
   }
 }
-
 async function getAllModules(req, res) {
   try {
     const modules = await modulePermission.getAllModule();

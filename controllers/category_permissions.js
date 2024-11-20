@@ -1,6 +1,5 @@
-const moduleCategory = require("../models/category_module");
+const moduleCategory = require("../models/category_permissions");
 const { err } = require("../utils/custom_error");
-
 async function createCategoryModule(req, res) {
   const data = req.body;
   try {
@@ -15,5 +14,4 @@ async function createCategoryModule(req, res) {
     });
   }
 }
-
 module.exports = { createCategoryModule };

@@ -1,5 +1,5 @@
 const { err } = require("../utils/custom_error");
-const modulesCourse = require("../models/modules_course");
+const modulesCourse = require("../models/module_courses");
 async function createModuleCourse(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
@@ -36,7 +36,6 @@ async function updateModuleCourse(req, res) {
     });
   }
 }
-
 async function deleteModuleCourse(req, res) {
   const { id: moduleId } = req.params;
   try {
@@ -56,9 +55,8 @@ async function deleteModuleCourse(req, res) {
     });
   }
 }
-
 async function getModuleById(req, res) {
-  const {id: moduleId} = req.params;
+  const { id: moduleId } = req.params;
   try {
     const isModuleExist = await modulesCourse.getModuleById(moduleId);
     if (isModuleExist === undefined) {
@@ -74,7 +72,6 @@ async function getModuleById(req, res) {
     });
   }
 }
-
 async function getModuleByCourse(req, res) {
   const { id: courseId } = req.params;
   try {
@@ -92,11 +89,10 @@ async function getModuleByCourse(req, res) {
     });
   }
 }
-
 module.exports = {
   createModuleCourse,
   updateModuleCourse,
   deleteModuleCourse,
   getModuleById,
-  getModuleByCourse
+  getModuleByCourse,
 };

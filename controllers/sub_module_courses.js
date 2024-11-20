@@ -1,8 +1,8 @@
 const { err } = require("../utils/custom_error");
-const subModules = require("../models/sub_modules_course");
+const subModules = require("../models/sub_module_courses");
 async function createSubModule(req, res) {
   const data = req.body;
-  const {id: userId} = req.user
+  const { id: userId } = req.user;
   try {
     await subModules.createSubModule(data, userId);
     return res.status(201).json({
@@ -17,7 +17,7 @@ async function createSubModule(req, res) {
 }
 async function updateSubModule(req, res) {
   const { id: subModuleId } = req.params;
-  const {id: userId} = req.user;
+  const { id: userId } = req.user;
   const data = req.body;
   try {
     const isSubModuleExist = await subModules.getSubModulesById(subModuleId);
@@ -36,7 +36,6 @@ async function updateSubModule(req, res) {
     });
   }
 }
-
 async function deleteSubModule(req, res) {
   const { id: subModuleId } = req.params;
   try {
@@ -45,7 +44,7 @@ async function deleteSubModule(req, res) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await subModules.deleteSubModule(isSubModuleExist.id); 
+    await subModules.deleteSubModule(isSubModuleExist.id);
     return res.status(200).json({
       message: "Sub module deleted successfully",
     });
@@ -56,9 +55,8 @@ async function deleteSubModule(req, res) {
     });
   }
 }
-
 async function getSubModuleById(req, res) {
-  const {id: subId} = req.params;
+  const { id: subId } = req.params;
   try {
     const isSubModuleExist = await subModules.getSubModulesById(subId);
     if (isSubModuleExist === undefined) {
@@ -74,11 +72,12 @@ async function getSubModuleById(req, res) {
     });
   }
 }
-
 async function getSubModuleByModuleCourse(req, res) {
   const { id: moduleId } = req.params;
   try {
-    const isSubModuleExist = await subModules.getSubModuleByModuleCourse(moduleId);
+    const isSubModuleExist = await subModules.getSubModuleByModuleCourse(
+      moduleId
+    );
     if (isSubModuleExist <= 0) {
       return res.status(400).json({ message: "Sub module not found" });
     }
@@ -92,11 +91,10 @@ async function getSubModuleByModuleCourse(req, res) {
     });
   }
 }
-
 module.exports = {
   createSubModule,
   updateSubModule,
   deleteSubModule,
   getSubModuleById,
-  getSubModuleByModuleCourse
+  getSubModuleByModuleCourse,
 };

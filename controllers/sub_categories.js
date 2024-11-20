@@ -1,12 +1,12 @@
 const { err } = require("../utils/custom_error");
-const subCategory = require("../models/sub_category");
+const subCategory = require("../models/sub_categories");
 async function createSubCategory(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
   try {
     await subCategory.createSubCategory(data, userId);
     return res.status(201).json({
-      message: "Categories created successfully"
+      message: "Categories created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -16,11 +16,13 @@ async function createSubCategory(req, res) {
   }
 }
 async function updateSubCategory(req, res) {
-  const {id: subCategoryId} = req.params;
-  const {id: userId} = req.user;
+  const { id: subCategoryId } = req.params;
+  const { id: userId } = req.user;
   const data = req.body;
   try {
-    const isSubCategoryExist = await subCategory.getSubCategoryById(subCategoryId);
+    const isSubCategoryExist = await subCategory.getSubCategoryById(
+      subCategoryId
+    );
     if (isSubCategoryExist === undefined) {
       return res.status(400).json({ message: "Sub category not found" });
     }
@@ -38,7 +40,9 @@ async function updateSubCategory(req, res) {
 async function deleteSubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   try {
-    const isSubCategoryExist = await subCategory.getSubCategoryById(subCategoryId);
+    const isSubCategoryExist = await subCategory.getSubCategoryById(
+      subCategoryId
+    );
     if (isSubCategoryExist === undefined) {
       return res.status(400).json({ message: "Sub category not found" });
     }
@@ -79,11 +83,9 @@ async function getAllSubCategories(req, res) {
     });
   }
 }
-
-
 module.exports = {
   createSubCategory,
   updateSubCategory,
   deleteSubCategory,
-  getAllSubCategories
+  getAllSubCategories,
 };

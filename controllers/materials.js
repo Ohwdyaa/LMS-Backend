@@ -1,7 +1,6 @@
 const { err } = require("../utils/custom_error");
 const Materials = require("../models/materials");
-const subModule = require("../models/sub_modules_course");
-
+const subModule = require("../models/sub_module_courses");
 async function updateMaterial(req, res) {
   const { id } = req.params;
   const { id: userId } = req.user;
@@ -12,7 +11,7 @@ async function updateMaterial(req, res) {
       return res.status(400).json({ message: "Sub module not found" });
     }
     const isExists = await Materials.getMaterialBySubModule(id);
-    if(isExists){
+    if (isExists) {
       await Materials.updateMaterial(isExists.id, data, userId);
       return res.status(201).json({
         message: "Material updated successfully",
@@ -31,7 +30,6 @@ async function updateMaterial(req, res) {
     });
   }
 }
-
 async function deleteMaterial(req, res) {
   const { id: materialId } = req.params;
   try {
@@ -51,7 +49,6 @@ async function deleteMaterial(req, res) {
     });
   }
 }
-
 async function getMaterialBySubModule(req, res) {
   const { id: subModuleId } = req.params;
   try {
@@ -72,5 +69,5 @@ async function getMaterialBySubModule(req, res) {
 module.exports = {
   updateMaterial,
   deleteMaterial,
-  getMaterialBySubModule
+  getMaterialBySubModule,
 };

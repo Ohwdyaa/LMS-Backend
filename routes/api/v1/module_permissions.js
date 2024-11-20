@@ -1,7 +1,5 @@
 const express = require("express");
-const {
-  createModules,
-} = require("../../../controllers/module");
+const { createModules } = require("../../../controllers/module_permissions");
 const router = express.Router();
 
 router.post("/module", createModules);

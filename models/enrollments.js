@@ -1,7 +1,7 @@
 const { lmsManagement } = require("../config/db/db");
 const { uuid } = require("../utils/tools");
 
-const Enrollment = {
+const Enrollments = {
   enrollMentor: async (courseId, mentorId, userId) => {
     try {
       const id = uuid();
@@ -130,4 +130,4 @@ const Enrollment = {
   },
 };
 
-module.exports = Enrollment;
+module.exports = Enrollments;

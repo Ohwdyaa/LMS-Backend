@@ -80,49 +80,56 @@ const mentorSchema = z.object({
     username: z
       .string()
       .regex(/^[a-zA-Z0-9]+$/, "Username cannot contain symbols or spaces")
-      .min(3, "Username must be at least 3 characters long"),
+      .min(1, "Username cannot be empty"),
     email: z
       .string()
       .email("Invalid email format")
-      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
+      .min(1, "Email cannot be empty"),
     phoneNumber: z
       .string()
-      .regex(/^0\d{10,13}$/, "Phone number must be at least 11 digits start with 0"),
+      .regex(/^0\d{10,15}$/, "Phone number must be at least 11 digits start with 0")
+      .min(1, "Phone number cannot be empty"),
     dateOfBirth: z
       .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
+      .min(1, "Date of Birth cannot be empty"),
     nik: z
       .string()
-      .regex(/^\d{16}$/, "NIK must be exactly 16 digits"),
+      .regex(/^\d{16}$/, "NIK must be exactly 16 digits")
+      .min(1, "NIK cannot be empty"),
     linkedin: z
       .string()
-      .url("Invalid LinkedIn URL"),
+      .url("Invalid LinkedIn URL")
+      .min(1, "Linkedin URL cannot be empty"),
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters long"),
+      .min(6, "Password must be at least 6 characters long"),
     bpjsKesehatan: z
       .string()
-      .regex(/^\d+$/, "BPJS Kesehatan number must contain only digits"),
+      .regex(/^\d+$/, "BPJS Kesehatan number must contain only digits")
+      .min(1, "BPJS Kesehatan number cannot be empty"),
     bpjsTenagakerja: z
       .string()
-      .regex(/^\d+$/, "BPJS Tenagakerja number must contain only digits"),
+      .regex(/^\d+$/, "BPJS Tenagakerja number must contain only digits")
+      .min(1, "BPJS Tenagakerja number cannot be empty"),
     cv: z
       .string(),
-    profileImage: z
-      .string()
-      .url("Invalid URL format"),
     npwp: z
       .string()
-      .regex(/^\d{15}$/, "NPWP must be exactly 15 digits"),
+      .regex(/^\d{15}$/, "NPWP must be exactly 15 digits")
+      .min(1, "NPWP cannot be empty"),
     contract: z
-      .string(),
+      .string()
+      .min(1, "contract cannot be empty"),
     contractStart: z
       .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract start date must be in YYYY-MM-DD format"),
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract start date must be in YYYY-MM-DD format")
+      .min(1, "Contract start date cannot be empty"),
     contractEnd: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract end date must be in YYYY-MM-DD format")
-      .optional(), // Optional field
+      .optional(), 
     roleId: z
       .string()
       .uuid("Invalid UUID format"),
@@ -147,22 +154,25 @@ const updateMentorSchema = z.object({
       email: z
         .string()
         .email("Invalid email format")
+        .min(1, "Email cannot be empty")
         .optional(),
       phoneNumber: z
         .string()
-        .regex(/^0\d{10,}$/, "Phone number must be at least 11 digits starting with 0")
+        .regex(/^0\d{10,15}$/, "Phone number must be at least 11 digits starting with 0")
         .optional(),
       dateOfBirth: z
         .string()
         .regex(/^\d{4}-\d{2}-\d{2}$/, "Date of birth must be in YYYY-MM-DD format")
+        .min(1, "Date of birth cannot be empty")
         .optional(),
       nik: z
         .string()
         .regex(/^\d{16}$/, "NIK must be 16 digits")
+        .min(1, "NIK cannot be empty")
         .optional(),
       linkedin: z
         .string()
-        .url("Invalid LinkedIn URL")
+        .min(1, "Linkedin URL cannot be empty")
         .optional(),
       password: z
         .string()
@@ -170,30 +180,31 @@ const updateMentorSchema = z.object({
         .optional(),
       bpjsKesehatan: z
         .string()
-        .regex(/^\d+$/, "BPJS Kesehatan card number must be numeric")
+        .regex(/^\d+$/, "BPJS Kesehatan number must be numeric")
+        .min(1, "BPJS Kesehatan number cannot be empty")
         .optional(),
       bpjsTenagakerja: z
         .string()
-        .regex(/^\d+$/, "BPJS Tenagakerja card number must be numeric")
+        .regex(/^\d+$/, "BPJS Tenagakerja number must be numeric")
+        .min(1, "BPJS Tenagakerja number cannot be empty")
         .optional(),
       cv: z
         .string()
-        .url("Invalid CV URL")
-        .optional(),
-      profileImage: z
-        .string()
-        .url("Invalid Profile Image URL")
+        .min(1, "cv cannot be empty")
         .optional(),
       npwp: z
         .string()
         .regex(/^\d{15}$/, "NPWP must be 15 digits")
+        .min(1, "NPWP cannot be empty")
         .optional(),
       contract: z
         .string()
+        .min(1, "NPWP cannot be empty")
         .optional(),
       contractStart: z
         .string()
         .regex(/^\d{4}-\d{2}-\d{2}$/, "Contract start date must be in YYYY-MM-DD format")
+        .min(1, "Contract start date cannot be empty")
         .optional(),
       contractEnd: z
         .string()

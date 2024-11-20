@@ -53,7 +53,7 @@ const Roles = {
     try {
       const result = await lmsManagement(
         `UPDATE 
-          users 
+          teams 
         SET 
           role_id = ?, 
           updated_at = NOW(), 

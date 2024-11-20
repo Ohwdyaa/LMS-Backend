@@ -3,11 +3,11 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const config = require("../config/config");
 const privateKey = fs.readFileSync(
-  "C:/Users/lenovo/Downloads/lms-backend/keys/private.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/private.pem",
   "utf8"
 );
 const publicKey = fs.readFileSync(
-  "C:/Users/lenovo/Downloads/lms-backend/keys/public.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
 

@@ -19,7 +19,7 @@ const Genders = {
   },
   getAllGenders: async () => {
     try {
-      const result = await lmsManagement(" SELECT name FROM genders WHERE is_deleted = 0");
+      const result = await lmsManagement(" SELECT id, name FROM genders WHERE is_deleted = 0");
       return result;
     } catch (error) {
       throw error;

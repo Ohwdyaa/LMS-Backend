@@ -246,7 +246,7 @@ const roleSchema = z.object({
   body: z.object({
     name: z
       .string()
-      .regex(/^[a-zA-Z0-9]+$/, "Role name should not contain by symbols")
+      .regex(/^[a-zA-Z0-9\s]+$/, "Role name should not contain by symbols")
       .min(1, "Role cannot be empty")
   })
 });
@@ -337,9 +337,9 @@ const subCourseCategorySchema = z.object({
       .min(1, "Subcategory name cannot be empty")
       .max(100, "Subcategory name cannot exceed 100 characters")
       .regex(/^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/, "Title contains invalid characters"),
-    categoriesId: z
-      .string()
-      .uuid("Invalid UUID format for categoriesId"),
+    // categoriesId: z
+    //   .string()
+    //   .uuid("Invalid UUID format for categoriesId"),
   }),
 });
 

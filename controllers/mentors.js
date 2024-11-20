@@ -33,7 +33,6 @@ async function createMentor(req, res) {
     });
   }
 }
-
 async function updateMentor(req, res) {
   const { id: mentorId } = req.user;
   const data = req.body;
@@ -53,7 +52,26 @@ async function updateMentor(req, res) {
     });
   }
 }
-
+async function updateMentorByAdmin(req, res) {
+  const { id: userId } = req.user;
+  const { id: mentorId } = req.params;
+  const data = req.body;
+  try {
+    const isMentorExists = await Mentors.getMentorById(mentorId);
+    if (isMentorExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Mentors.updateMentorByAdmin(isMentorExists.id, userId, data);
+    return res.status(200).json({
+      message: "Mentor updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
+    });
+  }
+}
 async function deleteMentor(req, res) {
   const { id: mentorId } = req.params;
   const { id: userId } = req.user; 
@@ -75,7 +93,6 @@ async function deleteMentor(req, res) {
     });
   }
 }
-
 async function getAllMentors(req, res) {
   try {
     const mentors = await Mentors.getAllMentors();
@@ -104,7 +121,6 @@ async function getAllMentors(req, res) {
     });
   }
 }
-
 async function getMentorBySubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   try {
@@ -149,4 +165,5 @@ module.exports = {
   getAllMentors,
   getMentorBySubCategory,
   getMentorById,
+  updateMentorByAdmin
 };

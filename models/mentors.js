@@ -79,6 +79,7 @@ const Mentors = {
             mentors
           SET 
             fullname = ?, 
+            username = ?,
             email = ?,
             phone_number = ?,
             date_of_birth = ?,
@@ -89,12 +90,15 @@ const Mentors = {
             cv = ?,
             profile_image = ?, 
             npwp = ?,
-            genders_id = ?,
+            contract_end = ?,
             updated_at = NOW(),
             updated_by = ? 
+            genders_id = ?,
           WHERE id = ?`,
         [
+
           data.fullname,
+          data.username,
           data.email,
           data.phoneNumber,
           data.dateOfBirth,
@@ -105,10 +109,28 @@ const Mentors = {
           data.cv,
           data.profileImage,
           data.npwp,
+          data.contractEnd,
+          id,
           data.genderId,
           id,
-          id,
         ]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateMentorByAdmin: async (id, userId, subCategoryId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          mentors
+        SET 
+          updated_at = NOW(),
+          updated_by = ?,
+          sub_category_id = ?
+        WHERE id = ?`,
+        [userId, subCategoryId, id]
       );
       return result;
     } catch (error) {

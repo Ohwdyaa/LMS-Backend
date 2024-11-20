@@ -41,20 +41,21 @@ async function updateTeam(req, res) {
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message,
+      error: error.message, 
     });
   }
 }
 
 async function deleteTeam(req, res) {
   const { id: teamId } = req.params;
+  const { id: userId } = req.user;
   try {
     const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Teams.deleteTeam(isTeamExists.id);
+    await Teams.deleteTeam(isTeamExists.id, userId);
     return res.status(200).json({
       message: "User deleted successfully",
     });
@@ -83,7 +84,7 @@ async function getAllTeams(req, res) {
       return res.status(400).json({ message: "No users found" });
     }
     const teamList = [];
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < teams.length; i++) {
       const team = teams[i];
       const teamObj = new Object();
       teamObj.id = team.id;

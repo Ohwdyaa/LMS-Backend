@@ -6,8 +6,7 @@ const Teams = {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `
-        INSERT INTO teams (
+        `INSERT INTO teams (
             id,
             username, 
             email,
@@ -21,9 +20,8 @@ const Teams = {
             created_by,
             role_id, 
             gender_id, 
-            religion_id
-        ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            religion_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
@@ -64,28 +62,32 @@ const Teams = {
         ` UPDATE 
             teams
           SET 
-          username = ?,
-          profile_image = ?,
-          phone_number = ?,
-          address = ?,
-          institute = ?,
-          date_of_birth = ?,
-          gender_id = ?,
-          religion_id = ?,
-          updated_by = ?,
-          updated_at = NOW() 
+            username = ?,
+            email = ?,                
+            profile_image = ?, 
+            fullname = ?, 
+            phone_number = ?, 
+            address = ?, 
+            institute = ?, 
+            date_of_birth = ?,
+            updated_at = NOW(), 
+            updated_by = ?,
+            gender_id = ?, 
+            religion_id = ?
           WHERE id = ?`,
         [
           data.username,
+          data.email,
           data.profileImage,
+          data.fullname,
           data.phoneNumber,
           data.address,
           data.institute,
           data.dateOfBirth,
+          id,
           data.genderId,
           data.religionId,
-          id,
-          id,
+          id
         ]
       );
       return result;
@@ -93,11 +95,17 @@ const Teams = {
       throw error;
     }
   },
-  deleteTeam: async (id) => {
+  deleteTeam: async (id, userId) => {
     try {
       const result = await lmsManagement(
-        `DELETE FROM teams WHERE id = ?`,
-        id
+        `UPDATE 
+          teams
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
       );
       return result;
     } catch (error) {

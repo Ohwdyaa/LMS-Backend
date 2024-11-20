@@ -48,14 +48,13 @@ async function updateTeam(req, res) {
 
 async function deleteTeam(req, res) {
   const { id: teamId } = req.params;
-  const { id: userId } = req.user;
   try {
     const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Teams.deleteTeam(isTeamExists.id, userId);
+    await Teams.deleteTeam(isTeamExists.id);
     return res.status(200).json({
       message: "User deleted successfully",
     });

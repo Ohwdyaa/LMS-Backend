@@ -17,8 +17,8 @@ router.post("/team",
   validateMiddleware(userSchema), 
   createTeam);
 router.put("/team", validateMiddleware(updateUserSchema), updateTeam);
-router.put(
-  "/team/:id/delete",
+router.delete(
+  "/team/:id",
   validateMiddleware(deleteUserSchema),
   deleteTeam
 );

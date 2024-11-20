@@ -95,17 +95,11 @@ const Teams = {
       throw error;
     }
   },
-  deleteTeam: async (id, userId) => {
+  deleteTeam: async (id) => {
     try {
       const result = await lmsManagement(
-        `UPDATE 
-          teams
-        SET 
-          is_deleted = 1,
-          updated_at = NOW(),
-          updated_by = ?
-        WHERE id = ?`,
-        [userId, id]
+        `DELETE FROM teams where id = ?`,
+        [id]
       );
       return result;
     } catch (error) {

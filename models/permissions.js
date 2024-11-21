@@ -1,4 +1,5 @@
 const { formatBulkQuery1, lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 
 const Permissions = {
   getPermissionByRole: async (roleId) => {
@@ -22,6 +23,10 @@ const Permissions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -46,6 +51,10 @@ const Permissions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -63,6 +72,10 @@ const Permissions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -84,6 +97,10 @@ const Permissions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -109,6 +126,10 @@ const Permissions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

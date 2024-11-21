@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const subCategory = {
@@ -16,6 +17,10 @@ const subCategory = {
       );
       return result.insertId;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -32,7 +37,11 @@ const subCategory = {
         [data.name, userId, id]
       );
       return result;
-    } catch (error) { 
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -44,13 +53,16 @@ const subCategory = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
   getAllSubCategories: async () => {
     try {
-      const result =
-        await lmsManagement(`
+      const result = await lmsManagement(`
           SELECT 
             sc.id, 
             sc.name, 
@@ -60,6 +72,10 @@ const subCategory = {
           LEFT JOIN categories c ON sc.category_id = c.id`);
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -78,6 +94,10 @@ const subCategory = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

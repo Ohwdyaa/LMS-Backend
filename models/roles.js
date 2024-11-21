@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Roles = {
@@ -16,6 +17,10 @@ const Roles = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -27,6 +32,10 @@ const Roles = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -37,15 +46,24 @@ const Roles = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
   deleteRole: async (id) => {
     try {
-      const result = await lmsManagement("DELETE FROM roles where id = ? ", 
-        [id]);
+      const result = await lmsManagement("DELETE FROM roles where id = ? ", [
+        id,
+      ]);
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -63,6 +81,10 @@ const Roles = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

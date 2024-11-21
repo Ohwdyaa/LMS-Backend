@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const subModules = {
@@ -14,10 +15,21 @@ const subModules = {
           module_course_id,
           content_type_id) 
         VALUES (?,?,?,?,?,?)`,
-        [id, data.title, data.description, userId, data.moduleCourseId, data.contentTypeId]
+        [
+          id,
+          data.title,
+          data.description,
+          userId,
+          data.moduleCourseId,
+          data.contentTypeId,
+        ]
       );
       return result.insertId;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -34,9 +46,15 @@ const subModules = {
         WHERE id = ?`,
         [data.title, data.description, userId, id]
       );
-      console.log(result)
+      console.log(result);
       return result;
-    } catch (error) {}
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
   },
   deleteSubModule: async (id) => {
     try {
@@ -46,10 +64,14 @@ const subModules = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
-  getSubModulesById: async (id) => { 
+  getSubModulesById: async (id) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -69,6 +91,10 @@ const subModules = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -84,6 +110,10 @@ const subModules = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

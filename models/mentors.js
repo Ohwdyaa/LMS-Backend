@@ -69,8 +69,14 @@ const Mentors = {
   updatePassword: async (id, hashedPassword) => {
     try {
       const result = await lmsManagement(
-        `UPDATE mentors SET password = ? where id = ?`,
-        [hashedPassword, id]
+        `UPDATE 
+          mentors 
+        SET 
+          password = ?,
+          updated_at = NOW(),
+          updated_by = ? 
+        WHERE id = ?`,
+        [hashedPassword, id, id]
       );
       return result;
     } catch (error) {

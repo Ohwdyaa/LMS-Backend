@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Religions = {
@@ -14,15 +15,25 @@ const Religions = {
         [id, data.name]
       );
       return result.insertId;
-      }catch (error) {
-        throw error;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
       }
+      throw error;
+    }
   },
   getAllReligion: async () => {
     try {
-      const result = await lmsManagement("SELECT name FROM religions WHERE is_deleted = 0");
+      const result = await lmsManagement(
+        "SELECT name FROM religions WHERE is_deleted = 0"
+      );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Materials = {
@@ -21,6 +22,10 @@ const Materials = {
       );
       return result.insertId;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -48,6 +53,10 @@ const Materials = {
       const result = await lmsManagement(`DELETE FROM materials WHERE id = ?`, id);
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -75,6 +84,10 @@ const Materials = {
       );
         return result; 
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -92,6 +105,10 @@ const Materials = {
       );
         return result; 
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   }

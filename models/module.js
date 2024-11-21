@@ -1,4 +1,5 @@
 const { lmsModule } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const modulePermission = {
@@ -14,6 +15,10 @@ const modulePermission = {
         [uuidModule, data.name, data.categoryId]);
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -25,6 +30,10 @@ const modulePermission = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -43,6 +52,10 @@ const modulePermission = {
         WHERE m.is_visible = 1`);
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

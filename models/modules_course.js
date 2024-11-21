@@ -1,4 +1,5 @@
 const { lmsManagement } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const modulesCourse = {
@@ -17,9 +18,13 @@ const modulesCourse = {
       );
       return result.insertId;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
-  }, 
+  },
   updateModuleCourse: async (id, data, userId) => {
     try {
       const result = await lmsManagement(
@@ -34,7 +39,13 @@ const modulesCourse = {
         [data.title, data.description, userId, id]
       );
       return result;
-    } catch (error) {}
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
   },
   deleteModuleCourse: async (id) => {
     try {
@@ -44,6 +55,10 @@ const modulesCourse = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -63,6 +78,10 @@ const modulesCourse = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },
@@ -78,6 +97,10 @@ const modulesCourse = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
       throw error;
     }
   },

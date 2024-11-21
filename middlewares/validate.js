@@ -515,9 +515,9 @@ function validateMiddleware(schema) {
           field : issue.path[1],
           message: issue.message,
         }));
-        res.status(400).json({ error: "Invalid data", details: errorMessages });
+        res.status(400).json({ message: "Invalid data", details: errorMessages });
       } else {
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ message: "Internal Server Error" });
       }
     }
   };

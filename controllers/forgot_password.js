@@ -39,19 +39,23 @@ async function requestResetPassword(req, res) {
 }
 
 async function resetPassword(req, res) {
-  const newPassword = req.body;
+  const { newPassword } = req.body;
+  const {id: userId} = req.user;
+  console.log(newPassword)
   try {
-    const verify = await verifyJWT(token);
-    const isUserExists = await Teams.getTeamById(verify.userId);
+    // const verify = await verifyJWT(token);
+    const isUserExists = await Teams.getTeamById(userId);
     if (isUserExists === undefined) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "User not found" });
     }
+
     const hashedPassword = await hashPassword(newPassword);
     await Teams.updatePassword(isUserExists.id, hashedPassword);
     return res.status(200).json({
       message: "password updated successfully",
     });
   } catch (error) {
+    console.log(error)
     res.status(err.errorReset.statusCode).json({
       message: err.errorReset.message,
       error: error.message,

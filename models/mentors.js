@@ -88,6 +88,7 @@ const Mentors = {
             mentors
           SET 
             fullname = ?, 
+            username = ?,
             email = ?,
             phone_number = ?,
             date_of_birth = ?,
@@ -98,11 +99,15 @@ const Mentors = {
             cv = ?,
             profile_image = ?, 
             npwp = ?,
-            genders_id = ?,
+            contract_end = ?,
+            updated_at = NOW(),
             updated_by = ? 
+            genders_id = ?,
           WHERE id = ?`,
         [
+
           data.fullname,
+          data.username,
           data.email,
           data.phoneNumber,
           data.dateOfBirth,
@@ -113,8 +118,9 @@ const Mentors = {
           data.cv,
           data.profileImage,
           data.npwp,
-          data.genderId,
+          data.contractEnd,
           id,
+          data.genderId,
           id,
         ]
       );
@@ -127,11 +133,51 @@ const Mentors = {
       throw error;
     }
   },
-  deleteMentor: async (id) => {
+  updateMentorByAdmin: async (id, userId, subCategoryId) => {
     try {
       const result = await lmsManagement(
-        `DELETE FROM mentors WHERE id = ?`,
-        id
+        `UPDATE 
+          mentors
+        SET 
+          updated_at = NOW(),
+          updated_by = ?,
+          sub_category_id = ?
+        WHERE id = ?`,
+        [userId, subCategoryId, id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  activeMentor: async (id, userId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          mentors
+        SET 
+          is_deleted = 0,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteMentor: async (id, userId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          mentors
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
       );
       return result;
     } catch (error) {

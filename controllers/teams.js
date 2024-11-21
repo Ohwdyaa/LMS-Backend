@@ -41,7 +41,7 @@ async function updateTeam(req, res) {
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
       message: err.errorUpdate.message,
-      error: error.message,
+      error: error.message, 
     });
   }
 }

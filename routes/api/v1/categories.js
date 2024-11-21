@@ -4,7 +4,7 @@ const {
   deleteCategory,
   updateCategory,
   getAllCategories,
-} = require("../../../controllers/category_course");
+} = require("../../../controllers/categories");
 const {
   validateMiddleware,
   courseCategorySchema,

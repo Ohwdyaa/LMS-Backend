@@ -6,7 +6,7 @@ const {
   getAllCourses,
   getCourseById,
   getCourseParticipants,
-} = require("../../../controllers/course");
+} = require("../../../controllers/courses");
 const {
   validateMiddleware,
   courseSchema,

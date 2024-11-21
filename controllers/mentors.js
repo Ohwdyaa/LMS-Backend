@@ -1,21 +1,30 @@
 const Mentors = require("../models/mentors");
+const Enrollments = require("../models/enrollments");
 const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
-
 async function createMentor(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
   try {
-    const password = "112233";
-    const hash = await hashPassword(password);
-    const mentorData = {
-      ...data,
-      password: hash,
-    };
-    await Mentors.createMentor(mentorData, userId);
-    return res.status(201).json({
-      message: "Mentor created successfully",
-    });
+    const isUserExist = await Mentors.getMentorByEmail(data.email);
+    if (isUserExist !== undefined) {
+      await Mentors.activeMentor(isUserExist.id, userId);
+      return res.status(201).json({
+        message: "Mentor is active successfully",
+      });
+    }
+    if (isExist === undefined) {
+      const password = "112233";
+      const hash = await hashPassword(password);
+      const mentorData = {
+        ...data,
+        password: hash,
+      };
+      await Mentors.createMentor(mentorData, userId);
+      return res.status(201).json({
+        message: "Mentor created successfully",
+      });
+    }
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
       message: err.errorCreate.message,
@@ -23,7 +32,6 @@ async function createMentor(req, res) {
     });
   }
 }
-
 async function updateMentor(req, res) {
   const { id: mentorId } = req.user;
   const data = req.body;
@@ -43,16 +51,37 @@ async function updateMentor(req, res) {
     });
   }
 }
-
+async function updateMentorByAdmin(req, res) {
+  const { id: userId } = req.user;
+  const { id: mentorId } = req.params;
+  const data = req.body;
+  try {
+    const isMentorExists = await Mentors.getMentorById(mentorId);
+    if (isMentorExists === undefined) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Mentors.updateMentorByAdmin(isMentorExists.id, userId, data);
+    return res.status(200).json({
+      message: "Mentor updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: err.errorUpdate.message,
+      error: error.message,
+    });
+  }
+}
 async function deleteMentor(req, res) {
   const { id: mentorId } = req.params;
+  const { id: userId } = req.user;
   try {
     const isMentorExists = await Mentors.getMentorById(mentorId);
     if (isMentorExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Mentors.deleteMentor(isMentorExists.id);
+    await Mentors.deleteMentor(isMentorExists.id, userId);
+    await Enrollments.unEnrollByMentor(isMentorExists.id, userId);
     return res.status(200).json({
       message: "Mentor deleted successfully",
     });
@@ -63,7 +92,6 @@ async function deleteMentor(req, res) {
     });
   }
 }
-
 async function getAllMentors(req, res) {
   try {
     const mentors = await Mentors.getAllMentors();
@@ -92,7 +120,6 @@ async function getAllMentors(req, res) {
     });
   }
 }
-
 async function getMentorBySubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   try {
@@ -129,7 +156,6 @@ async function getMentorById(req, res) {
     });
   }
 }
-
 module.exports = {
   createMentor,
   updateMentor,
@@ -137,4 +163,5 @@ module.exports = {
   getAllMentors,
   getMentorBySubCategory,
   getMentorById,
+  updateMentorByAdmin,
 };

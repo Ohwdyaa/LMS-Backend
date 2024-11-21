@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
-const Enrollment = {
+const Enrollments = {
   enrollMentor: async (courseId, mentorId, userId) => {
     try {
       const id = uuid();
@@ -136,6 +136,23 @@ const Enrollment = {
       throw error;
     }
   },
+  unEnrollByMentor: async (id, userId) => {
+    try {
+      const result = await lmsManagement(
+        `UPDATE 
+          enrollments
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE mentor_id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
-module.exports = Enrollment;
+module.exports = Enrollments;

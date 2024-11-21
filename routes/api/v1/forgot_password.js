@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/request", requestResetPassword);
 
-// change password
+// change password = req.query
 router.post("/reset", resetPassword);
 
 module.exports = router;

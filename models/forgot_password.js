@@ -1,3 +1,4 @@
+const { use } = require("passport");
 const { lmsManagement } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
@@ -11,10 +12,10 @@ const forgetPassword = {
           (id, 
           reset_token, 
           expired_date, 
-          is_used, 
-          user_id) 
+          created_by,
+          team_id) 
         VALUES (?, ?, ?, ?, ?)`,
-        [id, resetToken, expiredDate, false, userId]
+        [id, resetToken, expiredDate, userId, userId]
       );
       return result;
     } catch (error) {
@@ -35,7 +36,7 @@ const forgetPassword = {
           u.fullname as user 
         FROM forget_password fp
         LEFT JOIN users u ON fp.user_id= u.id
-        WHERE reset_token = ? AND is_used = false`,
+        WHERE reset_token = ? AND is_used = 0`,
         [resetToken]
       );
       return result;
@@ -53,7 +54,7 @@ const forgetPassword = {
         `UPDATE 
           forget_password 
         SET 
-          is_used = true 
+          is_used = 1 
         WHERE reset_token = ?`,
         [resetToken]
       );

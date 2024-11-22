@@ -1,9 +1,9 @@
 const express = require("express");
 const {
-  createRoles,
-  getAllRoles,
-  deleteRoles,
-  changeUserRoles,
+  createRoleTeam,
+  getAllRoleTeams,
+  deleteRoleTeam,
+  changeTeamRole,
 } = require("../../../controllers/role_teams");
 const router = express.Router();
 const {
@@ -13,9 +13,17 @@ const {
   changeRoleSchema,
 } = require("../../../middlewares/validate");
 
-router.post("/roleTeam", validateMiddleware(roleSchema), createRoles); 
-router.get("/roleTeam", getAllRoles);
-router.delete("/roleTeam/:id", validateMiddleware(deleteRoleSchema), deleteRoles);
-router.put("/roleTeam/:id", validateMiddleware(changeRoleSchema), changeUserRoles);
+router.post("/roleTeam", validateMiddleware(roleSchema), createRoleTeam);
+router.get("/roleTeam", getAllRoleTeams);
+router.delete(
+  "/roleTeam/:id",
+  validateMiddleware(deleteRoleSchema),
+  deleteRoleTeam
+);
+router.put(
+  "/roleTeam/:id",
+  validateMiddleware(changeRoleSchema),
+  changeTeamRole
+);
 
 module.exports = router;

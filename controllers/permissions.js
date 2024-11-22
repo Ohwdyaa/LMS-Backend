@@ -1,15 +1,15 @@
 const Permissions = require("../models/permissions");
-const Roles = require("../models/roles");
+const roleTeams = require("../models/role_teams");
 const Module = require("../models/module_permissions");
 const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 async function updatePermissions(req, res) {
+  const { id: userId } = req.user;
   const { id: roleId } = req.params;
   const { listModules } = req.body;
-  const { id: userId } = req.user;
   let newValue = [];
   try {
-    const isRoleExists = await Roles.getRoleById(roleId);
+    const isRoleExists = await roleTeams.getRoleById(roleId);
     if (isRoleExists === undefined) {
       return res.status(400).json({ message: "Role not found" });
     }

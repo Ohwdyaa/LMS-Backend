@@ -2,7 +2,7 @@ const { lmsManagement } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
-const Roles = {
+const roleTeams = {
   createRole: async (data, userId) => {
     try {
       const id = uuid();
@@ -67,7 +67,7 @@ const Roles = {
       throw error;
     }
   },
-  changeUserRole: async (userId, id) => {
+  changeUserRole: async (userId, id, newRoleId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -77,7 +77,7 @@ const Roles = {
           updated_at = NOW(), 
           updated_by = ? 
         WHERE id = ? `,
-        [id, userId, userId]
+        [newRoleId, userId, id]
       );
       return result;
     } catch (error) {
@@ -90,4 +90,4 @@ const Roles = {
   },
 };
 
-module.exports = Roles;
+module.exports = roleTeams;

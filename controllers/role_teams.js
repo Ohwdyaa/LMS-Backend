@@ -1,13 +1,12 @@
-const Roles = require("../models/roles");
+const roleTeams = require("../models/role_teams");
 const { err } = require("../utils/custom_error");
-
 async function createRoles(req, res) {
+  const { id: userId } = req.user;
   const data = req.body;
-  const { id:userId } = req.user;
   try {
-    await Roles.createRole(data, userId);
+    await roleTeams.createRole(data, userId);
     return res.status(201).json({
-      message: "Role created successfully",       
+      message: "Role created successfully",
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
@@ -16,12 +15,13 @@ async function createRoles(req, res) {
     });
   }
 }
-
 async function changeUserRoles(req, res) {
-  const { id: userId } = req.params;
+  const { id: userId } = req.user;
+  const { id: teamId } = req.params;
   const { roleId: newRoleId } = req.body;
   try {
-    await Roles.changeUserRole(userId, newRoleId);
+    //pengecekan apakah user team exist
+    await roleTeams.changeUserRole(userId, teamId, newRoleId);
     return res.status(200).json({
       message: "User role updated successfully",
     });
@@ -32,11 +32,9 @@ async function changeUserRoles(req, res) {
     });
   }
 }
-
 async function getAllRoles(req, res) {
   try {
-    const data = await Roles.getAllRole();
-
+    const data = await roleTeams.getAllRole(); // obj blum ad
     return res.status(200).json(data);
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
@@ -48,12 +46,12 @@ async function getAllRoles(req, res) {
 async function deleteRoles(req, res) {
   const { id: roleId } = req.params;
   try {
-    const isRoleExists = await Roles.getRoleById(roleId);
+    const isRoleExists = await roleTeams.getRoleById(roleId);
     if (isRoleExists === undefined) {
       return res.status(400).json({ message: "Role not found" });
     }
 
-    await Roles.deleteRole(isRoleExists.id);
+    await roleTeams.deleteRole(isRoleExists.id);
     return res.status(200).json({
       message: "Role deleted successfully",
     });
@@ -64,10 +62,9 @@ async function deleteRoles(req, res) {
     });
   }
 }
-
 module.exports = {
   createRoles,
   getAllRoles,
   deleteRoles,
-  changeUserRoles
+  changeUserRoles,
 };

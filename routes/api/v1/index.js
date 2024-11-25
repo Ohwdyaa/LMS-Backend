@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const teamRoutes = require("./teams");
-const mentorRoutes = require("./mentors");
-const forgetPasswordRoutes = require("./forgot_password");
-const roleRoutes = require("./roles");
+const teams = require("./teams");
+const roleTeams = require("./role_teams");
+const mentors = require("./mentors");
+const roleMentors = require("./role_mentors");
+const forgetPassword = require("./forgot_password");
 const religionRoutes = require("./religions");
 const genderRoutes = require("./genders");
 
@@ -22,10 +23,11 @@ const subModuleCourses = require("./sub_module_courses");
 const contentTypes = require("./content_types");
 const materials = require("./materials");
 
-router.use(teamRoutes);
-router.use(mentorRoutes);
-router.use(forgetPasswordRoutes);
-router.use(roleRoutes);
+router.use(teams);
+router.use(roleTeams);
+router.use(mentors);
+router.use(roleMentors);
+router.use(forgetPassword);
 router.use(religionRoutes);
 router.use(genderRoutes);
 

@@ -1,14 +1,12 @@
 const { lmsManagement } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
-
-const Roles = {
-  createRole: async (data, userId) => {
+const roleTeams = {
+  createRoleTeam: async (data, userId) => {
     try {
       const id = uuid();
       const result = await lmsManagement(
-        `
-        INSERT INTO roles 
+        `INSERT INTO roles 
           (id,
           name,
           created_by) 
@@ -24,10 +22,14 @@ const Roles = {
       throw error;
     }
   },
-  getRoleById: async (id) => {
+  getRoleTeamById: async (id) => {
     try {
       const [result] = await lmsManagement(
-        "SELECT id, name FROM roles WHERE id = ?",
+        `SELECT 
+          id, 
+          name 
+        FROM roles 
+        WHERE id = ?`,
         [id]
       );
       return result;
@@ -39,10 +41,14 @@ const Roles = {
       throw error;
     }
   },
-  getAllRole: async () => {
+  getAllRoleTeams: async () => {
     try {
       const result = await lmsManagement(
-        "SELECT id, name FROM roles WHERE is_deleted = 0"
+        `SELECT 
+          id, 
+          name 
+        FROM roles 
+        WHERE is_deleted = 0`
       );
       return result;
     } catch (error) {
@@ -53,9 +59,9 @@ const Roles = {
       throw error;
     }
   },
-  deleteRole: async (id) => {
+  deleteRoleTeam: async (id) => {
     try {
-      const result = await lmsManagement("DELETE FROM roles where id = ? ", [
+      const result = await lmsManagement(`DELETE FROM roles where id = ?`, [
         id,
       ]);
       return result;
@@ -67,7 +73,7 @@ const Roles = {
       throw error;
     }
   },
-  changeUserRole: async (userId, id) => {
+  changeTeamRole: async (userId, id, newRoleId) => {
     try {
       const result = await lmsManagement(
         `UPDATE 
@@ -77,7 +83,7 @@ const Roles = {
           updated_at = NOW(), 
           updated_by = ? 
         WHERE id = ? `,
-        [id, userId, userId]
+        [newRoleId, userId, id]
       );
       return result;
     } catch (error) {
@@ -90,4 +96,4 @@ const Roles = {
   },
 };
 
-module.exports = Roles;
+module.exports = roleTeams;

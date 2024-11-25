@@ -1,13 +1,12 @@
-const Roles = require("../models/roles");
+const roleMentor = require("../models/role_mentors");
 const { err } = require("../utils/custom_error");
-
-async function createRoles(req, res) {
+async function createRoleMentor(req, res) {
+  const { id: userId } = req.user;
   const data = req.body;
-  const { id:userId } = req.user;
   try {
-    await Roles.createRole(data, userId);
+    await roleMentor.createRoleMentor(data, userId);
     return res.status(201).json({
-      message: "Role created successfully",       
+      message: "Role created successfully",
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
@@ -16,12 +15,13 @@ async function createRoles(req, res) {
     });
   }
 }
-
-async function changeUserRoles(req, res) {
-  const { id: userId } = req.params;
+async function changeMentorRole(req, res) {
+  const { id: userId } = req.user;
+  const { id: mentorId } = req.params;
   const { roleId: newRoleId } = req.body;
   try {
-    await Roles.changeUserRole(userId, newRoleId);
+    //pengecekan apakah user team exist
+    await roleMentor.changeMentorRole(userId, mentorId, newRoleId);
     return res.status(200).json({
       message: "User role updated successfully",
     });
@@ -32,11 +32,9 @@ async function changeUserRoles(req, res) {
     });
   }
 }
-
-async function getAllRoles(req, res) {
+async function getAllRoleMentors(req, res) {
   try {
-    const data = await Roles.getAllRole();
-
+    const data = await roleMentor.getAllRoleMentors(); // obj blum ad
     return res.status(200).json(data);
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
@@ -45,15 +43,15 @@ async function getAllRoles(req, res) {
     });
   }
 }
-async function deleteRoles(req, res) {
+async function deleteRoleMentor(req, res) {
   const { id: roleId } = req.params;
   try {
-    const isRoleExists = await Roles.getRoleById(roleId);
+    const isRoleExists = await roleMentor.getRoleMentorById(roleId);
     if (isRoleExists === undefined) {
       return res.status(400).json({ message: "Role not found" });
     }
 
-    await Roles.deleteRole(isRoleExists.id);
+    await roleMentor.deleteRoleMentor(isRoleExists.id);
     return res.status(200).json({
       message: "Role deleted successfully",
     });
@@ -64,10 +62,9 @@ async function deleteRoles(req, res) {
     });
   }
 }
-
 module.exports = {
-  createRoles,
-  getAllRoles,
-  deleteRoles,
-  changeUserRoles
+  createRoleMentor,
+  getAllRoleMentors,
+  deleteRoleMentor,
+  changeMentorRole,
 };

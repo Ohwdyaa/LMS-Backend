@@ -8,13 +8,16 @@ const transporter = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
-});
+  tls: {
+    rejectUnauthorized: false,  
+  },
+}); 
 async function sendResetPasswordEmail(email, token) {
   try {
     const mailOptions = {
       to: email,
       subject: "Reset your password",
-      html: `Click on the link to reset your password: http://localhost:3000/reset-password/${token}`,
+      html: `Click on the link to reset your password: http://localhost:3000/reset/${token}`,
     };
     await transporter.sendMail(mailOptions);
   } catch (error) {

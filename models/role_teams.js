@@ -1,11 +1,11 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 const roleTeams = {
   createRoleTeam: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `INSERT INTO roles 
           (id,
           name,
@@ -24,7 +24,7 @@ const roleTeams = {
   },
   getRoleTeamById: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           id, 
           name 
@@ -43,7 +43,7 @@ const roleTeams = {
   },
   getAllRoleTeams: async () => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           id, 
           name 
@@ -61,7 +61,7 @@ const roleTeams = {
   },
   deleteRoleTeam: async (id) => {
     try {
-      const result = await lmsManagement(`DELETE FROM roles where id = ?`, [
+      const result = await learningManagementSystem(`DELETE FROM roles where id = ?`, [
         id,
       ]);
       return result;
@@ -75,7 +75,7 @@ const roleTeams = {
   },
   changeTeamRole: async (userId, id, newRoleId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           teams 
         SET 

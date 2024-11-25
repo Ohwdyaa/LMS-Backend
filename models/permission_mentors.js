@@ -1,10 +1,10 @@
-const { formatBulkQuery1, lmsManagement } = require("../config/db/db");
+const { formatBulkQuery1, learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const permissionMentors = {
   getPermissionMentorByRole: async (roleId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
               mp.can_create AS 'create', 
               mp.can_read AS 'read', 
@@ -32,7 +32,7 @@ const permissionMentors = {
   },
   getPermissionMentorByRoleJwt: async (roleId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           mp.can_create AS 'create', 
           mp.can_read AS 'read', 
@@ -60,7 +60,7 @@ const permissionMentors = {
   },
   getPermissionMentorByRoleAndModule: async (roleId, moduleId) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           can_create AS 'create', 
           can_read AS 'read', 
@@ -81,7 +81,7 @@ const permissionMentors = {
   },
   getPermissionMentorById: async (id) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           mp.can_create, 
           mp.can_read, 
@@ -106,7 +106,7 @@ const permissionMentors = {
   },
   updatePermissionMentor: async (roleId, moduleId, data, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE mentor_permissions SET 
             can_create = ?,
             can_read = ?, 

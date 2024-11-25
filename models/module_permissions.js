@@ -1,4 +1,4 @@
-const { lmsModule } = require("../config/db/db");
+const {  modulePages } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const modulePermission = {
   createModule: async (data) => {
     try {
       const uuidModule = uuid();
-      const result = await lmsModule(
+      const result = await modulePages(
         `INSERT INTO module 
           (uuid, 
           name,
@@ -24,7 +24,7 @@ const modulePermission = {
   },
   getModuleById: async (module_id) => {
     try {
-      const [result] = await lmsModule(
+      const [result] = await modulePages(
         `SELECT uuid, name, category_module_id FROM module WHERE id = ?`,
         [module_id.modulePermissionId]
       );
@@ -39,7 +39,7 @@ const modulePermission = {
   },
   getAllModule: async () => {
     try {
-      const result = await lmsModule(`
+      const result = await modulePages(`
         SELECT 
           m.id, 
           m.uuid, 

@@ -1,4 +1,4 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const subCategory = {
   createSubCategory: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `INSERT INTO sub_categories (
           id, 
           name, 
@@ -26,7 +26,7 @@ const subCategory = {
   },
   updateSubCategory: async (id, data, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           sub_categories 
         SET 
@@ -47,7 +47,7 @@ const subCategory = {
   },
   deleteSubCategory: async (id) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `DELETE FROM sub_categories WHERE id = ?`,
         id
       );
@@ -62,7 +62,7 @@ const subCategory = {
   },
   getAllSubCategories: async () => {
     try {
-      const result = await lmsManagement(`
+      const result = await learningManagementSystem(`
           SELECT 
             sc.id, 
             sc.name, 
@@ -81,7 +81,7 @@ const subCategory = {
   },
   getSubCategoryById: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           sc.id, 
           sc.name, 

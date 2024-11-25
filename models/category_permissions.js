@@ -1,4 +1,4 @@
-const { lmsModule } = require("../config/db/db");
+const { modulePages } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const moduleCategory = {
   createCategoryModule: async (data) => {
     try {
       const id = uuid();
-      const result = await lmsModule(
+      const result = await modulePages(
         `INSERT INTO category_module(
           uuid, 
           name

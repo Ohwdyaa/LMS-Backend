@@ -87,7 +87,7 @@ const Mentors = {
       throw error;
     }
   },
-  updateMentor: async (id, data) => {
+  updateMentor: async (id, data, userId) => {
     try {
       const result = await learningManagementSystem(
         ` UPDATE 
@@ -105,10 +105,14 @@ const Mentors = {
             cv = ?,
             profile_image = ?, 
             npwp = ?,
+            contract = ?,
+            contract_start = ?,
             contract_end = ?,
             updated_at = NOW(),
-            updated_by = ? 
+            updated_by = ?, 
             genders_id = ?,
+            role_id = ?,
+            sub_category_id = ?
           WHERE id = ?`,
         [
 
@@ -124,9 +128,13 @@ const Mentors = {
           data.cv,
           data.profileImage,
           data.npwp,
+          data.contract,
+          data.contractStart,
           data.contractEnd,
-          id,
+          userId,
           data.genderId,
+          data.roleId,
+          data.subCategoryId,
           id,
         ]
       );
@@ -136,23 +144,6 @@ const Mentors = {
         const message = mapMySQLError(error);
         throw new Error(message);
       }
-      throw error;
-    }
-  },
-  updateMentorByAdmin: async (id, userId, subCategoryId) => {
-    try {
-      const result = await learningManagementSystem(
-        `UPDATE 
-          mentors
-        SET 
-          updated_at = NOW(),
-          updated_by = ?,
-          sub_category_id = ?
-        WHERE id = ?`,
-        [userId, subCategoryId, id]
-      );
-      return result;
-    } catch (error) {
       throw error;
     }
   },

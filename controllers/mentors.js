@@ -13,7 +13,7 @@ async function createMentor(req, res) {
         message: "Mentor is active successfully",
       });
     }
-    if (isExist === undefined) {
+    if (isUserExist === undefined) {
       const password = "112233";
       const hash = await hashPassword(password);
       const mentorData = {
@@ -33,25 +33,6 @@ async function createMentor(req, res) {
   }
 }
 async function updateMentor(req, res) {
-  const { id: mentorId } = req.user;
-  const data = req.body;
-  try {
-    const isMentorExists = await Mentors.getMentorById(mentorId);
-    if (isMentorExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    await Mentors.updateMentor(isMentorExists.id, data);
-    return res.status(200).json({
-      message: "Mentor updated successfully",
-    });
-  } catch (error) {
-    return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
-    });
-  }
-}
-async function updateMentorByAdmin(req, res) {
   const { id: userId } = req.user;
   const { id: mentorId } = req.params;
   const data = req.body;
@@ -60,7 +41,7 @@ async function updateMentorByAdmin(req, res) {
     if (isMentorExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
-    await Mentors.updateMentorByAdmin(isMentorExists.id, userId, data);
+    await Mentors.updateMentor(isMentorExists.id, data, userId);
     return res.status(200).json({
       message: "Mentor updated successfully",
     });
@@ -163,5 +144,4 @@ module.exports = {
   getAllMentors,
   getMentorBySubCategory,
   getMentorById,
-  updateMentorByAdmin,
 };

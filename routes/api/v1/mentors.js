@@ -16,10 +16,10 @@ const {
 } = require("../../../middlewares/validate");
 
 router.post("/mentor", 
-  // validateMiddleware(mentorSchema), 
+  validateMiddleware(mentorSchema),
   createMentor);
 router.put("/mentor/:id", 
-  // validateMiddleware(updateMentorSchema), 
+  validateMiddleware(updateMentorSchema),
   updateMentor);
 router.put(
   "/mentor/:id/delete",

@@ -148,23 +148,23 @@ const Mentors = {
       throw error;
     }
   },
-  activeMentor: async (id, userId) => {
-    try {
-      const result = await learningManagementSystem(
-        `UPDATE 
-          mentors
-        SET 
-          is_deleted = 0,
-          updated_at = NOW(),
-          updated_by = ?
-        WHERE id = ?`,
-        [userId, id]
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  },
+  // activeMentor: async (id, userId) => {
+  //   try {
+  //     const result = await learningManagementSystem(
+  //       `UPDATE 
+  //         mentors
+  //       SET 
+  //         is_deleted = 0,
+  //         updated_at = NOW(),
+  //         updated_by = ?
+  //       WHERE id = ?`,
+  //       [userId, id]
+  //     );
+  //     return result;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
   deleteMentor: async (id, userId) => {
     try {
       const result = await learningManagementSystem(
@@ -201,7 +201,7 @@ const Mentors = {
         LEFT JOIN roles r ON m.role_id = r.id
         LEFT JOIN genders g ON m.genders_id = g.id
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
-        WHERE m.is_deleted = 0`
+        WHERE m.is_active = 1 AND m.is_deleted = 0`
       );
       return result;
     } catch (error) {

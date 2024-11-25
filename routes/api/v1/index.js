@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const upload = require("./upload");
+
 const teams = require("./teams");
 const roleTeams = require("./role_teams");
 const mentors = require("./mentors");
@@ -23,6 +25,8 @@ const moduleCourses = require("./module_courses");
 const subModuleCourses = require("./sub_module_courses");
 const contentTypes = require("./content_types");
 const materials = require("./materials");
+
+router.use(upload);
 
 router.use(teams);
 router.use(roleTeams);

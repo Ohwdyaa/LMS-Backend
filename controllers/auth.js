@@ -1,6 +1,7 @@
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
-const Permissions = require("./permissions");
+const permissionTeams = require("./permission_teams");
+const permissionMentors = require("./permission_mentors");
 const { generateJWT, verifyJWT } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
@@ -13,10 +14,14 @@ async function login(req, res) {
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
-    const getAccess = await Permissions.getPermissions(verifiedUser);
+    let getAccess = await permissionTeams.getPermissionTeams(verifiedUser);
+    if (getAccess === undefined) {
+      getAccess = await permissionMentors.getPermissionMentor(verifiedUser);
+    }
     if (getAccess === undefined) {
       return res.status(400).json({ message: "No access rights found for user." });
     }
+    
     const token = await generateJWT(verifiedUser, getAccess);
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);

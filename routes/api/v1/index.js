@@ -11,7 +11,8 @@ const genderRoutes = require("./genders");
 
 const categoryPermission = require("./category_permissions");
 const modulePermission = require("./module_permissions");
-const permissions = require("./permissions");
+const permissionTeams = require("./permission_teams");
+const permissionMentors = require("./permission_mentors");
 
 const categories = require("./categories");
 const subCategory = require("./sub_categories");
@@ -33,7 +34,8 @@ router.use(genderRoutes);
 
 router.use(categoryPermission);
 router.use(modulePermission);
-router.use(permissions);
+router.use(permissionTeams);
+router.use(permissionMentors);
 
 router.use(categories);
 router.use(subCategory);

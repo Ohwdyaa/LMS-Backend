@@ -1,22 +1,22 @@
 const { formatBulkQuery1, lmsManagement } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
-const Permissions = {
-  getPermissionByRole: async (roleId) => {
+const permissionMentors = {
+  getPermissionMentorByRole: async (roleId) => {
     try {
       const result = await lmsManagement(
         `SELECT 
-              rp.can_create AS 'create', 
-              rp.can_read AS 'read', 
-              rp.can_edit AS 'edit', 
-              rp.can_delete AS 'delete', 
+              mp.can_create AS 'create', 
+              mp.can_read AS 'read', 
+              mp.can_edit AS 'edit', 
+              mp.can_delete AS 'delete', 
               m.id AS moduleId,
               m.name AS moduleName,
               cm.name AS categoryName
-          FROM lms_management.role_permissions rp
-          LEFT JOIN lms_module.module m
-            ON rp.module_id = m.id
-          LEFT JOIN lms_module.category_module cm
+          FROM learning_management_system.mentor_permissions mp
+          LEFT JOIN module_pages.module m
+            ON mp.module_id = m.id
+          LEFT JOIN module_pages.category_module cm
             ON m.category_module_id = cm.id
         WHERE role_id = ?`,
         [roleId]
@@ -30,21 +30,21 @@ const Permissions = {
       throw error;
     }
   },
-  getPermissionByRoleJwt: async (roleId) => {
+  getPermissionMentorByRoleJwt: async (roleId) => {
     try {
       const result = await lmsManagement(
         `SELECT 
-          rp.can_create AS 'create', 
-          rp.can_read AS 'read', 
-          rp.can_edit AS 'edit', 
-          rp.can_delete AS 'delete', 
+          mp.can_create AS 'create', 
+          mp.can_read AS 'read', 
+          mp.can_edit AS 'edit', 
+          mp.can_delete AS 'delete', 
           m.uuid AS moduleId,
           m.name AS moduleName,
           cm.name AS categoryName
-        FROM lms_management.role_permissions rp
-        LEFT JOIN lms_module.module m
-            ON rp.module_id = m.id
-          LEFT JOIN lms_module.category_module cm
+        FROM learning_management_system.mentor_permissions mp
+        LEFT JOIN module_pages.module m
+            ON mp.module_id = m.id
+        LEFT JOIN module_pages.category_module cm
             ON m.category_module_id = cm.id
         WHERE role_id = ?`,
         [roleId]
@@ -58,7 +58,7 @@ const Permissions = {
       throw error;
     }
   },
-  getPermissionByRoleAndModule: async (roleId, moduleId) => {
+  getPermissionMentorByRoleAndModule: async (roleId, moduleId) => {
     try {
       const [result] = await lmsManagement(
         `SELECT 
@@ -66,7 +66,7 @@ const Permissions = {
           can_read AS 'read', 
           can_edit AS 'edit', 
           can_delete AS 'delete'
-        FROM lms_management.role_permissions 
+        FROM learning_management_system.mentor_permissions 
         WHERE role_id = ? AND module_id = ?`,
         [roleId, moduleId]
       );
@@ -79,20 +79,20 @@ const Permissions = {
       throw error;
     }
   },
-  getPermissionById: async (id) => {
+  getPermissionMentorById: async (id) => {
     try {
       const result = await lmsManagement(
         `SELECT 
-          rp.can_create, 
-          rp.can_read, 
-          rp.can_edit, 
-          rp.can_delete, 
-          rp.role_id, r.name as role,
-          rp.module_id, m.name as module
-        FROM lms_management.role_permissions rp
-          LEFT JOIN lms_db2.roles r ON rp.role_id = r.id
-          LEFT JOIN lms_module.module m ON rp.module_id = m.id
-        WHERE rp.id = ?`,
+          mp.can_create, 
+          mp.can_read, 
+          mp.can_edit, 
+          mp.can_delete, 
+          mp.role_id, r.name as role,
+          mp.module_id, m.name as module
+        FROM learning_management_system.mentor_permissions mp
+          LEFT JOIN learning_management_system.roles r ON mp.role_id = r.id
+          LEFT JOIN module_pages.module m ON mp.module_id = m.id
+        WHERE mp.id = ?`,
         [id]
       );
       return result;
@@ -104,15 +104,15 @@ const Permissions = {
       throw error;
     }
   },
-  updatePermission: async (roleId, moduleId, data, userId) => {
+  updatePermissionMentor: async (roleId, moduleId, data, userId) => {
     try {
       const result = await lmsManagement(
-        `UPDATE role_permissions SET 
-        can_create = ?,
-        can_read = ?, 
-        can_edit = ?, 
-        can_delete = ?,
-        updated_by = ?
+        `UPDATE mentor_permissions SET 
+            can_create = ?,
+            can_read = ?, 
+            can_edit = ?, 
+            can_delete = ?,
+            updated_by = ?
         WHERE role_id = ? AND module_id = ?`,
         [
           data.canCreate,
@@ -133,11 +133,10 @@ const Permissions = {
       throw error;
     }
   },
-
-  createBulkPermission: async (query, array) => {
+  createBulkPermissionMentor: async (query, array) => {
     const formatQuery = await formatBulkQuery1(query, array);
     await lmsManagement(formatQuery);
   },
 };
 
-module.exports = Permissions;
+module.exports = permissionMentors;

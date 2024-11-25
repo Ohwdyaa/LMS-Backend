@@ -71,7 +71,7 @@ const Teams = {
       throw error;
     }
   },
-  updateTeam: async (id, data) => {
+  updateTeam: async (id, data, userId) => {
     try {
       const result = await learningManagementSystem(
         ` UPDATE 
@@ -99,7 +99,7 @@ const Teams = {
           data.address,
           data.institute,
           data.dateOfBirth,
-          id,
+          userId,
           data.genderId,
           data.religionId,
           id

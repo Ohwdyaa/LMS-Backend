@@ -27,14 +27,15 @@ async function createTeam(req, res) {
 
 async function updateTeam(req, res) {
   const { id: userId } = req.user;
+  const { id: teamId } = req.params;
   const data = req.body;
   try {
-    const isTeamExists = await Teams.getTeamById(userId);
+    const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    await Teams.updateTeam(isTeamExists.id, data);
+    await Teams.updateTeam(isTeamExists.id, data, userId);
     return res.status(200).json({
       message: "User updated successfully",
     });

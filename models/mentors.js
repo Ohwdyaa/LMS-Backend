@@ -108,6 +108,7 @@ const Mentors = {
             contract = ?,
             contract_start = ?,
             contract_end = ?,
+            is_active = ?,
             updated_at = NOW(),
             updated_by = ?, 
             genders_id = ?,
@@ -115,7 +116,6 @@ const Mentors = {
             sub_category_id = ?
           WHERE id = ?`,
         [
-
           data.fullname,
           data.username,
           data.email,
@@ -131,6 +131,7 @@ const Mentors = {
           data.contract,
           data.contractStart,
           data.contractEnd,
+          data.isActive,
           userId,
           data.genderId,
           data.roleId,

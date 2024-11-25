@@ -1,4 +1,4 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Mentors = {
   createMentor: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `
         INSERT INTO mentors (
             id,
@@ -68,7 +68,7 @@ const Mentors = {
   },
   updatePassword: async (id, hashedPassword) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           mentors 
         SET 
@@ -89,7 +89,7 @@ const Mentors = {
   },
   updateMentor: async (id, data) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         ` UPDATE 
             mentors
           SET 
@@ -141,7 +141,7 @@ const Mentors = {
   },
   updateMentorByAdmin: async (id, userId, subCategoryId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           mentors
         SET 
@@ -158,7 +158,7 @@ const Mentors = {
   },
   activeMentor: async (id, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           mentors
         SET 
@@ -175,7 +175,7 @@ const Mentors = {
   },
   deleteMentor: async (id, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           mentors
         SET 
@@ -196,7 +196,7 @@ const Mentors = {
   },
   getAllMentors: async () => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
             m.id, 
             m.fullname, 
@@ -222,7 +222,7 @@ const Mentors = {
   },
   getMentorById: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           m.id,
           m.fullname,
@@ -263,7 +263,7 @@ const Mentors = {
   },
   getMentorByEmail: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           m.id,
           m.fullname,
@@ -288,7 +288,7 @@ const Mentors = {
   },
   getMentorsBySubCategory: async (id) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           m.id,  
           m.fullname,
@@ -313,7 +313,7 @@ const Mentors = {
   },
   logoutMentor: async (token) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE mentors SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );

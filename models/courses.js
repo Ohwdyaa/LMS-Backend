@@ -1,4 +1,4 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Courses = {
   createCourse: async (data, userId, enrollmentKey) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `INSERT INTO courses(
           id, 
           title, 
@@ -39,7 +39,7 @@ const Courses = {
   },
   updateCourse: async (id, data, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           courses 
         SET 
@@ -68,7 +68,7 @@ const Courses = {
   },
   deleteCourse: async (id) => {
     try {
-      const result = await lmsManagement(`DELETE FROM courses WHERE id=?`, id);
+      const result = await learningManagementSystem(`DELETE FROM courses WHERE id=?`, id);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -80,7 +80,7 @@ const Courses = {
   },
   getAllCourse: async () => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           id, 
           title, 
@@ -102,7 +102,7 @@ const Courses = {
   },
   getCourseById: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           id, 
           title, 

@@ -1,15 +1,15 @@
-const Permissions = require("../models/permissions");
+const Permissions = require("../models/permission_teams");
 const roleTeams = require("../models/role_teams");
 const Module = require("../models/module_permissions");
 const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
-async function updatePermissions(req, res) {
+async function updatePermissionTeam(req, res) {
   const { id: userId } = req.user;
   const { id: roleId } = req.params;
   const { listModules } = req.body;
   let newValue = [];
   try {
-    const isRoleExists = await roleTeams.getRoleById(roleId);
+    const isRoleExists = await roleTeams.getRoleTeamById(roleId);
     if (isRoleExists === undefined) {
       return res.status(400).json({ message: "Role not found" });
     }
@@ -17,7 +17,7 @@ async function updatePermissions(req, res) {
     for (let i = 0; i < moduleLength; i++) {
       const { moduleId, canRead, canCreate, canEdit, canDelete } =
         listModules[i];
-      const isExists = await Permissions.getPermissionByRoleAndModule(
+      const isExists = await Permissions.getPermissionTeamByRoleAndModule(
         roleId,
         moduleId
       );
@@ -28,7 +28,7 @@ async function updatePermissions(req, res) {
           canEdit,
           canDelete,
         };
-        await Permissions.updatePermission(
+        await Permissions.updatePermissionTeam(
           roleId,
           moduleId,
           updateData,
@@ -49,8 +49,8 @@ async function updatePermissions(req, res) {
       }
     }
     if (newValue.length > 0) {
-      await Permissions.createBulkPermission(
-        `INSERT INTO role_permissions ( 
+      await Permissions.createBulkPermissionTeam(
+        `INSERT INTO team_permissions ( 
           id, can_create, can_read, can_edit, can_delete, created_by, role_id,  module_id
         ) VALUES ?`,
         [newValue]
@@ -66,10 +66,10 @@ async function updatePermissions(req, res) {
     });
   }
 }
-async function getPermissionByRole(req, res) {
+async function getPermissionTeamByRole(req, res) {
   const { id: roleId } = req.params;
   try {
-    const permission = await Permissions.getPermissionByRole(roleId);
+    const permission = await Permissions.getPermissionTeamByRole(roleId);
     if (permission.length === 0) {
       const permissionList = [];
       const modules = await Module.getAllModule();
@@ -102,9 +102,9 @@ async function getPermissionByRole(req, res) {
     });
   }
 }
-async function getPermissions(user) {
+async function getPermissionTeams(user) {
   try {
-    const isRolePermissionsExist = await Permissions.getPermissionByRoleJwt(
+    const isRolePermissionsExist = await Permissions.getPermissionTeamByRoleJwt(
       user.role_id
     );
     if (isRolePermissionsExist === undefined) {
@@ -121,7 +121,7 @@ async function getPermissions(user) {
   }
 }
 module.exports = {
-  updatePermissions,
-  getPermissionByRole,
-  getPermissions,
+  updatePermissionTeam,
+  getPermissionTeamByRole,
+  getPermissionTeams,
 };

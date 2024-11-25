@@ -2,7 +2,8 @@ const moment = require("moment");
 const forgotPassword = require("../models/forgot_password");
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
-const Permissions = require("./permissions");
+const permissionTeams = require("./permission_teams");
+const permissionMentors = require("./permission_mentors");
 const { sendResetPasswordEmail } = require("../utils/send_email");
 const { hashPassword } = require("../utils/bcrypt");
 const jwt = require("../utils/jwt");
@@ -14,14 +15,23 @@ async function requestResetPassword(req, res) {
     if (!validateEmail(email)) {
       return res.status(400).json({ message: "invalid email" });
     }
-    let isUserExist = await Teams.getTeamByEmail(email);
-    if (isUserExist === undefined) {
-      isUserExist = await Mentors.getMentorByEmail(email);
-    }
-    if(isUserExist === undefined){
-      return res.status(400).json({ message: "User not found with the provided email address" });
-    }
-    const getAccess = await Permissions.getPermissions(isUserExist);
+
+      let isUserExist = await Teams.getTeamByEmail(email);
+      if (isUserExist === undefined) {
+        isUserExist = await Mentors.getMentorByEmail(email);
+      }
+      if(isUserExist === undefined){
+        return res.status(400).json({ message: "User not found with the provided email address" });
+      }
+
+      let getAccess = await permissionTeams.getPermissionTeams(isUserExist);
+      if(getAccess === undefined){
+        getAccess = await permissionMentors.getPermissionMentor(isUserExist);
+      }
+      if(getAccess === undefined){
+        return res.status(400).json({ message: "No access rights found for user." });
+      }
+
     const resetToken = await jwt.generateTokenPassword(isUserExist, getAccess);
     const expiredDate = moment().add(1, "hours").toDate();
     await forgotPassword.createResetToken(

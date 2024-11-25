@@ -1,8 +1,8 @@
 const express = require("express");
 const {
-  updatePermissions,
-  getPermissionByRole
-} = require("../../../controllers/permissions");
+  updatePermissionTeam,
+  getPermissionTeamByRole,
+} = require("../../../controllers/permission_teams");
 const router = express.Router();
 const {
   validateMiddleware,
@@ -10,11 +10,11 @@ const {
 } = require("../../../middlewares/validate");
 
 router.put(
-  "/permission/:id",
+  "/permissionTeam/:id",
   validateMiddleware(permissionSchema),
-  updatePermissions
+  updatePermissionTeam
 );
 
-router.get("/permission/:id", getPermissionByRole);
+router.get("/permissionTeam/:id", getPermissionTeamByRole);
 
 module.exports = router;

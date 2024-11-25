@@ -1,4 +1,4 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Teams = {
   createTeam: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `INSERT INTO teams (
             id,
             username, 
@@ -52,7 +52,7 @@ const Teams = {
   },
   updatePassword: async (id, hashedPassword) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           teams 
         SET 
@@ -73,7 +73,7 @@ const Teams = {
   },
   updateTeam: async (id, data) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         ` UPDATE 
             teams
           SET 
@@ -116,7 +116,7 @@ const Teams = {
   },
   deleteTeam: async (id) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `DELETE FROM teams where id = ?`,
         [id]
       );
@@ -131,7 +131,7 @@ const Teams = {
   },
   getAllTeams: async () => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           t.id, 
           t.username, 
@@ -159,7 +159,7 @@ const Teams = {
   },
   getTeamById: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           t.id,
           t.username, 
@@ -182,7 +182,7 @@ const Teams = {
   },
   getTeamByEmail: async (email) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           t.id, 
           t.username, 
@@ -205,7 +205,7 @@ const Teams = {
   },
   getTeamByRole: async (id) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           t.id, 
           t.username, 
@@ -229,7 +229,7 @@ const Teams = {
   },
   logoutTeam: async (token) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE teams SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );

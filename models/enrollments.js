@@ -1,4 +1,4 @@
-const { lmsManagement } = require("../config/db/db");
+const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Enrollments = {
   enrollMentor: async (courseId, mentorId, userId) => {
     try {
       const id = uuid();
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `INSERT INTO enrollments(
               id, 
               created_by,
@@ -26,7 +26,7 @@ const Enrollments = {
   },
   updateEnroll: async (id, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           enrollments
         SET 
@@ -47,7 +47,7 @@ const Enrollments = {
   },
   existingEntry: async (courseId, mentorId) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           e.id, 
           m.id as mentorId,
@@ -70,7 +70,7 @@ const Enrollments = {
   },
   existingEnroll: async (id) => {
     try {
-      const [result] = await lmsManagement(
+      const [result] = await learningManagementSystem(
         `SELECT 
           e.id, 
           m.id as mentorId,
@@ -93,7 +93,7 @@ const Enrollments = {
   },
   getCourseParticipants: async (courseId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `SELECT 
           e.id, 
           m.id as mentorId,
@@ -117,7 +117,7 @@ const Enrollments = {
   },
   unEnroll: async (id, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           enrollments
         SET 
@@ -138,7 +138,7 @@ const Enrollments = {
   },
   unEnrollByMentor: async (id, userId) => {
     try {
-      const result = await lmsManagement(
+      const result = await learningManagementSystem(
         `UPDATE 
           enrollments
         SET 

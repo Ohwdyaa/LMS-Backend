@@ -5,7 +5,7 @@ const Mentors = require("../models/mentors");
 const permissionTeams = require("./permission_teams");
 const permissionMentors = require("./permission_mentors");
 const { sendResetPasswordEmail } = require("../utils/send_email");
-const { hashPassword } = require("../utils/bcrypt");
+const { hashPassword, verifyPassword } = require("../utils/bcrypt");
 const jwt = require("../utils/jwt");
 const { validateEmail } = require("../middlewares/validate");
 const { err } = require("../utils/custom_error");
@@ -54,7 +54,7 @@ async function requestResetPassword(req, res) {
   }
 }
 async function resetPassword(req, res) {
-  const { newPassword, confirmPassword } = req.body;
+  const { currentPassword, newPassword, confirmPassword } = req.body;
   const {id: userId} = req.user;
   const { userType } = req.query;
   try {
@@ -69,15 +69,25 @@ async function resetPassword(req, res) {
         return res.status(400).json({ message: "User not found" });
       }
 
+      const isCurrentPassword = await verifyPassword(currentPassword, isUserExist.password);
+      if (isCurrentPassword === false) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+
       await Teams.updatePassword(isUserExist.id, hashedPassword);
       return res.status(200).json({
         message: "password updated successfully",
       });
-      }
+    }
     if (userType === "mentor") {
       isUserExist = await Mentors.getMentorById(userId);
       if(isUserExist === undefined){
         return res.status(400).json({ message: "User not found" });
+      }
+
+      const isCurrentPassword = await verifyPassword(currentPassword, isUserExist.password);
+      if (isCurrentPassword === false) {
+        return res.status(400).json({ message: "Current password is incorrect" });
       }
 
       await Mentors.updatePassword(isUserExist.id, hashedPassword);

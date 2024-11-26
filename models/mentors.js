@@ -224,6 +224,7 @@ const Mentors = {
           m.date_of_birth as dateOfBirth,
           m.nik,
           m.linkedin,
+          m.password,
           m.bpjs_kesehatan as bpjsKesehata,
           m.bpjs_tk as bpjsTenagakerja,
           m.cv,

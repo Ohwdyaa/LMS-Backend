@@ -127,8 +127,31 @@ async function getMentorById(req, res) {
     if (isMentorExist === undefined) {
       return res.status(400).json({ message: "Mentor not found" });
     }
+    const detailMentor = new Object();
+    detailMentor.id = isMentorExist.id;
+    detailMentor.fullname = isMentorExist.fullname;
+    detailMentor.username = isMentorExist.username;
+    detailMentor.email = isMentorExist.email;
+    detailMentor.phoneNumber = isMentorExist.phoneNumber;
+    detailMentor.dateOfBirth = isMentorExist.dateOfBirth;
+    detailMentor.nik = isMentorExist.nik;
+    detailMentor.linkedin = isMentorExist.linkedin;
+    detailMentor.bpjsKesehatan = isMentorExist.bpjsKesehatan;
+    detailMentor.bpjsTenagakerja = isMentorExist.bpjsTenagakerja;
+    detailMentor.cv = isMentorExist.cv;
+    detailMentor.npwp = isMentorExist.npwp;
+    detailMentor.contract = isMentorExist.contract;
+    detailMentor.contractStart = isMentorExist.contractStart;
+    detailMentor.contractEnd = isMentorExist.contractEnd;
+    detailMentor.roleId = isMentorExist.roleId;
+    detailMentor.genderId = isMentorExist.genderId;
+    detailMentor.subCategoryId = isMentorExist.subCategoryId;
+    detailMentor.role = isMentorExist.role;
+    detailMentor.gender = isMentorExist.gender;
+    detailMentor.subCategory = isMentorExist.subCategory;
+
     return res.status(200).json({
-      data: isMentorExist,
+      data: detailMentor,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({

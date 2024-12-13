@@ -10,11 +10,12 @@ async function createReligion(req, res) {
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 async function getAllReligions(req, res) {
   try {
     const religion = await Religions.getAllReligion();
@@ -23,8 +24,8 @@ async function getAllReligions(req, res) {
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }

@@ -1,6 +1,7 @@
 const { learningManagementSystem } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
+
 const roleMentors = {
   createRoleMentor: async (data, userId) => {
     try {
@@ -29,7 +30,7 @@ const roleMentors = {
             id, 
             name 
         FROM role_mentors 
-        WHERE id = ?`,
+        WHERE id = ? AND is_deleted = 0`,
         [id]
       );
       return result;
@@ -74,17 +75,37 @@ const roleMentors = {
       throw error;
     }
   },
-  changeMentorRole: async (userId, id, newRoleId) => {
+  softDeleteRoleMentor: async (id, userId) => {
     try {
       const result = await learningManagementSystem(
         `UPDATE 
-          mentors 
+          role_mentors
         SET 
-          role_id = ?, 
-          updated_at = NOW(), 
-          updated_by = ? 
-        WHERE id = ? `,
-        [newRoleId, userId, id]
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  updateRoleMentor: async (roleId, data, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE role_mentors 
+        SET 
+          name = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [data.name, userId, roleId]
       );
       return result;
     } catch (error) {

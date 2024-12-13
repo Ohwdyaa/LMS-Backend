@@ -2,13 +2,14 @@ const passport = require("passport");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/public.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
 
 passport.use(
+  "internal-rule",
   new Strategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -37,7 +38,12 @@ async function validatePermission(token) {
 
   for (let i = 0; i < permission.length; i++) {
     const p = permission[i];
-    if (p.create == 1 || p.read == 1 || p.edit == 1 || p.delete == 1) {
+    if (
+      p.canCreate == 1 ||
+      p.canRead == 1 ||
+      p.canEdit == 1 ||
+      p.canDelete == 1
+    ) {
       access = true;
       break;
     }

@@ -8,7 +8,6 @@ const {
 const {
   validateMiddleware,
   subCourseCategorySchema,
-  deleteSubCourseCategorySchema,
 } = require("../../../middlewares/validate");
 const router = express.Router();
 
@@ -18,11 +17,7 @@ router.post(
   createSubCategory
 );
 router.put("/subCategory/:id", updateSubCategory);
-router.delete(
-  "/subCategory/:id",
-  validateMiddleware(deleteSubCourseCategorySchema),
-  deleteSubCategory
-);
+router.delete("/subCategory/:id", deleteSubCategory);
 router.get("/subCategory", getAllSubCategories);
 
 module.exports = router;

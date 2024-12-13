@@ -105,10 +105,26 @@ const subModules = {
           id, 
           title
         FROM sub_modules
-        WHERE module_course_id = ?`,
+        WHERE module_course_id = ?
+        ORDER BY created_at ASC`,
         [id]
       );
       return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getSubModulesCountByModuleId: async (moduleId) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT COUNT(*) as count FROM sub_modules where module_course_id = ?`,
+        [moduleId]
+      );
+      return result.count;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);

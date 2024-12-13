@@ -3,6 +3,7 @@ const roleMentor = require("../models/role_mentors");
 const Module = require("../models/module_permissions");
 const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
+
 async function updatePermissionMentor(req, res) {
   const { id: userId } = req.user;
   const { id: roleId } = req.params;
@@ -11,7 +12,7 @@ async function updatePermissionMentor(req, res) {
   try {
     const isRoleExists = await roleMentor.getRoleMentorById(roleId);
     if (isRoleExists === undefined) {
-      return res.status(400).json({ message: "Role not found" });
+      return res.status(404).json({ message: "Role not found" });
     }
     const moduleLength = listModules.length;
     for (let i = 0; i < moduleLength; i++) {
@@ -61,11 +62,12 @@ async function updatePermissionMentor(req, res) {
     });
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 async function getPermissionMentorByRole(req, res) {
   const { id: roleId } = req.params;
   try {
@@ -77,15 +79,15 @@ async function getPermissionMentorByRole(req, res) {
       for (let i = 0; i < modules.length; i++) {
         const element = modules[i];
 
-        const permissionObj = new Object();
-        permissionObj.create = 0;
-        permissionObj.read = 0;
-        permissionObj.edit = 0;
-        permissionObj.delete = 0;
-        permissionObj.moduleId = element.id;
-        permissionObj.moduleName = element.name;
-        permissionObj.categoryName = element.categoryModule;
-        permissionList.push(permissionObj);
+        permissionList.push({
+          canCreate: 0,
+          canRead: 0,
+          canEdit: 0,
+          canDelete: 0,
+          moduleId: element.id,
+          moduleName: element.name,
+          categoryName: element.categoryModule,
+        });
       }
 
       return res.status(200).json({
@@ -97,16 +99,16 @@ async function getPermissionMentorByRole(req, res) {
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 async function getPermissionMentor(user) {
   try {
-    const isRolePermissionsExist = await Permissions.getPermissionMentorByRoleJwt(
-      user.role_id
-    );
+    const isRolePermissionsExist =
+      await Permissions.getPermissionMentorByRoleJwt(user.role_id);
     if (isRolePermissionsExist === undefined) {
       return res
         .status(400)
@@ -115,11 +117,12 @@ async function getPermissionMentor(user) {
     return isRolePermissionsExist;
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 module.exports = {
   updatePermissionMentor,
   getPermissionMentorByRole,

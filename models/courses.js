@@ -68,7 +68,10 @@ const Courses = {
   },
   deleteCourse: async (id) => {
     try {
-      const result = await learningManagementSystem(`DELETE FROM courses WHERE id=?`, id);
+      const result = await learningManagementSystem(
+        `DELETE FROM courses WHERE id=?`,
+        id
+      );
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -112,8 +115,28 @@ const Courses = {
           end_date,
           created_at
         FROM courses
-        WHERE id = ?`,
+        WHERE id = ? AND is_deleted = 0`,
         [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  softDeleteCourse: async (id, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE courses 
+        SET 
+          is_deleted = 1, 
+          updated_at = NOW(),
+          updated_by = ? 
+        WHERE id=?`,
+        [userId, id]
       );
       return result;
     } catch (error) {

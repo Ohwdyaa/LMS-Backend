@@ -1,4 +1,7 @@
-const { formatBulkQuery1, learningManagementSystem } = require("../config/db/db");
+const {
+  formatBulkQuery1,
+  learningManagementSystem,
+} = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const permissionTeams = {
@@ -6,18 +9,16 @@ const permissionTeams = {
     try {
       const result = await learningManagementSystem(
         `SELECT 
-              tp.can_create AS 'create', 
-              tp.can_read AS 'read', 
-              tp.can_edit AS 'edit', 
-              tp.can_delete AS 'delete', 
-              m.id AS moduleId,
-              m.name AS moduleName,
-              cm.name AS categoryName
-          FROM learning_management_system.team_permissions tp
-          LEFT JOIN module_pages.module m
-            ON tp.module_id = m.id
-          LEFT JOIN module_pages.category_module cm
-            ON m.category_module_id = cm.id
+          tp.can_create AS canCreate, 
+          tp.can_read AS canRead, 
+          tp.can_edit AS canEdit, 
+          tp.can_delete AS canDelete, 
+          m.id AS moduleId,
+          m.name AS moduleName,
+          cm.name AS categoryName
+        FROM learning_management_system.team_permissions tp
+        LEFT JOIN module_pages.module m ON tp.module_id = m.id
+        LEFT JOIN module_pages.category_module cm ON m.category_module_id = cm.id
         WHERE role_id = ?`,
         [roleId]
       );
@@ -34,18 +35,16 @@ const permissionTeams = {
     try {
       const result = await learningManagementSystem(
         `SELECT 
-          tp.can_create AS 'create', 
-          tp.can_read AS 'read', 
-          tp.can_edit AS 'edit', 
-          tp.can_delete AS 'delete', 
+          tp.can_create AS canCreate, 
+          tp.can_read AS canRead, 
+          tp.can_edit AS canEdit, 
+          tp.can_delete AS canDelete,  
           m.uuid AS moduleId,
           m.name AS moduleName,
           cm.name AS categoryName
         FROM learning_management_system.team_permissions tp
-        LEFT JOIN module_pages.module m 
-            ON tp.module_id = m.id
-        LEFT JOIN module_pages.category_module cm
-            ON m.category_module_id = cm.id
+        LEFT JOIN module_pages.module m ON tp.module_id = m.id
+        LEFT JOIN module_pages.category_module cm ON m.category_module_id = cm.id
         WHERE role_id = ?`,
         [roleId]
       );
@@ -62,38 +61,13 @@ const permissionTeams = {
     try {
       const [result] = await learningManagementSystem(
         `SELECT 
-          can_create AS 'create', 
-          can_read AS 'read', 
-          can_edit AS 'edit', 
-          can_delete AS 'delete'
+          can_create AS canCreate, 
+          can_read AS canRead, 
+          can_edit AS canEdit, 
+          can_delete AS canDelete
         FROM learning_management_system.team_permissions 
         WHERE role_id = ? AND module_id = ?`,
         [roleId, moduleId]
-      );
-      return result;
-    } catch (error) {
-      if (error.code && error.sqlMessage) {
-        const message = mapMySQLError(error);
-        throw new Error(message);
-      }
-      throw error;
-    }
-  },
-  getPermissionTeamById: async (id) => {
-    try {
-      const result = await learningManagementSystem(
-        `SELECT 
-          tp.can_create, 
-          tp.can_read, 
-          tp.can_edit, 
-          tp.can_delete, 
-          tp.role_id, r.name as role,
-          tp.module_id, m.name as module
-        FROM learning_management_system.team_permissions tp
-        LEFT JOIN learning_management_system.roles r ON tp.role_id = r.id
-        LEFT JOIN module_pages.module m ON tp.module_id = m.id
-        WHERE tp.id = ?`,
-        [id]
       );
       return result;
     } catch (error) {
@@ -135,7 +109,7 @@ const permissionTeams = {
   },
 
   createBulkPermissionTeam: async (query, array) => {
-    const formatQuery = await formatBulkQuery1(query, array);
+    const formatQuery = formatBulkQuery1(query, array);
     await learningManagementSystem(formatQuery);
   },
 };

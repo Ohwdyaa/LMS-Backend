@@ -87,6 +87,7 @@ const Teams = {
             date_of_birth = ?,
             updated_at = NOW(), 
             updated_by = ?,
+            role_id = ?,
             gender_id = ?, 
             religion_id = ?
           WHERE id = ?`,
@@ -100,9 +101,10 @@ const Teams = {
           data.institute,
           data.dateOfBirth,
           userId,
+          data.roleId,
           data.genderId,
           data.religionId,
-          id
+          id,
         ]
       );
       return result;
@@ -129,6 +131,27 @@ const Teams = {
       throw error;
     }
   },
+  softDeleteTeam: async (id, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE 
+          teams 
+        SET 
+          is_deleted = 1, 
+          updated_at = NOW(),
+          updated_by = ? 
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
   getAllTeams: async () => {
     try {
       const result = await learningManagementSystem(
@@ -137,16 +160,11 @@ const Teams = {
           t.username, 
           t.email, 
           t.fullname, 
-          t.gender_id, 
-          t.role_id, 
-          t.religion_id, 
-          r.name as role, 
-          g.name as gender, 
-          rg.name as religion
+          t.role_id as roleId,  
+          r.name as role
         FROM teams t
         LEFT JOIN roles r ON t.role_id = r.id
-        LEFT JOIN genders g ON t.gender_id = g.id
-        LEFT JOIN religions  rg ON t.religion_id = rg.id `
+        WHERE t.is_deleted = 0`
       );
       return result;
     } catch (error) {
@@ -164,14 +182,46 @@ const Teams = {
           t.id,
           t.username, 
           t.email, 
-          t.fullname,
-          t.password, 
+          t.password,
+          t.fullname, 
           t.role_id, r.name as role
           FROM teams t
         LEFT JOIN roles r ON t.role_id = r.id
-        WHERE t.id = ?`,
+        WHERE t.id = ? AND t.is_deleted = 0`,
         [id]
       );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getTeamDetails: async (id) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT 
+          t.id, 
+          t.username, 
+          t.email, 
+          t.fullname,
+          t.phone_number as phoneNumber, 
+          t.date_of_birth as dateOfBirth, 
+          t.address, 
+          t.institute, 
+          t.gender_id as genderId, 
+          t.role_id as roleId, 
+          r.name as role, 
+          g.name as gender
+          FROM teams t
+        LEFT JOIN roles r ON t.role_id = r.id
+        LEFT JOIN genders g ON t.gender_id = g.id
+        WHERE t.id = ? AND t.is_deleted = 0`,
+        [id]
+      );
+      console.log({ result });
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -185,14 +235,14 @@ const Teams = {
     try {
       const [result] = await learningManagementSystem(
         `SELECT 
-          t.id, 
-          t.username, 
-          t.email, 
-          t.password, 
-          t.fullname, 
-          t.role_id, r.name as role 
-        FROM teams t
-        LEFT JOIN roles r ON t.role_id = r.id WHERE email = ?`,
+          id, 
+          username, 
+          email, 
+          password, 
+          fullname, 
+          role_id
+        FROM teams
+        WHERE email = ? AND is_deleted = 0`,
         [email]
       );
       return result;
@@ -204,20 +254,28 @@ const Teams = {
       throw error;
     }
   },
-  getTeamByRole: async (id) => {
+  getTeamByUsernameAndEmail: async (username, email, id) => {
     try {
-      const result = await learningManagementSystem(
+      if (id) {
+        const [result] = await learningManagementSystem(
+          `SELECT 
+            id,
+            email,
+            username
+          FROM teams
+          WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
+          [username + "%", email + "%", id]
+        );
+        return result;
+      }
+      const [result] = await learningManagementSystem(
         `SELECT 
-          t.id, 
-          t.username, 
-          t.email, 
-          t.password, 
-          t.fullname, 
-          r.name as role 
-        FROM teams t
-        LEFT JOIN roles r ON t.role_id = r.id 
-        WHERE t.role_id = ?`,
-        [id]
+          id,
+          email,
+          username
+        FROM teams
+        WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+        [username + "%", email + "%"]
       );
       return result;
     } catch (error) {
@@ -235,6 +293,21 @@ const Teams = {
         token
       );
       return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getTeamsCountByRoleId: async (roleId) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT COUNT(*) as count FROM teams where role_id = ? AND is_deleted = 0`,
+        [roleId]
+      );
+      return result.count;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);

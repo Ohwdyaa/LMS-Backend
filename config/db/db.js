@@ -30,9 +30,9 @@ async function learningManagementSystem(query, value) {
   }
 }
 
-async function formatBulkQuery1(query, array) {
+function formatBulkQuery1(query, array) {
   try {
-    return await pool1.format(query, array === undefined ? [] : array);
+    return pool1.format(query, array === undefined ? [] : array);
   } catch (error) {
     console.log(error);
   }

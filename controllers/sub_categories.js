@@ -1,5 +1,7 @@
 const { err } = require("../utils/custom_error");
 const subCategory = require("../models/sub_categories");
+const Mentors = require("../models/mentors");
+
 async function createSubCategory(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
@@ -10,11 +12,12 @@ async function createSubCategory(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 async function updateSubCategory(req, res) {
   const { id: subCategoryId } = req.params;
   const { id: userId } = req.user;
@@ -24,65 +27,70 @@ async function updateSubCategory(req, res) {
       subCategoryId
     );
     if (isSubCategoryExist === undefined) {
-      return res.status(400).json({ message: "Sub category not found" });
+      return res.status(404).json({ message: "Sub category not found" });
     }
     await subCategory.updateSubCategory(isSubCategoryExist.id, data, userId);
     return res.status(201).json({
       message: "Sub category updated successfully",
     });
   } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+    return res.status(error.statusCode || err.errorUpdate.statusCode).json({
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 async function deleteSubCategory(req, res) {
+  const { id: userId } = req.user;
   const { id: subCategoryId } = req.params;
   try {
     const isSubCategoryExist = await subCategory.getSubCategoryById(
       subCategoryId
     );
     if (isSubCategoryExist === undefined) {
-      return res.status(400).json({ message: "Sub category not found" });
+      return res.status(404).json({ message: "Sub category not found" });
     }
 
-    await subCategory.deleteSubCategory(isSubCategoryExist.id);
+    const isChildExist = await Mentors.getMentorsCountBySubCategoryId(
+      subCategoryId
+    );
+
+    if (isChildExist > 0) {
+      return res.status(400).json({
+        message: `This data cannot be deleted because it is associated with ${isChildExist} mentor data`,
+      });
+    }
+
+    await subCategory.softDeleteSubCategory(isSubCategoryExist.id, userId);
     return res.status(200).json({
       message: "Sub category deleted successfully",
     });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
-      message: err.errorDelete.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorDelete.message,
     });
   }
 }
+
 async function getAllSubCategories(req, res) {
   try {
     const subCategories = await subCategory.getAllSubCategories();
     if (!subCategories || subCategories.length === 0) {
-      return res.status(400).json({ message: "No sub categories found" });
-    }
-    const subCategoryList = [];
-    for (let i = 0; i < subCategories.length; i++) {
-      const subCategory = subCategories[i];
-      const subCategoryObj = new Object();
-      subCategoryObj.id = subCategory.id;
-      subCategoryObj.name = subCategory.name;
-      subCategoryObj.categories = subCategory.categories;
-      subCategoryList.push(subCategoryObj);
+      return res.status(404).json({ message: "Sub category not found" });
     }
     return res.status(200).json({
-      data: subCategoryList,
+      data: subCategories,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 module.exports = {
   createSubCategory,
   updateSubCategory,

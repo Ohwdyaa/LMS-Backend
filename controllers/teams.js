@@ -4,12 +4,28 @@ const { err } = require("../utils/custom_error");
 
 async function createTeam(req, res) {
   const { id: userId } = req.user;
-  const data = req.body;
+  const { username, email } = req.body;
   try {
     const password = "112233";
+    const isUserExist = await Teams.getTeamByUsernameAndEmail(username, email);
+    if (isUserExist) {
+      let message;
+
+      if (isUserExist.email.toLowerCase() === email.toLowerCase()) {
+        message = "Email already registered";
+      } else if (
+        isUserExist.username.toLowerCase() === username.toLowerCase()
+      ) {
+        message = "Username already registered";
+      }
+      return res.status(400).json({
+        message,
+      });
+    }
+
     const hash = await hashPassword(password);
     const userData = {
-      ...data,
+      ...req.body,
       password: hash,
     };
     await Teams.createTeam(userData, userId);
@@ -19,8 +35,8 @@ async function createTeam(req, res) {
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
@@ -28,80 +44,114 @@ async function createTeam(req, res) {
 async function updateTeam(req, res) {
   const { id: userId } = req.user;
   const { id: teamId } = req.params;
-  const data = req.body;
+  const teamData = req.body;
   try {
     const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    await Teams.updateTeam(isTeamExists.id, data, userId);
+    const isEmailOrUsernameDuplicate = await Teams.getTeamByUsernameAndEmail(
+      teamData.username,
+      teamData.email,
+      teamId
+    );
+
+    if (isEmailOrUsernameDuplicate) {
+      let message;
+
+      if (
+        isEmailOrUsernameDuplicate.email.toLowerCase() ===
+        teamData.email.toLowerCase()
+      ) {
+        message = "Email already registered";
+      } else if (
+        isEmailOrUsernameDuplicate.username.toLowerCase() ===
+        teamData.username.toLowerCase()
+      ) {
+        message = "Username already registered";
+      }
+      return res.status(400).json({
+        message,
+      });
+    }
+
+    await Teams.updateTeam(isTeamExists.id, teamData, userId);
     return res.status(200).json({
       message: "User updated successfully",
     });
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message, 
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
 
 async function deleteTeam(req, res) {
   const { id: teamId } = req.params;
+  const { id: userId } = req.user;
   try {
     const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    await Teams.deleteTeam(isTeamExists.id);
+    if (isTeamExists.id === userId) {
+      return res
+        .status(400)
+        .json({ message: "Cannot delete your own account" });
+    }
+
+    if (isTeamExists.id === "4577863f-ea2c-4a1f-9932-89e154118f20") {
+      return res
+        .status(400)
+        .json({ message: "Cannot delete super admin account" });
+    }
+
+    await Teams.softDeleteTeam(isTeamExists.id, userId);
     return res.status(200).json({
       message: "User deleted successfully",
     });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
-      message: err.errorDelete.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorDelete.message,
     });
   }
 }
 
 async function getAllTeams(req, res) {
-  const { role } = req.query;
   try {
-    if (role !== undefined) {
-      const isTeamExists = await Teams.getTeamByRole(role);
-      if (isTeamExists === undefined) {
-        return res.status(400).json({ message: "Users not found" });
-      }
-      return res.status(200).json({
-        data: isTeamExists,
-      });
-    }
     const teams = await Teams.getAllTeams();
     if (!teams || teams.length === 0) {
-      return res.status(400).json({ message: "No users found" });
-    }
-    const teamList = [];
-    for (let i = 0; i < teams.length; i++) {
-      const team = teams[i];
-      const teamObj = new Object();
-      teamObj.id = team.id;
-      teamObj.username = team.username;
-      teamObj.email = team.email;
-      teamObj.fullname = team.fullname;
-      teamObj.roleId = team.role_id;
-      teamObj.role = team.role;
-      teamList.push(teamObj);
+      return res.status(404).json({ message: "Users not found" });
     }
     return res.status(200).json({
-      data: teamList,
+      data: teams,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
+
+async function getTeamById(req, res) {
+  const { id } = req.params;
+  try {
+    const teams = await Teams.getTeamDetails(id);
+    if (!teams || teams.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({
+      data: teams,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
@@ -111,4 +161,5 @@ module.exports = {
   updateTeam,
   deleteTeam,
   getAllTeams,
+  getTeamById,
 };

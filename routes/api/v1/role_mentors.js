@@ -3,12 +3,21 @@ const {
   createRoleMentor,
   getAllRoleMentors,
   deleteRoleMentor,
-  changeMentorRole,
+  updateMentorRole,
 } = require("../../../controllers/role_mentors");
+const {
+  validateMiddleware,
+  roleSchema,
+  updateRoleSchema,
+} = require("../../../middlewares/validate");
 const router = express.Router();
-router.post("/roleMentor", createRoleMentor);
+router.post("/roleMentor", validateMiddleware(roleSchema), createRoleMentor);
 router.get("/roleMentor", getAllRoleMentors);
 router.delete("/roleMentor/:id", deleteRoleMentor);
-router.put("/roleMentor/:id", changeMentorRole);
+router.put(
+  "/roleMentor/:id",
+  validateMiddleware(updateRoleSchema),
+  updateMentorRole
+);
 
 module.exports = router;

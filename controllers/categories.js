@@ -1,5 +1,6 @@
 const { err } = require("../utils/custom_error");
 const Category = require("../models/categories");
+
 async function createCategory(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
@@ -10,11 +11,12 @@ async function createCategory(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 async function updateCategory(req, res) {
   const { id: categoryId } = req.params;
   const { id: userId } = req.user;
@@ -22,7 +24,7 @@ async function updateCategory(req, res) {
   try {
     const isCategoryExist = await Category.getCategoryById(categoryId);
     if (isCategoryExist === undefined) {
-      return res.status(400).json({ message: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     await Category.updateCategory(isCategoryExist.id, data, userId);
@@ -31,17 +33,18 @@ async function updateCategory(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 async function deleteCategory(req, res) {
   const { id: categoryId } = req.params;
   try {
     const isCategoryExist = await Category.getByIdCategory(categoryId);
     if (isCategoryExist === undefined) {
-      return res.status(400).json({ message: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     await Category.deleteCategory(isCategoryExist.id);
@@ -50,16 +53,17 @@ async function deleteCategory(req, res) {
     });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
-      message: err.errorDelete.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorDelete.message,
     });
   }
 }
+
 async function getAllCategories(req, res) {
   try {
     const categories = await Category.getAllCategories();
     if (!categories || categories.length === 0) {
-      return res.status(400).json({ message: "No category found" });
+      return res.status(404).json({ message: "Categories Not found" });
     }
     const categoryList = [];
     for (let i = 0; i < categories.length; i++) {
@@ -74,11 +78,12 @@ async function getAllCategories(req, res) {
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 module.exports = {
   createCategory,
   updateCategory,

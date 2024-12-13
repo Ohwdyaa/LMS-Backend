@@ -1,5 +1,7 @@
 const roleTeams = require("../models/role_teams");
+const Teams = require("../models/teams");
 const { err } = require("../utils/custom_error");
+
 async function createRoleTeam(req, res) {
   const { id: userId } = req.user;
   const data = req.body;
@@ -10,61 +12,81 @@ async function createRoleTeam(req, res) {
     });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
-async function changeTeamRole(req, res) {
+
+async function updateTeamRole(req, res) {
   const { id: userId } = req.user;
-  const { id: teamId } = req.params;
-  const { roleId: newRoleId } = req.body;
+  const { id: roleId } = req.params;
+  const data = req.body;
+  
   try {
-    //pengecekan apakah user team exist
-    await roleTeams.changeTeamRole(userId, teamId, newRoleId);
+    const isRoleExists = await roleTeams.getRoleTeamById(roleId);
+    if (isRoleExists === undefined) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+
+    await roleTeams.updateRoleTeam(roleId, data, userId);
     return res.status(200).json({
       message: "User role updated successfully",
     });
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 async function getAllRoleTeams(req, res) {
   try {
-    const data = await roleTeams.getAllRoleTeams(); // obj blum ad
+    const data = await roleTeams.getAllRoleTeams();
+    if (data === undefined || data.length === 0) {
+      return res.status(404).json({ message: "Roles not found" });
+    }
     return res.status(200).json(data);
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 async function deleteRoleTeam(req, res) {
   const { id: roleId } = req.params;
+  const { id: userId } = req.user;
   try {
     const isRoleExists = await roleTeams.getRoleTeamById(roleId);
     if (isRoleExists === undefined) {
-      return res.status(400).json({ message: "Role not found" });
+      return res.status(404).json({ message: "Role not found" });
     }
+    const isChildExist = await Teams.getTeamsCountByRoleId(isRoleExists.id);
 
-    await roleTeams.deleteRoleTeam(isRoleExists.id);
+    if (isChildExist > 0) {
+      return res.status(400).json({
+        message: `This data cannot be deleted because it is associated with ${isChildExist} team data`,
+      });
+    }
+    await roleTeams.softDeleteRoleTeam(isRoleExists.id, userId);
+
     return res.status(200).json({
       message: "Role deleted successfully",
     });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
-      message: err.errorDelete.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorDelete.message,
     });
   }
 }
+
 module.exports = {
   createRoleTeam,
   getAllRoleTeams,
   deleteRoleTeam,
-  changeTeamRole,
+  updateTeamRole,
 };

@@ -29,7 +29,7 @@ async function createMentor(req, res) {
 
     // create file url
     const npwpUrl = npwp
-      ? `${req.protocol}://${req.get("host")}/uploads/profile-mentors/${
+      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           npwp[0].filename
         }`
       : "";

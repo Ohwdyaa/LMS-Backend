@@ -2,6 +2,8 @@ const { err } = require("../utils/custom_error");
 const Courses = require("../models/courses");
 const generateEnrollmentId = require("../utils/nanoid");
 const Enrollments = require("../models/enrollments");
+const modulesCourse = require("../models/module_courses");
+
 async function createCourse(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
@@ -13,11 +15,12 @@ async function createCourse(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 async function updateCourse(req, res) {
   const { id: courseId } = req.params;
   const { id: userId } = req.user;
@@ -25,7 +28,7 @@ async function updateCourse(req, res) {
   try {
     const isCourseExist = await Courses.getCourseById(courseId);
     if (isCourseExist === undefined) {
-      return res.status(400).json({ message: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     await Courses.updateCourse(isCourseExist.id, data, userId);
@@ -34,35 +37,48 @@ async function updateCourse(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 async function deleteCourse(req, res) {
   const { id: courseId } = req.params;
+  const { id: userId } = req.user;
   try {
     const isCourseExists = await Courses.getCourseById(courseId);
     if (isCourseExists === undefined) {
-      return res.status(400).json({ message: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
+    }
+    const isChildExist = await modulesCourse.getModulesCountByCourseId(
+      isCourseExists.id
+    );
+
+    if (isChildExist > 0) {
+      return res.status(400).json({
+        message: `This data cannot be deleted because it is associated with ${isChildExist} modules`,
+      });
     }
 
-    await Courses.deleteCourse(isCourseExists.id);
+    await Courses.softDeleteCourse(isCourseExists.id, userId);
+
     return res.status(200).json({
       message: "Course deleted successfully",
     });
   } catch (error) {
     return res.status(err.errorDelete.statusCode).json({
-      message: err.errorDelete.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorDelete.message,
     });
   }
 }
+
 async function getAllCourses(req, res) {
   try {
     const courses = await Courses.getAllCourse();
     if (!courses || courses.length === 0) {
-      return res.status(400).json({ message: "No courses found" });
+      return res.status(404).json({ message: "Courses not found" });
     }
     const courseList = [];
     for (let i = 0; i < courses.length; i++) {
@@ -82,45 +98,48 @@ async function getAllCourses(req, res) {
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 async function getCourseById(req, res) {
   const { id: courseId } = req.params;
   try {
     const isCourseExist = await Courses.getCourseById(courseId);
     if (isCourseExist === undefined) {
-      return res.status(400).json({ message: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
     }
     return res.status(200).json({
       data: isCourseExist,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 async function getCourseParticipants(req, res) {
   const { id: courseId } = req.params;
   try {
     const isUserExist = await Enrollments.getCourseParticipants(courseId);
-    if (isUserExist === undefined) {
-      return res.status(400).json({ message: "Users not found" });
+    if (isUserExist === undefined || isUserExist.length === 0) {
+      return res.status(404).json({ message: "Users not found" });
     }
     return res.status(200).json({
       data: isUserExist,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 module.exports = {
   createCourse,
   updateCourse,

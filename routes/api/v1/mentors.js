@@ -14,13 +14,20 @@ const {
   updateMentorSchema,
   deleteMentorSchema,
 } = require("../../../middlewares/validate");
+const { uploadMentorDocs } = require("../../../middlewares/upload_mentor_docs");
 
-router.post("/mentor", 
+router.post(
+  "/mentor",
+  uploadMentorDocs,
   validateMiddleware(mentorSchema),
-  createMentor);
-router.put("/mentor/:id", 
+  createMentor
+);
+router.put(
+  "/mentor/:id",
+  uploadMentorDocs,
   validateMiddleware(updateMentorSchema),
-  updateMentor);
+  updateMentor
+);
 router.put(
   "/mentor/:id/delete",
   validateMiddleware(deleteMentorSchema),

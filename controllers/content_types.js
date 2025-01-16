@@ -1,5 +1,6 @@
 const { err } = require("../utils/custom_error");
 const contentTypes = require("../models/content_types");
+
 async function createContentTypes(req, res) {
   const data = req.body;
   try {
@@ -9,24 +10,28 @@ async function createContentTypes(req, res) {
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
-      message: error.message || err.errorCreate.message,
-      details: error.details || null,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 async function getAllContentTypes(req, res) {
   try {
     const data = await contentTypes.getAllContentTypes();
-
+    if (data.length === 0) {
+      return res.status(404).json({ message: "Content type not found" });
+    }
     return res.status(200).json(data);
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }
+
 module.exports = {
   createContentTypes,
-  getAllContentTypes
+  getAllContentTypes,
 };

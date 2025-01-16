@@ -1,5 +1,6 @@
 const moduleCategory = require("../models/category_permissions");
 const { err } = require("../utils/custom_error");
+
 async function createCategoryModule(req, res) {
   const data = req.body;
   try {
@@ -9,9 +10,10 @@ async function createCategoryModule(req, res) {
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
+
 module.exports = { createCategoryModule };

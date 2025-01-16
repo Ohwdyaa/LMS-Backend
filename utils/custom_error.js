@@ -69,6 +69,9 @@ const mapMySQLError = (error) => {
       }
       return "Invalid column name detected. Please verify the query.";
     }
+    case "ER_BAD_NULL_ERROR": {
+      return error.sqlMessage;
+    }
     case "ER_ROW_IS_REFERENCED_2":
       return "This record cannot be deleted or updated because it is referenced by another record in a related table. Please ensure that no related records exist before making changes.";
     case "ER_PARSE_ERROR":

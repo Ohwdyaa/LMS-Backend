@@ -73,7 +73,7 @@ const modulesCourse = {
           c.title as course
         FROM module_courses mc
         LEFT JOIN courses c ON mc.course_id = c.id
-        WHERE mc.id = ?`,
+        WHERE mc.id = ? AND mc.is_deleted = 0`,
         [id]
       );
       return result;
@@ -91,9 +91,45 @@ const modulesCourse = {
         `SELECT 
           id, 
           title
-        FROM module_courses
-        WHERE course_id = ?`,
+        FROM module_courses 
+        WHERE course_id = ? AND is_deleted = 0
+        ORDER BY created_at ASC`,
         [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getModulesCountByCourseId: async (courseId) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT COUNT(*) as count FROM module_courses where course_id = ? AND is_deleted = 0`,
+        [courseId]
+      );
+      return result.count;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  softDeleteModuleCourse: async (id, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE module_courses 
+        SET 
+          is_deleted = 1, 
+          updated_at = NOW(),
+          updated_by = ? 
+        WHERE id = ?`,
+        [userId, id]
       );
       return result;
     } catch (error) {

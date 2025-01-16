@@ -10,8 +10,8 @@ async function createGenders(req, res) {
     });
   } catch (error) {
     res.status(err.errorCreate.statusCode).json({
-      message: err.errorCreate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorCreate.message,
     });
   }
 }
@@ -19,13 +19,16 @@ async function createGenders(req, res) {
 async function getAllGenders(req, res) {
   try {
     const gender = await Genders.getAllGenders();
+    if(gender.length === 0){
+      return res.status(404).json({message: "Genders Not Found"});
+    }
     return res.status(200).json({
       data: gender,
     });
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({
-      message: err.errorSelect.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorSelect.message,
     });
   }
 }

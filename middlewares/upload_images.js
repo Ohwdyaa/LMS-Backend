@@ -1,27 +1,27 @@
-const multer = require('multer');
+const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/profile_mentors/'); 
+    cb(null, "uploads/profile-mentors/");
   },
   filename: (req, file, cb) => {
     cb(null, `user-${req.user.id}-${file.originalname}`);
-},
+  },
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
   if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true); 
+    cb(null, true);
   } else {
-    cb(new Error('Only JPEG, JPG, and PNG files are allowed!'), false); 
+    cb(new Error("Only JPEG, JPG, and PNG files are allowed!"), false);
   }
 };
 
 const uploadImages = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, 
+    fileSize: 5 * 1024 * 1024,
   },
   fileFilter,
 });

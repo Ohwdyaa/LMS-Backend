@@ -4,24 +4,19 @@ const {
   updateTeam,
   deleteTeam,
   getAllTeams,
+  getTeamById,
 } = require("../../../controllers/teams");
 const router = express.Router();
 const {
   validateMiddleware,
   userSchema,
   updateUserSchema,
-  deleteUserSchema,
 } = require("../../../middlewares/validate");
 
-router.post("/team", 
-  validateMiddleware(userSchema), 
-  createTeam);
+router.post("/team", validateMiddleware(userSchema), createTeam);
 router.put("/team/:id", validateMiddleware(updateUserSchema), updateTeam);
-router.delete(
-  "/team/:id",
-  validateMiddleware(deleteUserSchema),
-  deleteTeam
-);
+router.delete("/team/:id", deleteTeam);
 router.get("/team", getAllTeams);
+router.get("/team/:id", getTeamById);
 
 module.exports = router;

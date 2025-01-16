@@ -60,6 +60,27 @@ const subCategory = {
       throw error;
     }
   },
+  softDeleteSubCategory: async (id, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE 
+          sub_categories
+        SET 
+          is_deleted = 1,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
   getAllSubCategories: async () => {
     try {
       const result = await learningManagementSystem(`
@@ -69,7 +90,8 @@ const subCategory = {
             sc.category_id, 
             c.name as categories 
           FROM sub_categories sc
-          LEFT JOIN categories c ON sc.category_id = c.id`);
+          LEFT JOIN categories c ON sc.category_id = c.id
+          WHERE sc.is_deleted = 0`);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -89,7 +111,7 @@ const subCategory = {
           c.name as categories 
         FROM sub_categories sc
         LEFT JOIN categories c ON sc.category_id = c.id
-        WHERE sc.id =?`,
+        WHERE sc.id = ? AND sc.is_deleted = 0`,
         [id]
       );
       return result;

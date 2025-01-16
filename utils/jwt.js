@@ -3,21 +3,23 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const config = require("../config/config");
 const privateKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/private.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/private.pem",
   "utf8"
 );
 const publicKey = fs.readFileSync(
-  "D:/Data Magang Infinite/lms_superadmin_be/keys/public.pem",
+  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
   "utf8"
 );
 
 dotenv.config();
 
-async function generateJWT(user, permission) {
+async function generateJWT(user, type, permission) {
   const payload = {
-    u : user.id,
+    u: user.id,
     fullname: user.fullname,
+    username: user.username,
     roleId: user.role_id,
+    type,
     permission: permission,
   };
 
@@ -50,7 +52,6 @@ async function verifyJWT(token) {
 async function generateTokenPassword(user) {
   const payload = {
     user: user.email,
-    
   };
 
   const signOptions = {

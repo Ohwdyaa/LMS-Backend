@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const { passport } = require("./middlewares/passport");
 const routes = require("./routes");
+const compression = require("compression");
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS;
 const corsOptions = {
@@ -25,11 +26,17 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 });
 
+app.use(compression());
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(helmet());
-app.use(limiter);
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "same-site" },
+  })
+);
+// app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 app.use(passport.initialize());
 app.use(routes);
 

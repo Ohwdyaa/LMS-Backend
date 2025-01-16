@@ -148,24 +148,7 @@ const Mentors = {
       throw error;
     }
   },
-  // activeMentor: async (id, userId) => {
-  //   try {
-  //     const result = await learningManagementSystem(
-  //       `UPDATE 
-  //         mentors
-  //       SET 
-  //         is_deleted = 0,
-  //         updated_at = NOW(),
-  //         updated_by = ?
-  //       WHERE id = ?`,
-  //       [userId, id]
-  //     );
-  //     return result;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // },
-  deleteMentor: async (id, userId) => {
+  softDeleteMentor: async (id, userId) => {
     try {
       const result = await learningManagementSystem(
         `UPDATE 
@@ -194,14 +177,13 @@ const Mentors = {
             m.fullname, 
             m.username, 
             m.email, 
+            m.is_active as isActive,
             r.name as role, 
-            g.name as gender, 
             sc.name as subCategory
         FROM mentors m
-        LEFT JOIN roles r ON m.role_id = r.id
-        LEFT JOIN genders g ON m.genders_id = g.id
+        LEFT JOIN role_mentors r ON m.role_id = r.id
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
-        WHERE m.is_active = 1 AND m.is_deleted = 0`
+        WHERE m.is_deleted = 0`
       );
       return result;
     } catch (error) {
@@ -212,7 +194,7 @@ const Mentors = {
       throw error;
     }
   },
-  getMentorById: async (id) => {
+  getMentorDetails: async (id) => {
     try {
       const [result] = await learningManagementSystem(
         `SELECT 
@@ -228,10 +210,12 @@ const Mentors = {
           m.bpjs_kesehatan as bpjsKesehatan,
           m.bpjs_tk as bpjsTenagakerja,
           m.cv,
+          m.profile_image as profileImage,
           m.npwp,
           m.contract,
           m.contract_start as contractStart,
           m.contract_end as contractEnd,
+          m.is_active as isActive,
           m.role_id as roleId,
           m.genders_id as genderId,
           m.sub_category_id as subCategoryId,
@@ -239,10 +223,29 @@ const Mentors = {
           g.name as gender,
           sc.name as subCategory
         FROM mentors m
-        LEFT JOIN roles r ON m.role_id = r.id
+        LEFT JOIN role_mentors r ON m.role_id = r.id
         LEFT JOIN genders g ON m.genders_id = g.id
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
         WHERE m.id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getMentorById: async (id) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT 
+          m.id,
+          m.is_active
+          FROM mentors m
+          WHERE m.id = ? AND m.is_active = 1`,
         [id]
       );
       return result;
@@ -267,7 +270,7 @@ const Mentors = {
           r.name as role
         FROM mentors m
         LEFT JOIN roles r ON m.role_id = r.id
-        WHERE m.email = ?`,
+        WHERE m.email = ? AND m.is_active = 1 AND m.is_deleted = 0`,
         [id]
       );
       return result;
@@ -309,6 +312,68 @@ const Mentors = {
       const result = await learningManagementSystem(
         `UPDATE mentors SET refresh_token = NULL WHERE refresh_token = ?`,
         token
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getMentorsCountByRoleId: async (roleId) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT COUNT(*) as count FROM mentors where role_id = ? AND is_deleted = 0`,
+        [roleId]
+      );
+      return result.count;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getMentorsCountBySubCategoryId: async (subCategoryId) => {
+    try {
+      const [result] = await learningManagementSystem(
+        `SELECT COUNT(*) as count FROM mentors where sub_category_id = ? AND is_deleted = 0`,
+        [subCategoryId]
+      );
+      return result.count;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getMentorByUsernameAndEmail: async (username, email, id) => {
+    try {
+      if (id) {
+        const [result] = await learningManagementSystem(
+          `SELECT 
+            id,
+            email,
+            username
+          FROM mentors
+          WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
+          [username + "%", email + "%", id]
+        );
+        return result;
+      }
+      const [result] = await learningManagementSystem(
+        `SELECT 
+          id,
+          email,
+          username
+        FROM mentors
+        WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+        [username + "%", email + "%"]
       );
       return result;
     } catch (error) {

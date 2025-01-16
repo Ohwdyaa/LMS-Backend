@@ -14,53 +14,61 @@ async function login(req, res) {
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
-    let getAccess = await permissionTeams.getPermissionTeams(verifiedUser);
-    if (getAccess === undefined) {
-      getAccess = await permissionMentors.getPermissionMentor(verifiedUser);
+    let getAccess = await permissionTeams.getPermissionTeams(verifiedUser.data);
+    if (getAccess === undefined || getAccess.length === 0) {
+      getAccess = await permissionMentors.getPermissionMentor(
+        verifiedUser.data
+      );
     }
-    if (getAccess === undefined) {
-      return res.status(400).json({ message: "No access rights found for user." });
+    if (getAccess === undefined || getAccess.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No access rights found for user." });
     }
-    
-    const token = await generateJWT(verifiedUser, getAccess);
+
+    const token = await generateJWT(
+      verifiedUser.data,
+      verifiedUser.type,
+      getAccess
+    );
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);
 
     if (validateAccess !== "Access granted") {
-      return res
-        .status(403)
-        .json({ message: "Access denied: No access rights are available for this user." });
+      return res.status(403).json({
+        message: "Access denied: No access rights are available for this user.",
+      });
     }
     return res.status(200).json({
       message: "Login successful",
       data: {
         token,
         user: {
-          username: verifiedUser.username,
+          username: verifiedUser.data.username,
         },
       },
     });
   } catch (error) {
     return res.status(err.errorLogin.statusCode).json({
-      message: err.errorLogin.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorLogin.message,
     });
   }
 }
 
 async function verifyUser(email, password) {
   try {
+    let type = "team";
     let isUserExists = await Teams.getTeamByEmail(email);
     if (isUserExists === undefined) {
+      type = "mentor";
       isUserExists = await Mentors.getMentorByEmail(email);
       if (isUserExists === undefined) {
-        return res
-          .status(400)
-          .json({ message: "no user with registered email" });
+        throw new Error("no user with registered email");
       }
     }
     const isValid = await verifyPassword(password, isUserExists.password);
-    return isValid ? isUserExists : undefined;
+    return isValid ? { data: isUserExists, type } : undefined;
   } catch (error) {
     throw error;
   }
@@ -78,8 +86,8 @@ async function forgetPassword(req, res) {
     });
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
-      message: err.errorUpdate.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
@@ -99,11 +107,12 @@ async function logout(req, res) {
     return res.status(400).json({ message: "Logout failed" });
   } catch (error) {
     return res.status(err.errorLogout.statusCode).json({
-      message: err.errorLogout.message,
-      error: error.message,
+      message: error.message,
+      error: err.errorUpdate.message,
     });
   }
 }
+
 module.exports = {
   login,
   forgetPassword,

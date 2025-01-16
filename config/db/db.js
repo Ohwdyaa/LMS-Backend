@@ -19,8 +19,17 @@ const pool2 = mysql.createPool({
   bigNumberStrings: true,
   waitForConnections: true,
 });
+const pool3 = mysql.createPool({
+  host: config.dbMenteeManagement.host,
+  port: config.dbMenteeManagement.port,
+  user: config.dbMenteeManagement.user,
+  password: config.dbMenteeManagement.password,
+  database: config.dbMenteeManagement.name,
+  bigNumberStrings: true,
+  waitForConnections: true,
+});
 
-async function learningManagementSystem(query, value) {
+async function dbLms(query, value) {
   try {
     const [result] = await pool1.query(query, value === undefined ? [] : value);
     return result;
@@ -29,15 +38,7 @@ async function learningManagementSystem(query, value) {
     throw error;
   }
 }
-
-async function formatBulkQuery1(query, array) {
-  try {
-    return await pool1.format(query, array === undefined ? [] : array);
-  } catch (error) {
-    console.log(error);
-  }
-}
-async function modulePages(query, value) {
+async function dbModulePages(query, value) {
   try {
     const [result] = await pool2.query(query, value === undefined ? [] : value);
     return result;
@@ -46,5 +47,21 @@ async function modulePages(query, value) {
     throw error;
   }
 }
+async function dbMentee(query, value) {
+  try {
+    const [result] = await pool3.query(query, value === undefined ? [] : value);
+    return result;
+  } catch (error) {
+    console.error("Failed to connect to database:", error);
+    throw error;
+  }
+}
+function formatBulkQuery1(query, array) {
+  try {
+    return pool1.format(query, array === undefined ? [] : array);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-module.exports = { learningManagementSystem, modulePages, formatBulkQuery1 };
+module.exports = { dbLms, dbModulePages, dbMentee, formatBulkQuery1 };

@@ -10,7 +10,6 @@ const {
   validateMiddleware,
   moduleCourseSchema,
   updateModuleCourseSchema,
-  deleteModuleCourseSchema,
 } = require("../../../middlewares/validate");
 const router = express.Router();
 
@@ -24,11 +23,7 @@ router.put(
   validateMiddleware(updateModuleCourseSchema),
   updateModuleCourse
 );
-router.delete(
-  "/moduleCourse/:id",
-  validateMiddleware(deleteModuleCourseSchema),
-  deleteModuleCourse
-);
+router.delete("/moduleCourse/:id", deleteModuleCourse);
 router.get("/moduleCourse/:id", getModuleById);
 router.get("/course/:id/module", getModuleByCourse);
 

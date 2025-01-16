@@ -8,11 +8,11 @@ const Enrollments = {
       const id = uuid();
       const result = await learningManagementSystem(
         `INSERT INTO enrollments(
-              id, 
-              created_by,
-              course_id,
-              mentor_id) 
-            VALUES (?,?,?,?)`,
+          id, 
+          created_by,
+          course_id,
+          mentor_id) 
+        VALUES (?,?,?,?)`,
         [id, userId, courseId, mentorId]
       );
       return result.insertId;
@@ -49,14 +49,9 @@ const Enrollments = {
     try {
       const [result] = await learningManagementSystem(
         `SELECT 
-          e.id, 
-          m.id as mentorId,
-          m.fullname as name, 
-          c.title as course
-        FROM enrollments e
-        LEFT JOIN mentors m ON e.mentor_id = m.id 
-        LEFT JOIN courses c ON e.course_id = c.id
-        WHERE e.course_id = ? AND e.mentor_id = ?`,
+          id
+        FROM enrollments
+        WHERE course_id = ? AND mentor_id = ?`,
         [courseId, mentorId]
       );
       return result;
@@ -72,14 +67,9 @@ const Enrollments = {
     try {
       const [result] = await learningManagementSystem(
         `SELECT 
-          e.id, 
-          m.id as mentorId,
-          m.fullname as name, 
-          c.title as course
-        FROM enrollments e
-        LEFT JOIN mentors m ON e.mentor_id = m.id
-        LEFT JOIN courses c ON e.course_id = c.id 
-        WHERE e.id = ?`,
+          id
+        FROM enrollments
+        WHERE id = ?`,
         [id]
       );
       return result;
@@ -101,7 +91,7 @@ const Enrollments = {
           r.name as role
         FROM enrollments e
         LEFT JOIN mentors m ON e.mentor_id = m.id
-        LEFT JOIN roles r ON m.role_id = r.id 
+        LEFT JOIN role_mentors r ON m.role_id = r.id 
         LEFT JOIN courses c ON e.course_id = c.id 
         WHERE e.course_id = ? AND e.is_deleted = 0`,
         [courseId]

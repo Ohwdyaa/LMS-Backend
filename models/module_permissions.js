@@ -1,4 +1,4 @@
-const {  modulePages } = require("../config/db/db");
+const { modulePages } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -12,7 +12,8 @@ const modulePermission = {
           name,
           category_module_id) 
         VALUES (?, ?, ?)`,
-        [uuidModule, data.name, data.categoryId]);
+        [uuidModule, data.name, data.categoryId]
+      );
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -47,8 +48,7 @@ const modulePermission = {
           m.category_module_id, 
           cm.name as categoryModule
         FROM module m
-        LEFT JOIN category_module cm
-        ON m.category_module_id = cm.id 
+        LEFT JOIN category_module cm ON m.category_module_id = cm.id 
         WHERE m.is_visible = 1`);
       return result;
     } catch (error) {

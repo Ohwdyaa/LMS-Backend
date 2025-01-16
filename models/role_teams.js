@@ -29,7 +29,7 @@ const roleTeams = {
           id, 
           name 
         FROM roles 
-        WHERE id = ?`,
+        WHERE id = ? AND is_deleted = 0`,
         [id]
       );
       return result;
@@ -61,9 +61,10 @@ const roleTeams = {
   },
   deleteRoleTeam: async (id) => {
     try {
-      const result = await learningManagementSystem(`DELETE FROM roles where id = ?`, [
-        id,
-      ]);
+      const result = await learningManagementSystem(
+        `DELETE FROM roles where id = ?`,
+        [id]
+      );
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -73,17 +74,36 @@ const roleTeams = {
       throw error;
     }
   },
-  changeTeamRole: async (userId, id, newRoleId) => {
+  softDeleteRoleTeam: async (id, userId) => {
     try {
       const result = await learningManagementSystem(
-        `UPDATE 
-          teams 
+        `UPDATE roles 
         SET 
-          role_id = ?, 
-          updated_at = NOW(), 
-          updated_by = ? 
-        WHERE id = ? `,
-        [newRoleId, userId, id]
+          is_deleted = 1, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [userId, id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  updateRoleTeam: async (roleId, data, userId) => {
+    try {
+      const result = await learningManagementSystem(
+        `UPDATE roles 
+        SET 
+          name = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [data.name, userId, roleId]
       );
       return result;
     } catch (error) {

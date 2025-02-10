@@ -206,10 +206,10 @@ const Teams = {
           t.institute, 
           t.gender_id as genderId, 
           t.role_id as roleId, 
-          r.name as role, 
+          rt.name as role, 
           g.name as gender
           FROM teams t
-        LEFT JOIN roles r ON t.role_id = r.id
+        LEFT JOIN role_teams rt ON t.role_id = rt.id
         LEFT JOIN genders g ON t.gender_id = g.id
         WHERE t.id = ? AND t.is_deleted = 0`,
         [id]

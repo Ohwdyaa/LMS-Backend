@@ -2,7 +2,7 @@ const passport = require("passport");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const fs = require("fs");
 const publicKey = fs.readFileSync(
-  "E:/Task/TUGAS-TUGAS/Main/IL/lms/lms-backend/keys/public.pem",
+  "D:/Data Magang Infinite/lms-backend/lms_superadmin_be/keys/public.pem",
   "utf8"
 );
 const Teams = require("../models/teams");

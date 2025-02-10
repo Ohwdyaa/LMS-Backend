@@ -16,8 +16,9 @@ router.post(
   validateMiddleware(subCourseCategorySchema),
   createSubCategory
 );
-router.put("/subCategory/:id", updateSubCategory);
-router.delete("/subCategory/:id", deleteSubCategory);
-router.get("/subCategory", getAllSubCategories);
+router.put("/sub-category/:id", updateSubCategory);
+router.delete("/sub-category/:id", deleteSubCategory);
+router.get("/sub-category", getAllSubCategories);
+// router.get("/sub-category/:id/category", getByCateg);
 
 module.exports = router;

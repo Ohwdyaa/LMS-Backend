@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Materials = {
   createMaterial: async (data, userId, subModulesId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO materials(
           id, 
           content,  
@@ -31,7 +31,7 @@ const Materials = {
   },
   updateMaterial: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           materials 
         SET 
@@ -50,7 +50,7 @@ const Materials = {
   },
   deleteMaterial: async (id) => {
     try {
-      const result = await learningManagementSystem(`DELETE FROM materials WHERE id = ?`, id);
+      const result = await dbLms(`DELETE FROM materials WHERE id = ?`, id);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -62,7 +62,7 @@ const Materials = {
   },
   getAllMaterials: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           content,
@@ -74,7 +74,7 @@ const Materials = {
   },
   getMaterialById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           id, 
           content
@@ -93,7 +93,7 @@ const Materials = {
   },
   getMaterialBySubModule: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           m.id, 
           m.content, 

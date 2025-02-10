@@ -10,11 +10,11 @@ const {
 } = require("../../../middlewares/validate");
 
 router.put(
-  "/permissionTeam/:id",
+  "/permission-team/:id",
   validateMiddleware(permissionSchema),
   updatePermissionTeam
 );
 
-router.get("/permissionTeam/:id", getPermissionTeamByRole);
+router.get("/permission-team/:id", getPermissionTeamByRole);
 
 module.exports = router;

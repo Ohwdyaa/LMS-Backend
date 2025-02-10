@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,12 +6,12 @@ const subCategory = {
   createSubCategory: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO sub_categories (
           id, 
           name, 
           created_by, 
-          category_id) 
+          categories_id) 
           VALUES (?,?,?,?)`,
         [id, data.name, userId, data.categoriesId]
       );
@@ -26,7 +26,7 @@ const subCategory = {
   },
   updateSubCategory: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           sub_categories 
         SET 
@@ -47,7 +47,7 @@ const subCategory = {
   },
   deleteSubCategory: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `DELETE FROM sub_categories WHERE id = ?`,
         id
       );
@@ -62,7 +62,7 @@ const subCategory = {
   },
   softDeleteSubCategory: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           sub_categories
         SET 
@@ -83,14 +83,14 @@ const subCategory = {
   },
   getAllSubCategories: async () => {
     try {
-      const result = await learningManagementSystem(`
+      const result = await dbLms(`
           SELECT 
             sc.id, 
             sc.name, 
-            sc.category_id, 
+            sc.categories_id, 
             c.name as categories 
           FROM sub_categories sc
-          LEFT JOIN categories c ON sc.category_id = c.id
+          LEFT JOIN categories c ON sc.categories_id = c.id
           WHERE sc.is_deleted = 0`);
       return result;
     } catch (error) {
@@ -103,7 +103,7 @@ const subCategory = {
   },
   getSubCategoryById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           sc.id, 
           sc.name, 

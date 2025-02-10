@@ -4,7 +4,7 @@ const { err } = require("../utils/custom_error");
 async function createReligion(req, res) {
   const data = req.body;
   try {
-    await Religions.createReligion(data, userId);
+    await Religions.createReligion(data);
     return res.status(201).json({
       message: "Religion created successfully",
     });
@@ -18,9 +18,12 @@ async function createReligion(req, res) {
 
 async function getAllReligions(req, res) {
   try {
-    const religion = await Religions.getAllReligion();
+    const religionData = await Religions.getAllReligion();
+    if(religionData.length === 0){
+      return res.status(404).json({message: "Religions Not Found"});
+    }
     return res.status(200).json({
-      data: religion,
+      data: religionData,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({

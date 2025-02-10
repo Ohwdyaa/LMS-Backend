@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const modulesCourse = {
   createModuleCourse: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO module_courses(
           id, 
           title, 
@@ -27,7 +27,7 @@ const modulesCourse = {
   },
   updateModuleCourse: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           module_courses 
         SET 
@@ -49,7 +49,7 @@ const modulesCourse = {
   },
   deleteModuleCourse: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `DELETE FROM module_courses WHERE id=?`,
         id
       );
@@ -64,7 +64,7 @@ const modulesCourse = {
   },
   getModuleById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           mc.id, 
           mc.title, 
@@ -87,7 +87,7 @@ const modulesCourse = {
   },
   getModuleByCourse: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           title
@@ -107,7 +107,7 @@ const modulesCourse = {
   },
   getModulesCountByCourseId: async (courseId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT COUNT(*) as count FROM module_courses where course_id = ? AND is_deleted = 0`,
         [courseId]
       );
@@ -122,7 +122,7 @@ const modulesCourse = {
   },
   softDeleteModuleCourse: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE module_courses 
         SET 
           is_deleted = 1, 

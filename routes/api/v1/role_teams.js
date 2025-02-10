@@ -3,7 +3,7 @@ const {
   createRoleTeam,
   getAllRoleTeams,
   deleteRoleTeam,
-  updateTeamRole,
+  updateRoleTeam,
 } = require("../../../controllers/role_teams");
 const router = express.Router();
 const {
@@ -12,13 +12,13 @@ const {
   updateRoleSchema,
 } = require("../../../middlewares/validate");
 
-router.post("/roleTeam", validateMiddleware(roleSchema), createRoleTeam);
-router.get("/roleTeam", getAllRoleTeams);
-router.delete("/roleTeam/:id", deleteRoleTeam);
+router.post("/role-team", validateMiddleware(roleSchema), createRoleTeam);
+router.get("/role-team", getAllRoleTeams);
+router.delete("/role-team/:id", deleteRoleTeam);
 router.put(
-  "/roleTeam/:id",
+  "/role-team/:id",
   validateMiddleware(updateRoleSchema),
-  updateTeamRole
+  updateRoleTeam
 );
 
 module.exports = router;

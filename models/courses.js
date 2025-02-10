@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Courses = {
   createCourse: async (data, userId, enrollmentKey) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO courses(
           id, 
           title, 
@@ -39,7 +39,7 @@ const Courses = {
   },
   updateCourse: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           courses 
         SET 
@@ -68,7 +68,7 @@ const Courses = {
   },
   deleteCourse: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `DELETE FROM courses WHERE id=?`,
         id
       );
@@ -83,7 +83,7 @@ const Courses = {
   },
   getAllCourse: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           title, 
@@ -105,7 +105,7 @@ const Courses = {
   },
   getCourseById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           id, 
           title, 
@@ -129,7 +129,7 @@ const Courses = {
   },
   softDeleteCourse: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE courses 
         SET 
           is_deleted = 1, 

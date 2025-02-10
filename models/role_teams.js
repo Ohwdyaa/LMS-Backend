@@ -1,12 +1,12 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 const roleTeams = {
   createRoleTeam: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
-        `INSERT INTO roles 
+      const result = await dbLms(
+        `INSERT INTO role_teams 
           (id,
           name,
           created_by) 
@@ -24,11 +24,11 @@ const roleTeams = {
   },
   getRoleTeamById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           id, 
           name 
-        FROM roles 
+        FROM role_teams 
         WHERE id = ? AND is_deleted = 0`,
         [id]
       );
@@ -43,11 +43,11 @@ const roleTeams = {
   },
   getAllRoleTeams: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           name 
-        FROM roles 
+        FROM role_teams 
         WHERE is_deleted = 0`
       );
       return result;
@@ -61,8 +61,8 @@ const roleTeams = {
   },
   deleteRoleTeam: async (id) => {
     try {
-      const result = await learningManagementSystem(
-        `DELETE FROM roles where id = ?`,
+      const result = await dbLms(
+        `DELETE FROM role_teams where id = ?`,
         [id]
       );
       return result;
@@ -76,8 +76,8 @@ const roleTeams = {
   },
   softDeleteRoleTeam: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
-        `UPDATE roles 
+      const result = await dbLms(
+        `UPDATE role_teams 
         SET 
           is_deleted = 1, 
           updated_at = NOW(),
@@ -96,8 +96,8 @@ const roleTeams = {
   },
   updateRoleTeam: async (roleId, data, userId) => {
     try {
-      const result = await learningManagementSystem(
-        `UPDATE roles 
+      const result = await dbLms(
+        `UPDATE role_teams 
         SET 
           name = ?, 
           updated_at = NOW(),

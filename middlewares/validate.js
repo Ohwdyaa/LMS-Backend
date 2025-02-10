@@ -30,10 +30,6 @@ const loginSchema = z.object({
 
 const userSchema = z.object({
   body: z.object({
-    username: z
-      .string()
-      .regex(/^[a-zA-Z0-9 ]+$/, "Username cannot contain symbols")
-      .min(1, "Fullname cannot be empty"),
     email: z
       .string()
       .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
@@ -63,10 +59,6 @@ const userSchema = z.object({
 
 const updateUserSchema = z.object({
   body: z.object({
-    username: z
-      .string()
-      .regex(/^[a-zA-Z0-9 ]+$/, "Username cannot contain symbols")
-      .min(1, "Fullname cannot be empty"),
     email: z
       .string()
       .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
@@ -86,10 +78,6 @@ const updateUserSchema = z.object({
     address: z.string().optional(),
     institute: z.string().optional(),
     date_of_birth: z.string().date().optional(),
-    roleId: z
-      .string()
-      .uuid("Invalid UUID format")
-      .min(1, "Role cannot be empty"),
     genderId: z.string().uuid("Invalid UUID format").optional(),
   }),
 });
@@ -97,7 +85,6 @@ const updateUserSchema = z.object({
 const mentorSchema = z.object({
   files: z.object({
     profileImage: z.array(fileSchema).optional(),
-    npwp: z.array(fileSchema),
     contract: z.array(fileSchema),
     cv: z.array(fileSchema),
   }),
@@ -106,10 +93,6 @@ const mentorSchema = z.object({
       .string()
       .regex(/^[a-zA-Z\s]+$/, "Fullname should contain only alphabets")
       .min(1, "Fullname cannot be empty"),
-    username: z
-      .string()
-      .regex(/^[a-zA-Z0-9]+$/, "Username cannot contain symbols or spaces")
-      .min(1, "Username cannot be empty"),
     email: z
       .string()
       .email("Invalid email format")
@@ -142,6 +125,11 @@ const mentorSchema = z.object({
       .string()
       .regex(/^\d+$/, "BPJS Tenagakerja number must contain only digits")
       .min(1, "BPJS Tenagakerja number cannot be empty"),
+    npwp: z
+      .string()
+      .regex(/^\d+$/, "NPWP must be a numeric string")
+      .min(15, "NPWP must be at least 15 digits")
+      .max(20, "NPWP must be at most 20 digits"),
     contractStart: z.string().date(),
     contractEnd: z.string().date().optional(),
     roleId: z

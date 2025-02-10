@@ -1,4 +1,4 @@
-const { modulePages } = require("../config/db/db");
+const { dbModulePages } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const modulePermission = {
   createModule: async (data) => {
     try {
       const uuidModule = uuid();
-      const result = await modulePages(
+      const result = await dbModulePages(
         `INSERT INTO module 
           (uuid, 
           name,
@@ -25,7 +25,7 @@ const modulePermission = {
   },
   getModuleById: async (module_id) => {
     try {
-      const [result] = await modulePages(
+      const [result] = await dbModulePages(
         `SELECT uuid, name, category_module_id FROM module WHERE id = ?`,
         [module_id.modulePermissionId]
       );
@@ -40,7 +40,7 @@ const modulePermission = {
   },
   getAllModule: async () => {
     try {
-      const result = await modulePages(`
+      const result = await dbModulePages(`
         SELECT 
           m.id, 
           m.uuid, 

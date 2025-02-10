@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Religions = {
   createReligion: async (data) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `
         INSERT INTO religions 
           (id,
@@ -25,8 +25,8 @@ const Religions = {
   },
   getAllReligion: async () => {
     try {
-      const result = await learningManagementSystem(
-        "SELECT name FROM religions WHERE is_deleted = 0"
+      const result = await dbLms(
+        "SELECT id, name FROM religions WHERE is_deleted = 0"
       );
       return result;
     } catch (error) {

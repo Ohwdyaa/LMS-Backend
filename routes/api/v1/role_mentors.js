@@ -11,11 +11,11 @@ const {
   updateRoleSchema,
 } = require("../../../middlewares/validate");
 const router = express.Router();
-router.post("/roleMentor", validateMiddleware(roleSchema), createRoleMentor);
-router.get("/roleMentor", getAllRoleMentors);
-router.delete("/roleMentor/:id", deleteRoleMentor);
+router.post("/role-mentor", validateMiddleware(roleSchema), createRoleMentor);
+router.get("/role-mentor", getAllRoleMentors);
+router.delete("/role-mentor/:id", deleteRoleMentor);
 router.put(
-  "/roleMentor/:id",
+  "/role-mentor/:id",
   validateMiddleware(updateRoleSchema),
   updateMentorRole
 );

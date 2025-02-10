@@ -3,24 +3,13 @@ const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function createTeam(req, res) {
-  const { id: userId } = req.user;
-  const { username, email } = req.body;
   try {
+//  const { id: userId } = req.user;
+    const { email } = req.body;
     const password = "112233";
-    const isUserExist = await Teams.getTeamByUsernameAndEmail(username, email);
-    if (isUserExist) {
-      let message;
-
-      if (isUserExist.email.toLowerCase() === email.toLowerCase()) {
-        message = "Email already registered";
-      } else if (
-        isUserExist.username.toLowerCase() === username.toLowerCase()
-      ) {
-        message = "Username already registered";
-      }
-      return res.status(400).json({
-        message,
-      });
+    const isUserExist = await Teams.getTeamByEmail(email);
+    if (isUserExist > 0) {
+      return res.status(404).json({ message: "Email already registered" });
     }
 
     const hash = await hashPassword(password);
@@ -28,7 +17,7 @@ async function createTeam(req, res) {
       ...req.body,
       password: hash,
     };
-    await Teams.createTeam(userData, userId);
+    await Teams.createTeam(userData);
 
     return res.status(201).json({
       message: "User created successfully",
@@ -51,26 +40,17 @@ async function updateTeam(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isEmailOrUsernameDuplicate = await Teams.getTeamByUsernameAndEmail(
-      teamData.username,
+    const isEmailDuplicate = await Teams.getTeamByEmail(
       teamData.email,
       teamId
     );
 
-    if (isEmailOrUsernameDuplicate) {
+    if (isEmailDuplicate) {
       let message;
 
-      if (
-        isEmailOrUsernameDuplicate.email.toLowerCase() ===
-        teamData.email.toLowerCase()
-      ) {
+      if (isEmailDuplicate.email.toLowerCase() === teamData.email.toLowerCase()) {
         message = "Email already registered";
-      } else if (
-        isEmailOrUsernameDuplicate.username.toLowerCase() ===
-        teamData.username.toLowerCase()
-      ) {
-        message = "Username already registered";
-      }
+      } 
       return res.status(400).json({
         message,
       });
@@ -109,7 +89,7 @@ async function deleteTeam(req, res) {
         .json({ message: "Cannot delete super admin account" });
     }
 
-    await Teams.softDeleteTeam(isTeamExists.id, userId);
+    await Teams.deleteTeam(isTeamExists.id, userId);
     return res.status(200).json({
       message: "User deleted successfully",
     });

@@ -1,13 +1,13 @@
 const {
   formatBulkQuery1,
-  learningManagementSystem,
+  dbLms,
 } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const permissionMentors = {
   getPermissionMentorByRole: async (roleId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           mp.can_create AS canCreate, 
           mp.can_read AS canRead, 
@@ -33,7 +33,7 @@ const permissionMentors = {
   },
   getPermissionMentorByRoleJwt: async (roleId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           mp.can_create AS canCreate, 
           mp.can_read AS canRead, 
@@ -59,7 +59,7 @@ const permissionMentors = {
   },
   getPermissionMentorByRoleAndModule: async (roleId, moduleId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           can_create AS canCreate, 
           can_read AS canRead, 
@@ -80,7 +80,7 @@ const permissionMentors = {
   },
   updatePermissionMentor: async (roleId, moduleId, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE mentor_permissions SET 
             can_create = ?,
             can_read = ?, 

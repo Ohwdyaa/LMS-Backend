@@ -18,7 +18,7 @@ async function createRoleTeam(req, res) {
   }
 }
 
-async function updateTeamRole(req, res) {
+async function updateRoleTeam(req, res) {
   const { id: userId } = req.user;
   const { id: roleId } = req.params;
   const data = req.body;
@@ -88,5 +88,5 @@ module.exports = {
   createRoleTeam,
   getAllRoleTeams,
   deleteRoleTeam,
-  updateTeamRole,
+  updateRoleTeam,
 };

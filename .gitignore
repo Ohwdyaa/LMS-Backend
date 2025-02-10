@@ -1,4 +1,19 @@
+# Node modules
 node_modules/
+
+# Keys files
 keys/
+
+# Image management files
 uploads/
-.env  
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Specific to subprojects
+lms-superadmin/node_modules/
+lms-mentor/node_modules/
+lms-mentee/node_modules/  

@@ -4,47 +4,35 @@ const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function createMentor(req, res) {
-  const { email, username } = req.body;
-  const { npwp, contract, cv, profileImage } = req.files;
+  const { email } = req.body;
+  const { contract, cv, profileImage } = req.files;
   const { id: userId } = req.user;
   try {
-    const isUserExist = await Mentors.getMentorByUsernameAndEmail(
-      username,
-      email
-    );
+    const isUserExist = await Mentors.getMentorByEmail(email);
 
     if (isUserExist) {
       let message;
       if (isUserExist.email.toLowerCase() === email.toLowerCase()) {
         message = "Email already registered";
-      } else if (
-        isUserExist.username.toLowerCase() === username.toLowerCase()
-      ) {
-        message = "Username already registered";
-      }
+      } 
       return res.status(400).json({
         message,
       });
     }
 
     // create file url
-    const npwpUrl = npwp
-      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
-          npwp[0].filename
-        }`
-      : "";
     const contractUrl = contract
-      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
+      ? `${req.protocol}://${req.get("host")}/uploads/files/${
           contract[0].filename
         }`
       : "";
     const cvUrl = cv
-      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
+      ? `${req.protocol}://${req.get("host")}/uploads/files/${
           cv[0].filename
         }`
       : "";
     const profileImageUrl = profileImage
-      ? `${req.protocol}://${req.get("host")}/uploads/profile-mentors/${
+      ? `${req.protocol}://${req.get("host")}/uploads/files/${
           profileImage[0].filename
         }`
       : "";
@@ -54,7 +42,6 @@ async function createMentor(req, res) {
     const mentorData = {
       ...req.body,
       password: hash,
-      npwp: npwpUrl,
       contract: contractUrl,
       cv: cvUrl,
       profileImage: profileImageUrl,
@@ -77,25 +64,20 @@ async function updateMentor(req, res) {
   const { id: userId } = req.user;
   const { id: mentorId } = req.params;
   const { username, email } = req.body;
-  const { npwp, contract, cv, profileImage } = req.files;
+  const { contract, cv, profileImage } = req.files;
 
   try {
-    const isMentorUsernameOrEmailDuplicate =
-      await Mentors.getMentorByUsernameAndEmail(username, email, mentorId);
+    const isMentorEmailDuplicate =
+      await Mentors.getMentorByUsernameAndEmail(email, mentorId);
 
-    if (isMentorUsernameOrEmailDuplicate) {
+    if (isMentorEmailDuplicate !== 0 ) {
       let message;
       if (
-        isMentorUsernameOrEmailDuplicate.email.toLowerCase() ===
+        isMentorEmailDuplicate.email.toLowerCase() ===
         email.toLowerCase()
       ) {
         message = "Email already registered";
-      } else if (
-        isMentorUsernameOrEmailDuplicate.username.toLowerCase() ===
-        username.toLowerCase()
-      ) {
-        message = "Username already registered";
-      }
+      } 
       return res.status(400).json({
         message,
       });
@@ -104,11 +86,6 @@ async function updateMentor(req, res) {
     const isMentorExists = await Mentors.getMentorDetails(mentorId);
 
     // create file url
-    const npwpUrl = npwp
-      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
-          npwp[0].filename
-        }`
-      : isMentorExists.npwp;
     const contractUrl = contract
       ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           contract[0].filename

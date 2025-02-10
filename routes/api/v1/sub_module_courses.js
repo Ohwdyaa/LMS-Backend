@@ -14,17 +14,17 @@ const {
 const router = express.Router();
 
 router.post(
-  "/subModule",
+  "/sub-module",
   validateMiddleware(subModuleCourseSchema),
   createSubModule
 );
 router.put(
-  "/subModule/:id",
+  "/sub-module/:id",
   validateMiddleware(updateSubModuleCourseSchema),
   updateSubModule
 );
-router.delete("/subModule/:id", deleteSubModule);
-router.get("/subModule/:id", getSubModuleById);
-router.get("/module/:id/subModule", getSubModuleByModuleCourse);
+router.delete("/sub-module/:id", deleteSubModule);
+router.get("/sub-module/:id", getSubModuleById);
+router.get("/module/:id/sub-module", getSubModuleByModuleCourse);
 
 module.exports = router;

@@ -2,9 +2,9 @@ const Genders = require("../models/genders");
 const { err } = require("../utils/custom_error");
 
 async function createGenders(req, res) {
-  const genderData = req.body;
+  const data = req.body;
   try {
-    await Genders.createGender(genderData);
+    await Genders.createGender(data);
     return res.status(201).json({
       message: "Gender created successfully",
     });
@@ -18,12 +18,12 @@ async function createGenders(req, res) {
 
 async function getAllGenders(req, res) {
   try {
-    const gender = await Genders.getAllGenders();
-    if(gender.length === 0){
+    const genderData = await Genders.getAllGenders();
+    if(genderData.length === 0){
       return res.status(404).json({message: "Genders Not Found"});
     }
     return res.status(200).json({
-      data: gender,
+      data: genderData,
     });
   } catch (error) {
     res.status(err.errorSelect.statusCode).json({

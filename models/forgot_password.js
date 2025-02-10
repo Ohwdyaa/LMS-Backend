@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const forgetPassword = {
   createResetToken: async (userId, resetToken, expiredDate) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO forget_password 
           (id, 
           reset_token, 
@@ -27,7 +27,7 @@ const forgetPassword = {
   },
   getResetToken: async (resetToken) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           fp.id, 
           fp.expired_date, 
@@ -49,7 +49,7 @@ const forgetPassword = {
   },
   tokenAsUsed: async (resetToken) => {
     try {
-      await learningManagementSystem(
+      await dbLms(
         `UPDATE 
           forget_password 
         SET 
@@ -67,7 +67,7 @@ const forgetPassword = {
   },
   clearExpiredToken: async () => {
     try {
-      await learningManagementSystem(
+      await dbLms(
         `DELETE FROM forget_password WHERE expired_date < NOW() AND is_used = false`
       );
     } catch (error) {

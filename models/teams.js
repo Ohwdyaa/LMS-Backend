@@ -8,8 +8,7 @@ const Teams = {
       const id = uuid();
       const result = await dbLms(
         `INSERT INTO teams (
-            id,
-            username, 
+            id, 
             email,
             password,                
             profile_image, 
@@ -22,11 +21,10 @@ const Teams = {
             role_id, 
             gender_id, 
             religion_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
-          data.username,
           data.email,
           data.password,
           data.profileImage,
@@ -77,7 +75,6 @@ const Teams = {
         ` UPDATE 
             teams
           SET 
-            username = ?,
             email = ?,                
             profile_image = ?, 
             fullname = ?, 
@@ -87,12 +84,10 @@ const Teams = {
             date_of_birth = ?,
             updated_at = NOW(), 
             updated_by = ?,
-            role_id = ?,
             gender_id = ?, 
             religion_id = ?
           WHERE id = ?`,
         [
-          data.username,
           data.email,
           data.profileImage,
           data.fullname,
@@ -101,7 +96,6 @@ const Teams = {
           data.institute,
           data.dateOfBirth,
           userId,
-          data.roleId,
           data.genderId,
           data.religionId,
           id,
@@ -131,39 +125,38 @@ const Teams = {
       throw error;
     }
   },
-  softDeleteTeam: async (id, userId) => {
-    try {
-      const result = await dbLms(
-        `UPDATE 
-          teams 
-        SET 
-          is_deleted = 1, 
-          updated_at = NOW(),
-          updated_by = ? 
-        WHERE id = ?`,
-        [userId, id]
-      );
-      return result;
-    } catch (error) {
-      if (error.code && error.sqlMessage) {
-        const message = mapMySQLError(error);
-        throw new Error(message);
-      }
-      throw error;
-    }
-  },
+  // softDeleteTeam: async (id, userId) => {
+  //   try {
+  //     const result = await dbLms(
+  //       `UPDATE 
+  //         teams 
+  //       SET 
+  //         is_deleted = 1, 
+  //         updated_at = NOW(),
+  //         updated_by = ? 
+  //       WHERE id = ?`,
+  //       [userId, id]
+  //     );
+  //     return result;
+  //   } catch (error) {
+  //     if (error.code && error.sqlMessage) {
+  //       const message = mapMySQLError(error);
+  //       throw new Error(message);
+  //     }
+  //     throw error;
+  //   }
+  // },
   getAllTeams: async () => {
     try {
       const result = await dbLms(
         `SELECT 
-          t.id, 
-          t.username, 
+          t.id,  
           t.email, 
           t.fullname, 
           t.role_id as roleId,  
-          r.name as role
+          rt.name as role
         FROM teams t
-        LEFT JOIN roles r ON t.role_id = r.id
+        LEFT JOIN role_teams rt ON t.role_id = rt.id
         WHERE t.is_deleted = 0`
       );
       return result;
@@ -179,14 +172,14 @@ const Teams = {
     try {
       const [result] = await dbLms(
         `SELECT 
-          t.id,
-          t.username, 
+          t.id, 
           t.email, 
           t.password,
           t.fullname, 
-          t.role_id, r.name as role
+          t.role_id, 
+          rt.name as role
           FROM teams t
-        LEFT JOIN roles r ON t.role_id = r.id
+        LEFT JOIN role_teams rt ON t.role_id = rt.id
         WHERE t.id = ? AND t.is_deleted = 0`,
         [id]
       );
@@ -221,7 +214,6 @@ const Teams = {
         WHERE t.id = ? AND t.is_deleted = 0`,
         [id]
       );
-      console.log({ result });
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -235,14 +227,15 @@ const Teams = {
     try {
       const [result] = await dbLms(
         `SELECT 
-          id, 
-          username, 
-          email, 
-          password, 
-          fullname, 
-          role_id
-        FROM teams
-        WHERE email = ? AND is_deleted = 0`,
+          t.id,
+          t.fullname,
+          t.email, 
+          t.password,
+          t.role_id,
+          rt.name as role
+        FROM teams t
+        LEFT JOIN role_teams rt ON t.role_id = rt.id
+        WHERE t.email = ? AND t.is_deleted = 0`,
         [email]
       );
       return result;

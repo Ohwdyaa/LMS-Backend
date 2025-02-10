@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const roleMentors = {
   createRoleMentor: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO role_mentors 
           (id,
           name,
@@ -25,7 +25,7 @@ const roleMentors = {
   },
   getRoleMentorById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
             id, 
             name 
@@ -44,7 +44,7 @@ const roleMentors = {
   },
   getAllRoleMentors: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
             id, 
             name 
@@ -62,7 +62,7 @@ const roleMentors = {
   },
   deleteRoleMentor: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `DELETE FROM role_mentors where id = ?`,
         [id]
       );
@@ -77,7 +77,7 @@ const roleMentors = {
   },
   softDeleteRoleMentor: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           role_mentors
         SET 
@@ -98,7 +98,7 @@ const roleMentors = {
   },
   updateRoleMentor: async (roleId, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE role_mentors 
         SET 
           name = ?, 

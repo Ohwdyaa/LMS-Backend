@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const contentTypes = {
   createContentTypes: async (data) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO content_types(
           id, 
           name, 
@@ -25,7 +25,7 @@ const contentTypes = {
   },
   getAllContentTypes: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           name,

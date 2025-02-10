@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const subModules = {
   createSubModule: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO sub_modules(
           id, 
           title, 
@@ -35,7 +35,7 @@ const subModules = {
   },
   updateSubModule: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           sub_modules 
         SET 
@@ -58,10 +58,7 @@ const subModules = {
   },
   deleteSubModule: async (id) => {
     try {
-      const result = await learningManagementSystem(
-        `DELETE FROM sub_modules WHERE id=?`,
-        id
-      );
+      const result = await dbLms(`DELETE FROM sub_modules WHERE id=?`, id);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -73,7 +70,7 @@ const subModules = {
   },
   getSubModulesById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           sm.id, 
           sm.title, 
@@ -100,7 +97,7 @@ const subModules = {
   },
   getSubModuleByModuleCourse: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           id, 
           title
@@ -120,7 +117,7 @@ const subModules = {
   },
   getSubModulesCountByModuleId: async (moduleId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT COUNT(*) as count FROM sub_modules where module_course_id = ?`,
         [moduleId]
       );

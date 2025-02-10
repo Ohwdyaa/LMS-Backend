@@ -1,13 +1,13 @@
 const {
   formatBulkQuery1,
-  learningManagementSystem,
+  dbLms,
 } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const permissionTeams = {
   getPermissionTeamByRole: async (roleId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           tp.can_create AS canCreate, 
           tp.can_read AS canRead, 
@@ -33,7 +33,7 @@ const permissionTeams = {
   },
   getPermissionTeamByRoleJwt: async (roleId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           tp.can_create AS canCreate, 
           tp.can_read AS canRead, 
@@ -59,7 +59,7 @@ const permissionTeams = {
   },
   getPermissionTeamByRoleAndModule: async (roleId, moduleId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           can_create AS canCreate, 
           can_read AS canRead, 
@@ -80,7 +80,7 @@ const permissionTeams = {
   },
   updatePermissionTeam: async (roleId, moduleId, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE team_permissions SET 
           can_create = ?,
           can_read = ?, 
@@ -110,7 +110,7 @@ const permissionTeams = {
 
   createBulkPermissionTeam: async (query, array) => {
     const formatQuery = formatBulkQuery1(query, array);
-    await learningManagementSystem(formatQuery);
+    await dbLms(formatQuery);
   },
 };
 

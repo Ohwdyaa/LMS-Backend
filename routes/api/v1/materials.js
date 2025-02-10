@@ -21,6 +21,6 @@ router.delete(
   validateMiddleware(deleteMaterialSchema),
   deleteMaterial
 );
-router.get("/material/:id", getMaterialBySubModule);
+router.get("/sub-module/:id/material", getMaterialBySubModule);
 
 module.exports = router;

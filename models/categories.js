@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,7 +6,7 @@ const Categories = {
   createCategory: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `INSERT INTO categories
           (id, 
           name, 
@@ -25,7 +25,7 @@ const Categories = {
   },
   updateCategory: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           categories
         SET
@@ -46,7 +46,7 @@ const Categories = {
   },
   deleteCategory: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `DELETE FROM categories WHERE id = ?`,
         id
       );
@@ -61,7 +61,7 @@ const Categories = {
   },
   getCategoryById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           id, 
           name 
@@ -80,7 +80,7 @@ const Categories = {
   },
   getAllCategories: async () => {
     try {
-      const result = await learningManagementSystem(`
+      const result = await dbLms(`
           SELECT 
             id, 
             name 

@@ -1,4 +1,4 @@
-const { learningManagementSystem } = require("../config/db/db");
+const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -6,12 +6,11 @@ const Mentors = {
   createMentor: async (data, userId) => {
     try {
       const id = uuid();
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `
         INSERT INTO mentors (
             id,
             fullname, 
-            username, 
             email,
             phone_number,
             date_of_birth,
@@ -31,12 +30,11 @@ const Mentors = {
             genders_id,
             sub_category_id
         ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           id,
           data.fullname,
-          data.username,
           data.email,
           data.phoneNumber,
           data.dateOfBirth,
@@ -68,7 +66,7 @@ const Mentors = {
   },
   updatePassword: async (id, hashedPassword) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           mentors 
         SET 
@@ -89,12 +87,11 @@ const Mentors = {
   },
   updateMentor: async (id, data, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         ` UPDATE 
             mentors
           SET 
             fullname = ?, 
-            username = ?,
             email = ?,
             phone_number = ?,
             date_of_birth = ?,
@@ -117,7 +114,6 @@ const Mentors = {
           WHERE id = ?`,
         [
           data.fullname,
-          data.username,
           data.email,
           data.phoneNumber,
           data.dateOfBirth,
@@ -150,7 +146,7 @@ const Mentors = {
   },
   softDeleteMentor: async (id, userId) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE 
           mentors
         SET 
@@ -171,17 +167,15 @@ const Mentors = {
   },
   getAllMentors: async () => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
-            m.id, 
-            m.fullname, 
-            m.username, 
+            m.id,  
             m.email, 
-            m.is_active as isActive,
-            r.name as role, 
+            m.is_deleted as isActive,
+            rm.name as role, 
             sc.name as subCategory
         FROM mentors m
-        LEFT JOIN role_mentors r ON m.role_id = r.id
+        LEFT JOIN role_mentors rm ON m.role_id = rm.id
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
         WHERE m.is_deleted = 0`
       );
@@ -196,11 +190,10 @@ const Mentors = {
   },
   getMentorDetails: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           m.id,
           m.fullname,
-          m.username, 
           m.email, 
           m.phone_number as phoneNumber,
           m.date_of_birth as dateOfBirth,
@@ -215,15 +208,15 @@ const Mentors = {
           m.contract,
           m.contract_start as contractStart,
           m.contract_end as contractEnd,
-          m.is_active as isActive,
+          m.is_deleted as isActive,
           m.role_id as roleId,
           m.genders_id as genderId,
           m.sub_category_id as subCategoryId,
-          r.name as role,
+          rm.name as role,
           g.name as gender,
           sc.name as subCategory
         FROM mentors m
-        LEFT JOIN role_mentors r ON m.role_id = r.id
+        LEFT JOIN role_mentors rm ON m.role_id = rm.id
         LEFT JOIN genders g ON m.genders_id = g.id
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id 
         WHERE m.id = ?`,
@@ -240,12 +233,12 @@ const Mentors = {
   },
   getMentorById: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
-          m.id,
-          m.is_active
-          FROM mentors m
-          WHERE m.id = ? AND m.is_active = 1`,
+          id,
+          is_deleted
+        FROM mentors 
+        WHERE id = ? AND is_deleted = 0`,
         [id]
       );
       return result;
@@ -259,18 +252,17 @@ const Mentors = {
   },
   getMentorByEmail: async (id) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           m.id,
           m.fullname,
-          m.username, 
           m.email, 
           m.password,
           m.role_id,
-          r.name as role
+          rm.name as role
         FROM mentors m
-        LEFT JOIN roles r ON m.role_id = r.id
-        WHERE m.email = ? AND m.is_active = 1 AND m.is_deleted = 0`,
+        LEFT JOIN role_mentors rm ON m.role_id = rm.id
+        WHERE m.email = ? AND m.is_deleted = 0`,
         [id]
       );
       return result;
@@ -284,16 +276,15 @@ const Mentors = {
   },
   getMentorsBySubCategory: async (id) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `SELECT 
           m.id,  
           m.fullname,
-          m.username, 
           m.email, 
-          r.name as role, 
+          rm.name as role, 
           sc.name as subCategory 
         FROM mentors m
-        LEFT JOIN roles r ON m.role_id = r.id 
+        LEFT JOIN role_mentors rm ON m.role_id = rm.id 
         LEFT JOIN sub_categories sc ON m.sub_category_id = sc.id
         WHERE sc.id = ?`,
         [id]
@@ -309,7 +300,7 @@ const Mentors = {
   },
   logoutMentor: async (token) => {
     try {
-      const result = await learningManagementSystem(
+      const result = await dbLms(
         `UPDATE mentors SET refresh_token = NULL WHERE refresh_token = ?`,
         token
       );
@@ -324,7 +315,7 @@ const Mentors = {
   },
   getMentorsCountByRoleId: async (roleId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT COUNT(*) as count FROM mentors where role_id = ? AND is_deleted = 0`,
         [roleId]
       );
@@ -339,7 +330,7 @@ const Mentors = {
   },
   getMentorsCountBySubCategoryId: async (subCategoryId) => {
     try {
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT COUNT(*) as count FROM mentors where sub_category_id = ? AND is_deleted = 0`,
         [subCategoryId]
       );
@@ -355,7 +346,7 @@ const Mentors = {
   getMentorByUsernameAndEmail: async (username, email, id) => {
     try {
       if (id) {
-        const [result] = await learningManagementSystem(
+        const [result] = await dbLms(
           `SELECT 
             id,
             email,
@@ -366,7 +357,7 @@ const Mentors = {
         );
         return result;
       }
-      const [result] = await learningManagementSystem(
+      const [result] = await dbLms(
         `SELECT 
           id,
           email,

@@ -1,7 +1,8 @@
 const express = require("express");
-const { createQuiz } = require("../../../controllers/quiz");
+const { updateQuiz, getQuizBySubModule } = require("../../../controllers/quiz");
 const router = express.Router();
 
-router.post("/quizzes", createQuiz);
+router.put("/quiz/:id", updateQuiz);
+router.get("/sub-module/:id/quiz", getQuizBySubModule);
 
 module.exports = router;

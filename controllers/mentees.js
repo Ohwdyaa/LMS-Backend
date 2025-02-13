@@ -15,11 +15,7 @@ async function createMentee(req, res) {
       let message;
       if (isUserExist.email.toLowerCase() === data.email.toLowerCase()) {
         message = "Email already registered";
-      } else if (
-        isUserExist.username.toLowerCase() === data.username.toLowerCase()
-      ) {
-        message = "Username already registered";
-      }
+      } 
       return res.status(400).json({
         message,
       });

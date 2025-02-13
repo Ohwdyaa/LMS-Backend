@@ -39,5 +39,31 @@ const Levels = {
       throw error;
     }
   },
+  getLevelById: async (id) => {
+    try {
+      const [result] = await dbLms(`SELECT id, name FROM levels WHERE id = ?`, [
+        id,
+      ]);
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getAllLevels: async () => {
+    try {
+      const result = await dbLms(`SELECT id, name, weight FROM levels WHERE is_deleted = 0`);
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  }
 };
 module.exports = Levels;

@@ -1,21 +1,35 @@
 const Question = require("../models/questions");
+const Quizzes = require("../models/quiz");
+const Levels = require("../models/levels");
 const { err } = require("../utils/custom_error");
+const { fisherYatesShuffle, sattoloShuffle } = require("../utils/shuffleUtils");
 
-async function createLevel(req, res) {
+async function createQuestion(req, res) {
   try {
     const { id: userId } = req.user;
-    const data = req.body;
+    const { question, quizzesId, levelsId } = req.body;
 
-    const existingLevel = await Level.getLevelByName(data.name);
-    if (existingLevel.length > 0) {
-      return res
-        .status(400)
-        .json({ message: "A level with this name already exists" });
+    const isQuizExist = await Quizzes.getQuizById(quizzesId);
+    if (!isQuizExist || isQuizExist.length === 0) {
+      return res.status(400).json({
+        message: "Invalid quiz selected",
+      });
+    }
+    const isLevelExist = await Levels.getLevelById(levelsId);
+    if (!isLevelExist || isLevelExist.length === 0) {
+      return res.status(400).json({
+        message: "Invalid level selected",
+      });
     }
 
-    await Level.createLevel(data, userId);
+    await Question.createQuestion(
+      question,
+      isQuizExist.id,
+      isLevelExist.id,
+      userId
+    );
     return res.status(201).json({
-      message: "Level created successfully",
+      message: "Question created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -24,6 +38,63 @@ async function createLevel(req, res) {
     });
   }
 }
+async function getQuestionByQuiz(req, res) {
+  try {
+    const { id: quizId } = req.params;
+    const totalQuestions = 5;
+
+    const levelExist = await Levels.getAllLevels();
+    const levelWeights = {};
+    levelExist.forEach((level) => {
+      levelWeights[level.name.toLowerCase()] = level.weight;
+    });
+
+    const questions = await Question.getQuestionByQuiz(quizId);
+    const levelQuestions = {
+      easy: [],
+      medium: [],
+      hard: [],
+    };
+    questions.forEach((question) => {
+      const levelName = question.level_name.toLowerCase();
+      if (levelQuestions[levelName]) {
+        levelQuestions[levelName].push(question);
+      }
+    });
+
+    const numEasy = Math.round((levelWeights.easy / 100) * totalQuestions);
+    const numMedium = Math.round((levelWeights.medium / 100) * totalQuestions);
+    const numHard = Math.round((levelWeights.hard / 100) * totalQuestions);
+
+    const selectedEasy = sattoloShuffle(levelQuestions.easy).slice(
+      0,
+      numEasy
+    );
+    const selectedMedium = sattoloShuffle(levelQuestions.medium).slice(
+      0,
+      numMedium
+    );
+    const selectedHard = sattoloShuffle(levelQuestions.hard).slice(0, numHard);
+
+    const selectedQuestions = [
+      ...selectedEasy,
+      ...selectedMedium,
+      ...selectedHard,
+    ];
+    const finalQuestions = fisherYatesShuffle(selectedQuestions);
+
+    return res.status(200).json({
+      message: "Questions retrieved successfully",
+      questions: finalQuestions,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
-  createLevel,
+  createQuestion,
+  getQuestionByQuiz,
 };

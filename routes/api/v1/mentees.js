@@ -4,3 +4,5 @@ const router = express.Router;
 const {} = require("../../../middlewares/validate");
 
 router.post("/mentee", createMentee);
+
+module.exports = router;

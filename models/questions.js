@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Questions = {
-  createQuestion: async (data, userId) => {
+  createQuestion: async (question, quizzesId, levelsId, userId) => {
     try {
       const id = uuid();
       await dbLms(
@@ -13,11 +13,48 @@ const Questions = {
             question,
             created_by,
             quizzes_id,
-            levels_id,)
+            levels_id)
         VALUES (?, ?, ?, ?, ?)`,
-        [id, data.question, userId, data.quizzesId, data.levelsId]
+        [id, question, userId, quizzesId, levelsId]
       );
       return id;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getQuestionById: async (id) => {
+    try {
+      const [result] = await dbLms(
+        `SELECT id, question FROM questions WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getQuestionByQuiz: async (id) => {
+    try {
+      const result = await dbLms(
+        `SELECT 
+          q.id, 
+          q.question,
+          q.levels_id as level,
+          l.name as level_name
+        FROM questions q
+        LEFT JOIN levels l ON q.levels_id = l.id
+        WHERE quizzes_id = ?`,
+        [id]
+      );
+      return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);

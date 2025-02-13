@@ -4,20 +4,20 @@ const { err } = require("../utils/custom_error");
 
 async function createTeam(req, res) {
   try {
-//  const { id: userId } = req.user;
-    const { email } = req.body;
+    const { id: userId } = req.user;
+    const data = req.body;
     const password = "112233";
-    const isUserExist = await Teams.getTeamByEmail(email);
+    const isUserExist = await Teams.getTeamByEmail(data.email);
     if (isUserExist > 0) {
       return res.status(404).json({ message: "Email already registered" });
     }
 
     const hash = await hashPassword(password);
     const userData = {
-      ...req.body,
+      ...data,
       password: hash,
     };
-    await Teams.createTeam(userData);
+    await Teams.createTeam(userData, userId);
 
     return res.status(201).json({
       message: "User created successfully",
@@ -38,22 +38,6 @@ async function updateTeam(req, res) {
     const isTeamExists = await Teams.getTeamById(teamId);
     if (isTeamExists === undefined) {
       return res.status(404).json({ message: "User not found" });
-    }
-
-    const isEmailDuplicate = await Teams.getTeamByEmail(
-      teamData.email,
-      teamId
-    );
-
-    if (isEmailDuplicate) {
-      let message;
-
-      if (isEmailDuplicate.email.toLowerCase() === teamData.email.toLowerCase()) {
-        message = "Email already registered";
-      } 
-      return res.status(400).json({
-        message,
-      });
     }
 
     await Teams.updateTeam(isTeamExists.id, teamData, userId);

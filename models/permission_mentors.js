@@ -109,7 +109,7 @@ const permissionMentors = {
   },
   createBulkPermissionMentor: async (query, array) => {
     const formatQuery = formatBulkQuery1(query, array);
-    await learningManagementSystem(formatQuery);
+    await dbLms(formatQuery);
   },
 };
 

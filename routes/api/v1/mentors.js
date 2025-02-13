@@ -35,6 +35,6 @@ router.put(
 );
 router.get("/mentor", getAllMentors);
 router.get("/mentor/:id", getMentorById);
-router.get("/mentor/:id/sub-category", getMentorBySubCategory);
+router.get("/sub-category/:id/mentor", getMentorBySubCategory);
 
 module.exports = router;

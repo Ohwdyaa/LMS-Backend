@@ -107,10 +107,10 @@ const subCategory = {
         `SELECT 
           sc.id, 
           sc.name, 
-          sc.category_id, 
+          sc.categories_id, 
           c.name as categories 
         FROM sub_categories sc
-        LEFT JOIN categories c ON sc.category_id = c.id
+        LEFT JOIN categories c ON sc.categories_id = c.id
         WHERE sc.id = ? AND sc.is_deleted = 0`,
         [id]
       );

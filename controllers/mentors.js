@@ -61,28 +61,11 @@ async function createMentor(req, res) {
 }
 
 async function updateMentor(req, res) {
-  const { id: userId } = req.user;
-  const { id: mentorId } = req.params;
-  const { username, email } = req.body;
-  const { contract, cv, profileImage } = req.files;
-
   try {
-    const isMentorEmailDuplicate =
-      await Mentors.getMentorByUsernameAndEmail(email, mentorId);
-
-    if (isMentorEmailDuplicate !== 0 ) {
-      let message;
-      if (
-        isMentorEmailDuplicate.email.toLowerCase() ===
-        email.toLowerCase()
-      ) {
-        message = "Email already registered";
-      } 
-      return res.status(400).json({
-        message,
-      });
-    }
-
+    const { id: userId } = req.user;
+    const { id: mentorId } = req.params;
+    const data = req.body;
+    const { contract, cv, profileImage } = req.files;
     const isMentorExists = await Mentors.getMentorDetails(mentorId);
 
     // create file url
@@ -107,7 +90,7 @@ async function updateMentor(req, res) {
     }
 
     const mentorData = {
-      ...req.body,
+      ...data,
       npwp: npwpUrl,
       contract: contractUrl,
       cv: cvUrl,

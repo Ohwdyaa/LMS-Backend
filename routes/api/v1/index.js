@@ -25,11 +25,15 @@ const moduleCourses = require("./module_courses");
 const subModuleCourses = require("./sub_module_courses");
 const contentTypes = require("./content_types");
 const materials = require("./materials");
-const quizzes = require("./quiz");
+const quizzes = require("./quizzes");
 const levels = require("./levels");
 const questions = require("./questions");
-const questionOptions = require("./question_opsions");
+const questionOptions = require("./question_options");
 const answers = require("./answers");
+
+const Class = require("./class");
+const Session = require("./session");
+const mentee = require("./mentees");
 
 router.use(upload);
 
@@ -60,5 +64,9 @@ router.use(levels);
 router.use(questions);
 router.use(questionOptions);
 router.use(answers);
+
+router.use(Class);
+router.use(Session);
+router.use(mentee);
 
 module.exports = router;

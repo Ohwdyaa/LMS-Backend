@@ -1,4 +1,4 @@
-const Quiz = require("../models/quiz");
+const Quiz = require("../models/quizzes");
 const subModule = require("../models/sub_module_courses");
 const { err } = require("../utils/custom_error");
 
@@ -13,19 +13,17 @@ async function updateQuiz(req, res) {
       return res.status(404).json({ message: "Sub module not found" });
     }
 
-    const isQuizExist = await Quiz.getQuizBySubModule(
-      subModuleId
-    );
+    const isQuizExist = await Quiz.getQuizBySubModule(subModuleId);
     if (isQuizExist) {
       await Quiz.updateQuiz(isQuizExist.id, data, userId);
       return res.status(201).json({
-        message: "Material updated successfully",
+        message: "Quiz updated successfully", 
       });
     }
     if (isQuizExist === undefined) {
       await Quiz.createQUiz(data, userId, isSubModuleExist.id);
       return res.status(201).json({
-        message: "Material created successfully",
+        message: "Quiz created successfully",
       });
     }
   } catch (error) {
@@ -55,5 +53,5 @@ async function getQuizBySubModule(req, res) {
 }
 module.exports = {
   updateQuiz,
-  getQuizBySubModule
+  getQuizBySubModule,
 };

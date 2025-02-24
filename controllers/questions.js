@@ -1,24 +1,24 @@
 const Question = require("../models/questions");
-const Quizzes = require("../models/quiz");
+const Quizzes = require("../models/quizzes");
 const Levels = require("../models/levels");
 const { err } = require("../utils/custom_error");
-const { fisherYatesShuffle, sattoloShuffle } = require("../utils/shuffleUtils");
+const { sattoloShuffle } = require("../utils/shuffleUtils");
 
 async function createQuestion(req, res) {
   try {
     const { id: userId } = req.user;
-    const { question, quizzesId, levelsId } = req.body;
+    const { question, quizId, levelId } = req.body;
 
-    const isQuizExist = await Quizzes.getQuizById(quizzesId);
+    const isQuizExist = await Quizzes.getQuizById(quizId);
     if (!isQuizExist || isQuizExist.length === 0) {
       return res.status(400).json({
-        message: "Invalid quiz selected",
+        message: "Quiz not found",
       });
     }
-    const isLevelExist = await Levels.getLevelById(levelsId);
+    const isLevelExist = await Levels.getLevelById(levelId);
     if (!isLevelExist || isLevelExist.length === 0) {
       return res.status(400).json({
-        message: "Invalid level selected",
+        message: "Level not found",
       });
     }
 
@@ -62,14 +62,11 @@ async function getQuestionByQuiz(req, res) {
       }
     });
 
-    const numEasy = Math.round((levelWeights.easy / 100) * totalQuestions);
-    const numMedium = Math.round((levelWeights.medium / 100) * totalQuestions);
-    const numHard = Math.round((levelWeights.hard / 100) * totalQuestions);
+    const numEasy = Math.floor((levelWeights.easy / 100) * totalQuestions);
+    const numMedium = Math.ceil((levelWeights.medium / 100) * totalQuestions);
+    const numHard = Math.ceil((levelWeights.hard / 100) * totalQuestions);
 
-    const selectedEasy = sattoloShuffle(levelQuestions.easy).slice(
-      0,
-      numEasy
-    );
+    const selectedEasy = sattoloShuffle(levelQuestions.easy).slice(0, numEasy);
     const selectedMedium = sattoloShuffle(levelQuestions.medium).slice(
       0,
       numMedium
@@ -81,7 +78,7 @@ async function getQuestionByQuiz(req, res) {
       ...selectedMedium,
       ...selectedHard,
     ];
-    const finalQuestions = fisherYatesShuffle(selectedQuestions);
+    const finalQuestions = sattoloShuffle(selectedQuestions);
 
     return res.status(200).json({
       message: "Questions retrieved successfully",
@@ -94,6 +91,7 @@ async function getQuestionByQuiz(req, res) {
     });
   }
 }
+
 module.exports = {
   createQuestion,
   getQuestionByQuiz,

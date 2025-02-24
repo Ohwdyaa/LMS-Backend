@@ -66,6 +66,7 @@ async function updateMentor(req, res) {
     const { id: mentorId } = req.params;
     const data = req.body;
     const { contract, cv, profileImage } = req.files;
+    
     const isMentorExists = await Mentors.getMentorDetails(mentorId);
 
     // create file url

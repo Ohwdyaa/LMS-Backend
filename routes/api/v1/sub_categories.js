@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 router.post(
-  "/subCategory",
+  "/sub-category",
   validateMiddleware(subCourseCategorySchema),
   createSubCategory
 );

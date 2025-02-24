@@ -42,11 +42,11 @@ const subModules = {
           title = ?, 
           description = ?, 
           updated_at = NOW(),
-          updated_by = ?
+          updated_by = ?,
+          content_type_id = ?
         WHERE id = ?`,
-        [data.title, data.description, userId, id]
+        [data.title, data.description, userId, data.contentTypeId, id]
       );
-      console.log(result);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -58,7 +58,7 @@ const subModules = {
   },
   deleteSubModule: async (id) => {
     try {
-      const result = await dbLms(`DELETE FROM sub_modules WHERE id=?`, id);
+      const result = await dbLms(`DELETE FROM sub_modules WHERE id = ?`, [id]);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -99,9 +99,12 @@ const subModules = {
     try {
       const result = await dbLms(
         `SELECT 
-          id, 
-          title
-        FROM sub_modules
+          sm.id, 
+          sm.title,
+          sm.content_type_id,
+          ct.name as contentType
+        FROM sub_modules sm
+        LEFT JOIN content_types ct ON sm.content_type_id = ct.id
         WHERE module_course_id = ?
         ORDER BY created_at ASC`,
         [id]

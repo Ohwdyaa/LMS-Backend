@@ -26,6 +26,25 @@ const Questions = {
       throw error;
     }
   },
+  updateQuestion: async (id, data, userId) => {
+    try {
+      const result = await dbLms(
+        `UPDATE 
+          questions 
+        SET 
+          question = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [
+          data.question,
+          userId,
+          id,
+        ]
+      );
+      return result;
+    } catch (error) {}
+  },
   getQuestionById: async (id) => {
     try {
       const [result] = await dbLms(
@@ -47,7 +66,6 @@ const Questions = {
         `SELECT 
           q.id, 
           q.question,
-          q.levels_id as level,
           l.name as level_name
         FROM questions q
         LEFT JOIN levels l ON q.levels_id = l.id

@@ -1,5 +1,5 @@
 const Answers = require("../models/answers");
-const quizzes = require("../models/quiz");
+const quizzes = require("../models/quizzes");
 const question = require("../models/questions");
 const questionOption = require("../models/question_options");
 const { err } = require("../utils/custom_error");

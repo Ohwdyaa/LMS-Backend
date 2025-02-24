@@ -1,5 +1,6 @@
 const Mentees = require("../models/mentees");
 const { hashPassword } = require("../utils/bcrypt");
+const { err } = require("../utils/custom_error");
 
 async function createMentee(req, res) {
   try {
@@ -7,15 +8,12 @@ async function createMentee(req, res) {
     const data = req.body;
     const password = "112233";
 
-    const isUserExist = await Mentees.getMenteeByUsernameAndEmail(
-      data.username,
-      data.email
-    );
+    const isUserExist = await Mentees.getMenteeByEmail(data.email);
     if (isUserExist) {
       let message;
       if (isUserExist.email.toLowerCase() === data.email.toLowerCase()) {
         message = "Email already registered";
-      } 
+      }
       return res.status(400).json({
         message,
       });

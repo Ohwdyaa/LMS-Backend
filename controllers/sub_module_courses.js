@@ -7,7 +7,7 @@ async function createSubModule(req, res) {
   try {
     await subModules.createSubModule(data, userId);
     return res.status(201).json({
-      message: "Module course created successfully",
+      message: "Sub Modules created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -44,7 +44,7 @@ async function deleteSubModule(req, res) {
   try {
     const isSubModuleExist = await subModules.getSubModulesById(subModuleId);
     if (isSubModuleExist === undefined) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "sub module not found" });
     }
 
     await subModules.deleteSubModule(isSubModuleExist.id);
@@ -84,7 +84,7 @@ async function getSubModuleByModuleCourse(req, res) {
       moduleId
     );
     if (isSubModuleExist.length === 0) {
-      return res.status(404).json({ message: "Sub module not found" });
+      return res.status(404).json({ message: "Module not found" });
     }
     return res.status(200).json({
       data: isSubModuleExist,

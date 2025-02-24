@@ -1,4 +1,5 @@
 const { dbMentee } = require("../config/db/db");
+const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Mentees = {
@@ -9,7 +10,6 @@ const Mentees = {
         `INSERT INTO mentees(
             id,
             fullname,
-            username,
             email,
             password,
             phone_number,
@@ -26,7 +26,6 @@ const Mentees = {
         [
           id,
           data.fullname,
-          data.username,
           data.email,
           data.password,
           data.phoneNumber,
@@ -36,7 +35,7 @@ const Mentees = {
           userId,
           data.categoriesId,
           data.subCategoriesId,
-          data.mentorId,
+          data.mentorsId,
           data.classId,
           data.sessionId,
         ]
@@ -57,7 +56,6 @@ const Mentees = {
           mentees 
         SET 
           fullname = ?,
-          username = ?,
           email = ?,
           phone_number = ?,
           university = ?,
@@ -175,28 +173,23 @@ const Mentees = {
       throw error;
     }
   },
-  getMenteeByUsernameAndEmail: async (username, email, id) => {
+  getMenteeByEmail: async (id) => {
     try {
-      if (id) {
-        const [result] = await dbLms(
-          `SELECT 
-            id,
-            email,
-            username
-          FROM mentees
-          WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
-          [username + "%", email + "%", id]
-        );
-        return result;
-      }
-      const [result] = await dbLms(
+      const [result] = await dbMentee(
         `SELECT 
-          id,
-          email,
-          username
-        FROM mentee
-        WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
-        [username + "%", email + "%"]
+          m.id,
+          m.fullname,
+          m.email, 
+          m.password,
+          m.class_id,
+          m.session_id,
+          c.name as class,
+          s.name as session
+        FROM mentees m
+        LEFT JOIN class c ON m.class_id = c.id
+        LEFT JOIN session s ON m.session_id = s.id
+        WHERE m.email = ? AND m.is_deleted = 0`,
+        [id]
       );
       return result;
     } catch (error) {
@@ -207,5 +200,37 @@ const Mentees = {
       throw error;
     }
   },
+  // getMenteeByEmail: async (username, email, id) => {
+  //   try {
+  //     if (id) {
+  //       const [result] = await dbLms(
+  //         `SELECT 
+  //           id,
+  //           email,
+  //           username
+  //         FROM mentees
+  //         WHERE email = ? AND is_deleted = 0`,
+  //         [email, id]
+  //       );
+  //       return result;
+  //     }
+  //     const [result] = await dbLms(
+  //       `SELECT 
+  //         id,
+  //         email,
+  //         username
+  //       FROM mentee
+  //       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+  //       [username + "%", email + "%"]
+  //     );
+  //     return result;
+  //   } catch (error) {
+  //     if (error.code && error.sqlMessage) {
+  //       const message = mapMySQLError(error);
+  //       throw new Error(message);
+  //     }
+  //     throw error;
+  //   }
+  // },
 };
 module.exports = Mentees;

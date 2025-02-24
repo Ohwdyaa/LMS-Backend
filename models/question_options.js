@@ -10,13 +10,12 @@ const questionOptions = {
         `
         INSERT INTO question_options (
             id, 
-            label,
             description,
             is_correct,
             created_by,
             questions_id)
-        VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, data.label, data.description, data.isCorrect, userId, questionsId]
+        VALUES (?, ?, ?, ?, ?)`,
+        [id, data.description, data.isCorrect, userId, questionsId]
       );
       return id;
     } catch (error) {
@@ -32,6 +31,28 @@ const questionOptions = {
       const [result] = await dbLms(
         `
         SELECT is_correct FROM question_options WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getOptionByQuestion: async (id) => {
+    try {
+      const result = await dbLms(
+        `SELECT 
+          qo.id, 
+          qo.description,
+          qo.is_correct,
+          qo.questions_id
+        FROM question_options qo
+        LEFT JOIN questions q ON qo.questions_id = q.id
+        WHERE qo.questions_id = ? AND qo.is_deleted = 0`,
         [id]
       );
       return result;

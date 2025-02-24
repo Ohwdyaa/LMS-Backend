@@ -36,6 +36,41 @@ async function enrollMentor(req, res) {
     });
   }
 }
+async function enrollMentee(req, res) {
+  const { id: courseId } = req.params;
+  const { menteeId, enrollmentKey } = req.body;
+  const { id: userId } = req.user;
+
+  try {
+    const isCourseExist = await Courses.getCourseById(courseId);
+    if (isCourseExist === undefined) {
+      return res.status(400).json({
+        message: "Invalid course ID",
+      });
+    }
+    if (isCourseExist.enrollmentKey !== enrollmentKey) {
+      return res.status(400).json({
+        message: "Enrollment key does not match",
+      });
+    }
+    const isEnrollExist = await Enrollments.existingEntry(isCourseExist.id, menteeId);
+    if (isEnrollExist !== undefined) {
+      return res.status(400).json({
+        message: "Mentees are already enrolled in this course",
+      });
+    }
+    await Enrollments.enrollMentee(courseId, menteeId, userId);
+    return res.status(201).json({
+      message: "Mentee successfully registered",
+    });
+
+  } catch (error) {
+    return res.status(error.statusCode || error.errorCreate.statusCode).json({
+      message: error.message,
+      error: error.errorRequest.message,
+    });
+  }
+}
 
 async function unEnroll(req, res) {
   const { id } = req.params;
@@ -59,5 +94,6 @@ async function unEnroll(req, res) {
 
 module.exports = {
   enrollMentor,
+  enrollMentee,
   unEnroll,
 };

@@ -24,6 +24,27 @@ const Enrollments = {
       throw error;
     }
   },
+  enrollMentee: async (courseId, menteeId, userId) => {
+    try {
+      const id = uuid();
+      const result = await dbLms(
+        `INSERT INTO enrollments(
+          id, 
+          created_by,
+          course_id,
+          mentees_id) 
+        VALUES (?,?,?,?)`,
+        [id, userId, courseId, menteeId]
+      );
+      return result.insertId;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
   updateEnroll: async (id, userId) => {
     try {
       const result = await dbLms(

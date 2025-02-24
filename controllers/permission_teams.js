@@ -5,7 +5,7 @@ const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 async function updatePermissionTeam(req, res) {
-  const { id: userId } = req.user;
+  // const { id: userId } = req.user;
   const { id: roleId } = req.params;
   const { listModules } = req.body;
   let newValue = [];
@@ -32,8 +32,7 @@ async function updatePermissionTeam(req, res) {
         await Permissions.updatePermissionTeam(
           roleId,
           moduleId,
-          updateData,
-          userId
+          updateData
         );
       }
       if (isExists === undefined) {
@@ -43,7 +42,6 @@ async function updatePermissionTeam(req, res) {
           canRead,
           canEdit,
           canDelete,
-          userId,
           roleId,
           moduleId,
         ]);
@@ -52,7 +50,7 @@ async function updatePermissionTeam(req, res) {
     if (newValue.length > 0) {
       await Permissions.createBulkPermissionTeam(
         `INSERT INTO team_permissions ( 
-          id, can_create, can_read, can_edit, can_delete, created_by, role_id,  module_id
+          id, can_create, can_read, can_edit, can_delete, role_id,  module_id
         ) VALUES ?`,
         [newValue]
       );

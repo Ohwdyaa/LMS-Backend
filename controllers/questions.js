@@ -22,7 +22,7 @@ async function createQuestion(req, res) {
       });
     }
 
-    await Question.createQuestion(
+    const questionId = await Question.createQuestion(
       question,
       isQuizExist.id,
       isLevelExist.id,
@@ -30,6 +30,9 @@ async function createQuestion(req, res) {
     );
     return res.status(201).json({
       message: "Question created successfully",
+      data:{
+        id: questionId
+      }
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -96,3 +99,4 @@ module.exports = {
   createQuestion,
   getQuestionByQuiz,
 };
+ 

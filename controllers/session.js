@@ -24,6 +24,21 @@ async function createSession(req, res) {
     });
   }
 }
+async function getAllSession(req, res) {
+  try {
+    const data = await Session.getAllSession();
+    if (data === undefined || data.length === 0) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
   createSession,
+  getAllSession
 };

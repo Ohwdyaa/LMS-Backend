@@ -42,5 +42,23 @@ const Session = {
       throw error;
     }
   },
+  getAllSession: async (name) => {
+    try {
+      const result = await dbMentee(
+        `SELECT 
+            id, 
+            name
+          FROM session 
+          WHERE is_deleted = 0`
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
 };
 module.exports = Session;

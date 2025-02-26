@@ -14,7 +14,7 @@ async function createClass(req, res) {
       });
     } else {
       return res.status(400).json({
-        message: "Class is exist", 
+        message: "Class is exist",
       });
     }
   } catch (error) {
@@ -24,6 +24,21 @@ async function createClass(req, res) {
     });
   }
 }
+async function getAllClass(req, res) {
+  try {
+    const data = await Class.getAllClass();
+    if (data === undefined || data.length === 0) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
-    createClass,
+  createClass,
+  getAllClass
 };

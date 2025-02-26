@@ -32,7 +32,25 @@ const Class = {
           FROM class 
           WHERE name = ? AND is_deleted = 0`,
         [name]
-      ); 
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getAllClass: async (name) => {
+    try {
+      const result = await dbMentee(
+        `SELECT 
+            id, 
+            name
+          FROM class 
+          WHERE is_deleted = 0`
+      );
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {

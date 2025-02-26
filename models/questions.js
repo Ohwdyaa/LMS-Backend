@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Questions = {
-  createQuestion: async (question, quizzesId, levelsId, userId) => {
+  createQuestion: async (question, quizId, levelsId, userId) => {
     try {
       const id = uuid();
       await dbLms(
@@ -15,7 +15,7 @@ const Questions = {
             quizzes_id,
             levels_id)
         VALUES (?, ?, ?, ?, ?)`,
-        [id, question, userId, quizzesId, levelsId]
+        [id, question, userId, quizId, levelsId]
       );
       return id;
     } catch (error) {

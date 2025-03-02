@@ -33,7 +33,8 @@ const answers = require("./answers");
 
 const Class = require("./class");
 const Session = require("./session");
-const mentee = require("./mentees");
+const Mentee = require("./mentees");
+const Evaluation = require("./evaluation");
 
 router.use(upload);
 
@@ -67,6 +68,7 @@ router.use(answers);
 
 router.use(Class);
 router.use(Session);
-router.use(mentee);
+router.use(Mentee);
+router.use(Evaluation);
 
 module.exports = router;

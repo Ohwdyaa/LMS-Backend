@@ -21,7 +21,7 @@ async function createMentee(req, res) {
     const hash = await hashPassword(password);
     const userData = {
       ...data,
-      password: hash,
+      password: hash
     };
     await Mentees.createMentee(userData, userId);
     return res.status(201).json({
@@ -34,6 +34,23 @@ async function createMentee(req, res) {
     });
   }
 }
+async function getAllMentees(req, res) {
+  try {
+    const mentees = await Mentees.getAllMentee();
+    if (!mentees || mentees.length === 0) {
+      return res.status(404).json({ message: "Users not found" });
+    }
+    return res.status(200).json({
+      data: mentees,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
   createMentee,
+  getAllMentees
 };

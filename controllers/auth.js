@@ -1,8 +1,9 @@
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
+const Mentees = require("../models/mentees");
 const permissionTeams = require("./permission_teams");
 const permissionMentors = require("./permission_mentors");
-const { generateJWT, verifyJWT } = require("../utils/jwt");
+const { generateJWT, verifyJWT, generateJWTMentee } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
@@ -55,7 +56,35 @@ async function login(req, res) {
     });
   }
 }
+async function loginMentee(req, res) {
+  const { email, password } = req.body;
+  try {
+    const verifiedUser = await verifyUser(email, password);
+    if (verifiedUser === undefined) {
+      return res.status(400).json({ message: "Incorrect email or password!" });
+    }
 
+    const token = await generateJWTMentee(
+      verifiedUser.data,
+      verifiedUser.type
+    );
+    await verifyJWT(token);
+    return res.status(200).json({
+      message: "Login successful",
+      data: {
+        token,
+        user: {
+          name: verifiedUser.data.fullname,
+        },
+      },
+    });
+  } catch (error) {
+    return res.status(err.errorLogin.statusCode).json({
+      message: error.message,
+      error: err.errorLogin.message,
+    });
+  }
+}
 async function verifyUser(email, password) {
   try {
     let type = "team";
@@ -64,8 +93,12 @@ async function verifyUser(email, password) {
       type = "mentor";
       isUserExists = await Mentors.getMentorByEmail(email);
       if (isUserExists === undefined) {
-        throw new Error("no user with registered email");
-      }
+        type = "mentee";
+        isUserExists = await Mentees.getMenteeByEmail(email);
+        if (isUserExists === undefined) {
+            throw new Error("no user with registered email");
+        }
+      } 
     }
     const isValid = await verifyPassword(password, isUserExists.password);
     return isValid ? { data: isUserExists, type } : undefined;
@@ -115,6 +148,7 @@ async function logout(req, res) {
 
 module.exports = {
   login,
+  loginMentee,
   forgetPassword,
   logout,
 };

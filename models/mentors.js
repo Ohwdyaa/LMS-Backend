@@ -171,6 +171,7 @@ const Mentors = {
         `SELECT 
             m.id,  
             m.email, 
+            m.fullname,  
             m.is_deleted as isActive,
             rm.name as role, 
             sc.name as subCategory

@@ -9,7 +9,7 @@ const apiV1 = require("./api/v1");
 router.use(authV1);
 
 router.use(
-    passport.authenticate("internal-rule", { session: false }), 
+    passport.authenticate("user", { session: false }), 
     apiV1);
 
 module.exports = router;

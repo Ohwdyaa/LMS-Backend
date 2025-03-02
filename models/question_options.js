@@ -29,8 +29,7 @@ const questionOptions = {
   getOptionById: async (id) => {
     try {
       const [result] = await dbLms(
-        `
-        SELECT is_correct FROM question_options WHERE id = ?`,
+        `SELECT id, is_correct FROM question_options WHERE id = ?`,
         [id]
       );
       return result;
@@ -57,6 +56,28 @@ const questionOptions = {
       );
       return result;
     } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getOptionByQuestionAndCorrect: async (questionId, isCorrect) => {
+    try {
+      const [result] = await dbLms(
+        `SELECT 
+          qo.id, 
+          qo.description,
+          qo.is_correct,
+          q.question as questions
+        FROM question_options qo
+        LEFT JOIN questions q ON qo.questions_id = q.id
+        WHERE qo.questions_id = ? AND qo.is_correct = ?`,
+        [questionId, isCorrect]
+      );
+      return result;
+    } catch (error) {  
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);
         throw new Error(message);

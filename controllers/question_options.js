@@ -1,5 +1,5 @@
 const questionOptions = require("../models/question_options");
-const Question = require("../models/questions");
+const Questions = require("../models/questions");
 const { err } = require("../utils/custom_error");
 
 async function createQuestionOption(req, res) {
@@ -7,7 +7,7 @@ async function createQuestionOption(req, res) {
     const { id: userId } = req.user;
     const { questionsId } = req.body;
 
-    const isQuestionExist = await Question.getQuestionById(questionsId);
+    const isQuestionExist = await Questions.getQuestionById(questionsId);
     if (!isQuestionExist || isQuestionExist.length === 0) {
       return res.status(400).json({
         message: "Invalid question selected",
@@ -28,14 +28,16 @@ async function createQuestionOption(req, res) {
 async function getOptionByQuestion(req, res) {
   const { id: questionId } = req.params;
   try {
-    const isQuestionExist = await questionOptions.getOptionByQuestion(
-      questionId
-    );
+    const isQuestionExist = await Questions.getQuestionById(questionId);
     if (isQuestionExist.length === 0) {
       return res.status(404).json({ message: "Question not found" });
     }
+    const isOptions = await questionOptions.getOptionByQuestion(questionId);
+    if (isOptions.length === 0) {
+      return res.status(404).json({ message: "Options not found" });
+    }
     return res.status(200).json({
-      data: isQuestionExist,
+      data: isOptions,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({

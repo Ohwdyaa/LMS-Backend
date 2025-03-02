@@ -37,7 +37,7 @@ const Mentees = {
           data.subCategoriesId,
           data.mentorsId,
           data.classId,
-          data.sessionId,
+          data.sessionId
         ]
       );
       return result.insertId;
@@ -51,7 +51,7 @@ const Mentees = {
   },
   updateMentee: async (data, userId, id) => {
     try {
-      const result = await dbLms(
+      const result = await dbMentee(
         `UPDATE 
           mentees 
         SET 
@@ -97,7 +97,7 @@ const Mentees = {
   },
   updatePassword: async (id, hashedPassword) => {
     try {
-      const result = await dbLms(
+      const result = await dbMentee(
         `UPDATE 
           mentees 
         SET 
@@ -118,7 +118,7 @@ const Mentees = {
   },
   deleteMentee: async (id) => {
     try {
-      const result = await dbLms(
+      const result = await dbMentee(
         `DELETE FROM mentees where id = ?`,
         [id]
       );
@@ -133,14 +133,20 @@ const Mentees = {
   },
   getAllMentee: async () => {
     try {
-      const result = await dbLms(
+      const result = await dbMentee(
         `SELECT 
-          id, 
-          fullname, 
-          username, 
-          email
-        FROM mentees 
-        WHERE is_deleted = 0`
+          m.id,
+          m.fullname,
+          m.email, 
+          m.password,
+          mt.fullname as mentor,
+          c.name as class,
+          s.name as session
+        FROM mentees m
+        LEFT JOIN learning_management_system.mentors mt ON m.mentors_id = mt.id
+        LEFT JOIN class c ON m.class_id = c.id
+        LEFT JOIN session s ON m.session_id = s.id
+        WHERE  m.is_deleted = 0`
       );
       return result;
     } catch (error) {
@@ -153,15 +159,14 @@ const Mentees = {
   },
   getMenteeById: async (id) => {
     try {
-      const [result] = await dbLms(
+      const [result] = await dbMentee(
         `SELECT 
           id,
           fullname, 
-          username, 
           email, 
           password
         FROM mentees 
-        WHERE is_deleted = 0`,
+        WHERE id = ? AND is_deleted = 0`,
         [id]
       );
       return result;

@@ -30,7 +30,7 @@ async function getAllSession(req, res) {
     if (data === undefined || data.length === 0) {
       return res.status(404).json({ message: "Session not found" });
     }
-    return res.status(200).json(data);
+    return res.status(200).json({ data: data });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
       message: error.message,
@@ -40,5 +40,5 @@ async function getAllSession(req, res) {
 }
 module.exports = {
   createSession,
-  getAllSession
+  getAllSession,
 };

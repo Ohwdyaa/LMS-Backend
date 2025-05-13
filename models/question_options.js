@@ -47,8 +47,8 @@ const questionOptions = {
         `SELECT 
           qo.id, 
           qo.description,
-          qo.is_correct,
-          qo.questions_id
+          qo.is_correct as isCorrect,
+          qo.questions_id as questionsId
         FROM question_options qo
         LEFT JOIN questions q ON qo.questions_id = q.id
         WHERE qo.questions_id = ? AND qo.is_deleted = 0`,

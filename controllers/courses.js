@@ -1,15 +1,27 @@
 const { err } = require("../utils/custom_error");
 const Courses = require("../models/courses");
 const generateEnrollmentId = require("../utils/nanoid");
-const Enrollments = require("../models/enrollments");
 const modulesCourse = require("../models/module_courses");
+const Mentees = require("../models/mentees");
 
 async function createCourse(req, res) {
   const data = req.body;
   const { id: userId } = req.user;
+  const { thumbnail } = req.files; 
   try {
+    let thumbnailUrl = "";
+    if (thumbnail) {
+      thumbnailUrl = `${req.protocol}://${req.get("host")}/uploads/thumbnail/${thumbnail[0].filename}`;
+    }
+
+    const courseData = {
+      ...data,
+      thumbnail: thumbnailUrl,
+    };
+
     const enrollmentKey = generateEnrollmentId();
-    await Courses.createCourse(data, userId, enrollmentKey);
+    await Courses.createCourse(courseData, userId, enrollmentKey);
+
     return res.status(201).json({
       message: "Course created successfully",
     });
@@ -20,6 +32,7 @@ async function createCourse(req, res) {
     });
   }
 }
+
 
 async function updateCourse(req, res) {
   const { id: courseId } = req.params;
@@ -88,9 +101,9 @@ async function getAllCourses(req, res) {
       courseObj.title = course.title;
       courseObj.description = course.description;
       courseObj.thumbnail = course.thumbnail;
-      courseObj.enrollment_key = course.enrollment_key;
-      courseObj.start_date = course.start_date;
-      courseObj.end_date = course.end_date;
+      courseObj.enrollmentKey = course.enrollment_key;
+      courseObj.startDate = course.start_date;
+      courseObj.endDate = course.end_date;
       courseList.push(courseObj);
     }
     return res.status(200).json({
@@ -121,16 +134,16 @@ async function getCourseById(req, res) {
     });
   }
 }
-
-async function getCourseParticipants(req, res) {
-  const { id: courseId } = req.params;
+async function getCourseByMentee(req, res) {
+  const { id: userId } = req.user;
   try {
-    const isUserExist = await Enrollments.getCourseParticipants(courseId);
+    const isUserExist = await Mentees.getMenteeById(userId);
     if (isUserExist === undefined || isUserExist.length === 0) {
       return res.status(404).json({ message: "Users not found" });
     }
+    const result= await Courses.getCourseByMentee(isUserExist.id);
     return res.status(200).json({
-      data: isUserExist,
+      data: result,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
@@ -139,12 +152,11 @@ async function getCourseParticipants(req, res) {
     });
   }
 }
-
 module.exports = {
   createCourse,
   updateCourse,
   deleteCourse,
   getAllCourses,
   getCourseById,
-  getCourseParticipants,
+  getCourseByMentee
 };

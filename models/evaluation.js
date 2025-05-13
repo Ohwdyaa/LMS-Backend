@@ -1,6 +1,7 @@
 const { dbMentee } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
+const { getByQuizAndUser } = require("./answers");
 
 const Evaluation = {
   createEvaluation: async (data, userId) => {
@@ -17,7 +18,7 @@ const Evaluation = {
         VALUES (?, ?, ?, ?, ?, ?)`,
         [id, data.score, data.totalQuestions, userId, data.quizId, userId]
       );
-      return data.score;
+      return id;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);
@@ -39,7 +40,7 @@ const Evaluation = {
         WHERE id = ?`,
         [data.score, data.totalQuestions, userId, id]
       );
-      return data.score;
+      return id;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);
@@ -48,16 +49,33 @@ const Evaluation = {
       throw error;
     }
   },
-  getByQuizAndUser: async (quizId, userId) => {
+  getScoreById: async (id) => {
     try {
       const [result] = await dbMentee(
         `SELECT 
-          id, 
           score, 
           total_question
         FROM evaluation 
+        WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getByQuizAndUser: async (quizId, menteeId) => {
+    try {
+      const [result] = await dbMentee(
+        `SELECT 
+          id
+        FROM evaluation 
         WHERE quiz_id = ? AND mentee_id = ?`,
-        [quizId, userId]
+        [quizId, menteeId]
       );
       return result;
     } catch (error) {

@@ -124,7 +124,7 @@ const Mentors = {
           data.cv,
           data.profileImage,
           data.npwp,
-          data.contract,
+          data.contract, 
           data.contractStart,
           data.contractEnd,
           data.isActive,
@@ -172,7 +172,6 @@ const Mentors = {
             m.id,  
             m.email, 
             m.fullname,  
-            m.is_deleted as isActive,
             rm.name as role, 
             sc.name as subCategory
         FROM mentors m
@@ -209,7 +208,7 @@ const Mentors = {
           m.contract,
           m.contract_start as contractStart,
           m.contract_end as contractEnd,
-          m.is_deleted as isActive,
+          m.is_active as isActive,
           m.role_id as roleId,
           m.genders_id as genderId,
           m.sub_category_id as subCategoryId,

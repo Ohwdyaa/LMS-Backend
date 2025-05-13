@@ -84,7 +84,26 @@ async function getSubModuleByModuleCourse(req, res) {
       moduleId
     );
     if (isSubModuleExist.length === 0) {
-      return res.status(404).json({ message: "Module not found" });
+      return res.status(404).json({ message: "Sub Module not found" });
+    }
+    return res.status(200).json({
+      data: isSubModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
+async function getSubModuleByContentType(req, res) {
+  const { id: typeId } = req.params;
+  try {
+    const isSubModuleExist = await subModules.getSubModulesByContentType(
+      typeId
+    );
+    if (isSubModuleExist.length === 0) {
+      return res.status(404).json({ message: "Sub Module not found" });
     }
     return res.status(200).json({
       data: isSubModuleExist,
@@ -103,4 +122,5 @@ module.exports = {
   deleteSubModule,
   getSubModuleById,
   getSubModuleByModuleCourse,
+  getSubModuleByContentType
 };

@@ -92,7 +92,6 @@ async function updateMentor(req, res) {
 
     const mentorData = {
       ...data,
-      npwp: npwpUrl,
       contract: contractUrl,
       cv: cvUrl,
       profileImage: profileImageUrl,

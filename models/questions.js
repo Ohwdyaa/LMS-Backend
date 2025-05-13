@@ -66,7 +66,7 @@ const Questions = {
         `SELECT 
           q.id, 
           q.question,
-          l.name as level_name
+          l.name as levelName
         FROM questions q
         LEFT JOIN levels l ON q.levels_id = l.id
         WHERE quizzes_id = ?`,

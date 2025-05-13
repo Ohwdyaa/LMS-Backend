@@ -45,7 +45,7 @@ const modulePermission = {
           m.id, 
           m.uuid, 
           m.name, 
-          m.category_module_id, 
+          m.category_module_id as categoryModuleId, 
           cm.name as categoryModule
         FROM module m
         LEFT JOIN category_module cm ON m.category_module_id = cm.id 

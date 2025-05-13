@@ -45,7 +45,7 @@ async function login(req, res) {
       data: {
         token,
         user: {
-          username: verifiedUser.data.username,
+          name: verifiedUser.data.fullname,
         },
       },
     });
@@ -75,6 +75,7 @@ async function loginMentee(req, res) {
         token,
         user: {
           name: verifiedUser.data.fullname,
+          type: verifiedUser.type
         },
       },
     });

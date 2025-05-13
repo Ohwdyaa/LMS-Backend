@@ -151,10 +151,6 @@ const updateMentorSchema = z.object({
         /^[a-zA-Z\s]+$/,
         "Fullname should only contain letters and spaces"
       ),
-    username: z
-      .string()
-      .min(1, "Username cannot be empty")
-      .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters and numbers"),
     email: z
       .string()
       .email("Invalid email format")
@@ -185,6 +181,11 @@ const updateMentorSchema = z.object({
       .string()
       .regex(/^\d+$/, "BPJS Tenagakerja number must be numeric")
       .min(1, "BPJS Tenagakerja number cannot be empty"),
+    npwp: z
+      .string()
+      .regex(/^\d+$/, "NPWP must be a numeric string")
+      .min(15, "NPWP must be at least 15 digits")
+      .max(20, "NPWP must be at most 20 digits"),
     contractStart: z.string().date(),
     contractEnd: z.string().date().optional(),
     roleId: z
@@ -304,22 +305,14 @@ const subCourseCategorySchema = z.object({
 });
 
 const courseSchema = z.object({
+  files: z.object({
+    thumbnail: z.array(fileSchema).optional(),
+  }),
   body: z.object({
-    title: z
-      .string()
-      .regex(
-        /^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/,
-        "Title contains invalid characters"
-      )
-      .min(1, "Course name cannot be empty")
-      .max(200, "Course name cannot exceed 200 characters"),
-    description: z
-      .string()
-      .max(
-        65535,
-        "Description cannot exceed the TEXT limit of 65535 characters"
-      )
-      .optional(),
+    title: z.string().min(1, "Title cannot be empty"),
+    description: z.string().min(1, "Description cannot be empty"),
+    startDate: z.string().date(),
+    endDate: z.string().date().optional(),
   }),
 });
 
@@ -361,7 +354,7 @@ const moduleCourseSchema = z.object({
       .string()
       .max(
         65535,
-        "Description cannot exceed the TEXT limit of 65535 characters"
+        "Description cannot exceed the TEXT limit of 65535 characters" 
       )
       .optional(),
   }),
@@ -472,7 +465,6 @@ function validateMiddleware(schema) {
           body: req.body,
         });
       }
-
       next();
     } catch (error) {
       if (error instanceof ZodError) {

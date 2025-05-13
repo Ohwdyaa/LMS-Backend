@@ -1,12 +1,13 @@
 const Evaluation = require("../models/evaluation");
 const Answers = require("../models/answers");
 const questionOptions = require("../models/question_options");
+const Quizzes = require("../models/quizzes")
 const { err } = require("../utils/custom_error");
+const Mentees = require("../models/mentees");
 
 async function evaluateQuiz(req, res) {
   const { id: userId } = req.user;
   const { quizId } = req.body;
-
   try {
     const answers = await Answers.getByQuizAndUser(quizId, userId);
     const totalQuestions = answers.length;
@@ -26,7 +27,6 @@ async function evaluateQuiz(req, res) {
 
     const score = (correctAnswers / totalQuestions) * 100;
     const evaluateIsExist = await Evaluation.getByQuizAndUser(quizId, userId);
-    console.log(evaluateIsExist)
     if (evaluateIsExist === undefined) {
       const result = await Evaluation.createEvaluation(
         { score, totalQuestions, quizId },
@@ -37,16 +37,19 @@ async function evaluateQuiz(req, res) {
         message: "Evaluation completed",
         result,
       });
+    }if(evaluateIsExist !== undefined){
+      const result = await Evaluation.updateEvaluation(
+        { score, totalQuestions },
+        userId,
+        evaluateIsExist.id  
+      );
+      
+      return res.status(200).json({
+        message: "Evaluation complated [updated]",
+        result,  
+      });
     }
-    const result = await Evaluation.updateEvaluation(
-      { score, totalQuestions },
-      userId,
-      evaluateIsExist.id  
-    );
-    return res.status(200).json({
-      message: "Evaluation updated",
-      result,
-    });
+    
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
       message: error.message,
@@ -55,6 +58,24 @@ async function evaluateQuiz(req, res) {
   }
 }
 
+async function getScoreById(req, res) {
+  const { id: evaluationId } = req.params;
+  try {
+    const isScoreExist = await Evaluation.getScoreById(evaluationId);
+    if (isScoreExist === undefined) { 
+      return res.status(404).json({ message: "Score not found" });
+    }
+    return res.status(200).json({
+      data: isScoreExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
   evaluateQuiz,
+  getScoreById
 };

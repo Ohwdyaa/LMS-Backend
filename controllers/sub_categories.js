@@ -8,7 +8,7 @@ async function createSubCategory(req, res) {
   try {
     await subCategory.createSubCategory(data, userId);
     return res.status(201).json({
-      message: "Categories created successfully",
+      message: "Sub Categories created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({

@@ -101,7 +101,7 @@ const subModules = {
         `SELECT 
           sm.id, 
           sm.title,
-          sm.content_type_id,
+          sm.content_type_id as contentTypeId,
           ct.name as contentType
         FROM sub_modules sm
         LEFT JOIN content_types ct ON sm.content_type_id = ct.id
@@ -123,6 +123,21 @@ const subModules = {
       const [result] = await dbLms(
         `SELECT COUNT(*) as count FROM sub_modules where module_course_id = ?`,
         [moduleId]
+      );
+      return result.count;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getSubModulesByContentType: async (id) => {
+    try {
+      const [result] = await dbLms(
+        `SELECT id, title, module_course_id FROM sub_modules where content_type_id = ?`,
+        [id]
       );
       return result.count;
     } catch (error) {

@@ -89,6 +89,7 @@ const Courses = {
           title, 
           description, 
           thumbnail, 
+          enrollment_key,
           start_date, 
           end_date
         FROM courses 
@@ -103,7 +104,7 @@ const Courses = {
       throw error;
     }
   },
-  getCourseById: async (id) => {
+   getCourseById: async (id) => {
     try {
       const [result] = await dbLms(
         `SELECT 
@@ -117,6 +118,27 @@ const Courses = {
         FROM courses
         WHERE id = ? AND is_deleted = 0`,
         [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getCourseByMentee: async (id) => {
+    try {
+      const result = await dbLms(
+        `SELECT 
+          c.id, 
+          c.title
+        FROM learning_management_system.courses c
+        INNER JOIN mentee_management.mentee_enrollments e ON c.id = e.course_id
+        INNER JOIN mentee_management.mentees m ON e.mentee_id = m.id
+        WHERE m.id = ? AND c.is_deleted = 0`,
+        [id]  
       );
       return result;
     } catch (error) {
@@ -147,6 +169,7 @@ const Courses = {
       throw error;
     }
   },
+
 };
 
 module.exports = Courses;

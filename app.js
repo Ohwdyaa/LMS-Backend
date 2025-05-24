@@ -7,7 +7,9 @@ const { passport } = require("./middlewares/passport");
 const routes = require("./routes");
 const compression = require("compression");
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [];
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
@@ -20,10 +22,10 @@ const corsOptions = {
 };
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	windowMs: 15 * 60 * 1000, 
+	limit: 100,
+	standardHeaders: 'draft-7', 
+	legacyHeaders: false, 
 });
 
 app.use(compression());
@@ -31,12 +33,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(
   helmet({
-    crossOriginResourcePolicy: { policy: "same-site" },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
 // app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/uploads", express.static("uploads"));
+
 app.use(passport.initialize());
 app.use(routes);
 

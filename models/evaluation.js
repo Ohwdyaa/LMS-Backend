@@ -8,14 +8,15 @@ const Evaluation = {
     try {
       const id = uuid();
       await dbMentee(
-        `INSERT INTO evaluation (
-            id, 
-            score,
-            total_question,
-            created_by,
-            quiz_id,
-            mentee_id)
-        VALUES (?, ?, ?, ?, ?, ?)`,
+        `
+          INSERT INTO evaluation (
+              id, 
+              score,
+              total_question,
+              created_by,
+              quiz_id,
+              mentee_id)
+          VALUES (?, ?, ?, ?, ?, ?)`,
         [id, data.score, data.totalQuestions, userId, data.quizId, userId]
       );
       return id;
@@ -30,14 +31,15 @@ const Evaluation = {
   updateEvaluation: async (data, userId, id) => {
     try {
       await dbMentee(
-        `UPDATE 
-          evaluation 
-        SET 
-          score = ?,
-          total_question = ?,
-          updated_at = NOW(),
-          updated_by = ? 
-        WHERE id = ?`,
+        `
+          UPDATE 
+            evaluation 
+          SET 
+            score = ?,
+            total_question = ?,
+            updated_at = NOW(),
+            updated_by = ? 
+          WHERE id = ?`,
         [data.score, data.totalQuestions, userId, id]
       );
       return id;
@@ -52,11 +54,12 @@ const Evaluation = {
   getScoreById: async (id) => {
     try {
       const [result] = await dbMentee(
-        `SELECT 
-          score, 
-          total_question
-        FROM evaluation 
-        WHERE id = ?`,
+        `
+          SELECT 
+            score, 
+            total_question
+          FROM evaluation 
+          WHERE id = ?`,
         [id]
       );
       return result;
@@ -71,10 +74,13 @@ const Evaluation = {
   getByQuizAndUser: async (quizId, menteeId) => {
     try {
       const [result] = await dbMentee(
-        `SELECT 
-          id
-        FROM evaluation 
-        WHERE quiz_id = ? AND mentee_id = ?`,
+        `
+          SELECT 
+            id,
+            score
+          FROM evaluation 
+          WHERE quiz_id = ? 
+          AND mentee_id = ?`,
         [quizId, menteeId]
       );
       return result;

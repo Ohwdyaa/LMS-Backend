@@ -41,6 +41,25 @@ async function createQuestion(req, res) {
     });
   }
 }
+async function getAllQuestionByQuiz(req, res) {
+  try {
+    const { id: quizId } = req.params;
+    const isQuestionExist = await Question.getQuestionByQuiz(quizId);
+    if (isQuestionExist.length === 0) {
+      return res.status(400).json({
+        message: "qestion not found",
+      });
+    }
+    return res.status(201).json({
+      data: isQuestionExist,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || err.errorCreate.statusCode).json({
+      message: error.message,
+      error: err.errorCreate.message,
+    });
+  }
+}
 async function getQuestionByQuiz(req, res) {
   try {
     const { id: quizId } = req.params;
@@ -55,7 +74,9 @@ async function getQuestionByQuiz(req, res) {
 
     const questions = await Question.getQuestionByQuiz(quizId);
     if (questions.length === 0) {
-      return res.status(404).json({ message: "No questions found for this quiz" });
+      return res
+        .status(404)
+        .json({ message: "No questions found for this quiz" });
     }
     const levelQuestions = {
       easy: [],
@@ -138,4 +159,5 @@ function sattoloShuffle(array) {
 module.exports = {
   createQuestion,
   getQuestionByQuiz,
+  getAllQuestionByQuiz,
 };

@@ -43,17 +43,21 @@ async function enrollMenteeByKey(req, res) {
 
   try {
     const isCourseExist = await Courses.getCourseById(courseId);
+    console.log(isCourseExist);
     if (isCourseExist === undefined) {
       return res.status(400).json({
         message: "Invalid course ID",
       });
     }
-    if (isCourseExist.enrollmentKey !== enrollmentKey) {
+    if (isCourseExist.enrollment_key !== enrollmentKey) {
       return res.status(400).json({
         message: "Enrollment key does not match",
       });
     }
-    const isEnrollExist = await Enrollments.existingMentee(isCourseExist.id, menteeId);
+    const isEnrollExist = await Enrollments.existingMentee(
+      isCourseExist.id,
+      menteeId
+    );
     if (isEnrollExist !== undefined) {
       return res.status(400).json({
         message: "Mentees are already enrolled in this course",
@@ -163,5 +167,5 @@ module.exports = {
   enrollMentee,
   unEnroll,
   getMentorByCourse,
-  getMenteeByCourse
+  getMenteeByCourse,
 };

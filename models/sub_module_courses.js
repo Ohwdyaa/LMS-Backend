@@ -135,11 +135,11 @@ const subModules = {
   },
   getSubModulesByContentType: async (id) => {
     try {
-      const [result] = await dbLms(
+      const result = await dbLms(
         `SELECT id, title, module_course_id FROM sub_modules where content_type_id = ?`,
         [id]
       );
-      return result.count;
+      return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
         const message = mapMySQLError(error);

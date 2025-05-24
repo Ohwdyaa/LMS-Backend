@@ -102,7 +102,7 @@ async function getSubModuleByContentType(req, res) {
     const isSubModuleExist = await subModules.getSubModulesByContentType(
       typeId
     );
-    if (isSubModuleExist.length === 0) {
+    if (isSubModuleExist === 0) {
       return res.status(404).json({ message: "Sub Module not found" });
     }
     return res.status(200).json({
@@ -122,5 +122,5 @@ module.exports = {
   deleteSubModule,
   getSubModuleById,
   getSubModuleByModuleCourse,
-  getSubModuleByContentType
+  getSubModuleByContentType,
 };

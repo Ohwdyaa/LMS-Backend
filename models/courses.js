@@ -68,10 +68,7 @@ const Courses = {
   },
   deleteCourse: async (id) => {
     try {
-      const result = await dbLms(
-        `DELETE FROM courses WHERE id=?`,
-        id
-      );
+      const result = await dbLms(`DELETE FROM courses WHERE id=?`, id);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -104,7 +101,7 @@ const Courses = {
       throw error;
     }
   },
-   getCourseById: async (id) => {
+  getCourseById: async (id) => {
     try {
       const [result] = await dbLms(
         `SELECT 
@@ -112,6 +109,7 @@ const Courses = {
           title, 
           description, 
           thumbnail, 
+          enrollment_key,
           start_date, 
           end_date,
           created_at
@@ -138,7 +136,7 @@ const Courses = {
         INNER JOIN mentee_management.mentee_enrollments e ON c.id = e.course_id
         INNER JOIN mentee_management.mentees m ON e.mentee_id = m.id
         WHERE m.id = ? AND c.is_deleted = 0`,
-        [id]  
+        [id]
       );
       return result;
     } catch (error) {
@@ -169,7 +167,6 @@ const Courses = {
       throw error;
     }
   },
-
 };
 
 module.exports = Courses;

@@ -31,6 +31,7 @@ const questions = require("./questions");
 const questionOptions = require("./question_options");
 const answers = require("./answers");
 const project = require("./projects");
+const submission = require("./project_submissions");
 
 const Class = require("./class");
 const Session = require("./session");
@@ -68,6 +69,7 @@ router.use(questions);
 router.use(questionOptions);
 router.use(answers);
 router.use(project);
+router.use(submission);
 
 router.use(Class);
 router.use(Session);

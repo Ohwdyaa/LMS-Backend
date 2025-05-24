@@ -30,6 +30,7 @@ const levels = require("./levels");
 const questions = require("./questions");
 const questionOptions = require("./question_options");
 const answers = require("./answers");
+const project = require("./projects");
 
 const Class = require("./class");
 const Session = require("./session");
@@ -66,6 +67,7 @@ router.use(levels);
 router.use(questions);
 router.use(questionOptions);
 router.use(answers);
+router.use(project);
 
 router.use(Class);
 router.use(Session);

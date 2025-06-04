@@ -115,7 +115,29 @@ async function getSubModuleByContentType(req, res) {
     });
   }
 }
+async function getQuizSubModulesByCourse(req, res) {
+  const { courseId, typeId } = req.params;
+  try {
+    const quizSubModules = await subModules.getQuizSubModulesByCourseId(
+      courseId,
+      typeId
+    );
 
+    if (quizSubModules.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No quiz submodules found for this course" });
+    }
+
+    return res.status(200).json({
+      data: quizSubModules,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Failed to get quiz submodules",
+    });
+  }
+}
 module.exports = {
   createSubModule,
   updateSubModule,
@@ -123,4 +145,5 @@ module.exports = {
   getSubModuleById,
   getSubModuleByModuleCourse,
   getSubModuleByContentType,
+  getQuizSubModulesByCourse,
 };

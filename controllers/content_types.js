@@ -15,7 +15,6 @@ async function createContentTypes(req, res) {
     });
   }
 }
-
 async function getAllContentTypes(req, res) {
   try {
     const data = await contentTypes.getAllContentTypes();

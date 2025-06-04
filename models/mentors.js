@@ -124,7 +124,7 @@ const Mentors = {
           data.cv,
           data.profileImage,
           data.npwp,
-          data.contract, 
+          data.contract,
           data.contractStart,
           data.contractEnd,
           data.isActive,
@@ -343,38 +343,39 @@ const Mentors = {
       throw error;
     }
   },
-  // getMentorByUsernameAndEmail: async (username, email, id) => {
-  //   try {
-  //     if (id) {
-  //       const [result] = await dbLms(
-  //         `SELECT 
-  //           id,
-  //           email,
-  //           username
-  //         FROM mentors
-  //         WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
-  //         [username + "%", email + "%", id]
-  //       );
-  //       return result;
-  //     }
-  //     const [result] = await dbLms(
-  //       `SELECT 
-  //         id,
-  //         email,
-  //         username
-  //       FROM mentors
-  //       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
-  //       [username + "%", email + "%"]
-  //     );
-  //     return result;
-  //   } catch (error) {
-  //     if (error.code && error.sqlMessage) {
-  //       const message = mapMySQLError(error);
-  //       throw new Error(message);
-  //     }
-  //     throw error;
-  //   }
-  // },
 };
 
 module.exports = Mentors;
+
+// getMentorByUsernameAndEmail: async (username, email, id) => {
+//   try {
+//     if (id) {
+//       const [result] = await dbLms(
+//         `SELECT
+//           id,
+//           email,
+//           username
+//         FROM mentors
+//         WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
+//         [username + "%", email + "%", id]
+//       );
+//       return result;
+//     }
+//     const [result] = await dbLms(
+//       `SELECT
+//         id,
+//         email,
+//         username
+//       FROM mentors
+//       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+//       [username + "%", email + "%"]
+//     );
+//     return result;
+//   } catch (error) {
+//     if (error.code && error.sqlMessage) {
+//       const message = mapMySQLError(error);
+//       throw new Error(message);
+//     }
+//     throw error;
+//   }
+// },

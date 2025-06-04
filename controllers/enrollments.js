@@ -3,16 +3,18 @@ const Courses = require("../models/courses");
 const { err } = require("../utils/custom_error");
 
 async function enrollMentor(req, res) {
-  const { id: courseId } = req.params;
-  const { mentorId } = req.body;
-  const { id: userId } = req.user;
   try {
+    const { id: userId } = req.user;
+    const { id: courseId } = req.params;
+    const { mentorId } = req.body;
+
     const isCourseExist = await Courses.getCourseById(courseId);
     if (isCourseExist === undefined) {
       return res.status(400).json({
         message: "Invalid course ID",
       });
     }
+
     const isEnrollExist = await Enrollments.existingMentor(
       isCourseExist.id,
       mentorId
@@ -37,13 +39,12 @@ async function enrollMentor(req, res) {
   }
 }
 async function enrollMenteeByKey(req, res) {
-  const { id: courseId } = req.params;
-  const { menteeId, enrollmentKey } = req.body;
-  const { id: userId } = req.user;
-
   try {
+    const { id: userId } = req.user;
+    const { id: courseId } = req.params;
+    const { menteeId, enrollmentKey } = req.body;
+
     const isCourseExist = await Courses.getCourseById(courseId);
-    console.log(isCourseExist);
     if (isCourseExist === undefined) {
       return res.status(400).json({
         message: "Invalid course ID",
@@ -54,6 +55,7 @@ async function enrollMenteeByKey(req, res) {
         message: "Enrollment key does not match",
       });
     }
+
     const isEnrollExist = await Enrollments.existingMentee(
       isCourseExist.id,
       menteeId
@@ -63,6 +65,7 @@ async function enrollMenteeByKey(req, res) {
         message: "Mentees are already enrolled in this course",
       });
     }
+    
     await Enrollments.enrollMentee(courseId, menteeId, userId);
     return res.status(201).json({
       message: "Mentee successfully registered",

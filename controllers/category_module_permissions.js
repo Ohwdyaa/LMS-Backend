@@ -2,8 +2,9 @@ const moduleCategory = require("../models/category_module_permissions");
 const { err } = require("../utils/custom_error");
 
 async function createCategoryModule(req, res) {
-  const data = req.body;
   try {
+    const data = req.body;
+    
     await moduleCategory.createCategoryModule(data);
     return res.status(201).json({
       message: "Module Category created successfully",

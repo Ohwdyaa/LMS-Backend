@@ -4,17 +4,17 @@ const { hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function createMentor(req, res) {
-  const { email } = req.body;
-  const { contract, cv, profileImage } = req.files;
-  const { id: userId } = req.user;
   try {
-    const isUserExist = await Mentors.getMentorByEmail(email);
+    const { id: userId } = req.user;
+    const { email } = req.body;
+    const { contract, cv, profileImage } = req.files;
 
+    const isUserExist = await Mentors.getMentorByEmail(email);
     if (isUserExist) {
       let message;
       if (isUserExist.email.toLowerCase() === email.toLowerCase()) {
         message = "Email already registered";
-      } 
+      }
       return res.status(400).json({
         message,
       });
@@ -22,24 +22,24 @@ async function createMentor(req, res) {
 
     // create file url
     const contractUrl = contract
-      ? `${req.protocol}://${req.get("host")}/uploads/files/${
+      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           contract[0].filename
         }`
       : "";
     const cvUrl = cv
-      ? `${req.protocol}://${req.get("host")}/uploads/files/${
+      ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           cv[0].filename
         }`
       : "";
     const profileImageUrl = profileImage
-      ? `${req.protocol}://${req.get("host")}/uploads/files/${
+      ? `${req.protocol}://${req.get("host")}/uploads/profile-mentors/${
           profileImage[0].filename
         }`
       : "";
 
     const password = "112233";
     const hash = await hashPassword(password);
-    const mentorData = {
+    const data = {
       ...req.body,
       password: hash,
       contract: contractUrl,
@@ -47,7 +47,7 @@ async function createMentor(req, res) {
       profileImage: profileImageUrl,
     };
 
-    await Mentors.createMentor(mentorData, userId);
+    await Mentors.createMentor(data, userId);
 
     return res.status(201).json({
       message: "Mentor created successfully",
@@ -64,41 +64,37 @@ async function updateMentor(req, res) {
   try {
     const { id: userId } = req.user;
     const { id: mentorId } = req.params;
-    const data = req.body;
     const { contract, cv, profileImage } = req.files;
-    
-    const isMentorExists = await Mentors.getMentorDetails(mentorId);
 
-    // create file url
+    const isUserExist = await Mentors.getMentorDetails(mentorId);
+    if (isUserExist === undefined) {
+      return res.status(404).json({ message: "Mentor not found" });
+    }
+
     const contractUrl = contract
       ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           contract[0].filename
         }`
-      : isMentorExists.contract;
+      : isUserExist.contract;
     const cvUrl = cv
       ? `${req.protocol}://${req.get("host")}/uploads/docs-mentors/${
           cv[0].filename
         }`
-      : isMentorExists.cv;
+      : isUserExist.cv;
     const profileImageUrl = profileImage
       ? `${req.protocol}://${req.get("host")}/uploads/profile-mentors/${
           profileImage[0].filename
         }`
-      : isMentorExists.profileImage;
+      : isUserExist.profileImage;
 
-    if (isMentorExists === undefined) {
-      return res.status(404).json({ message: "Mentor not found" });
-    }
-
-    const mentorData = {
-      ...data,
+    const data = {
+      ...req.body,
       contract: contractUrl,
       cv: cvUrl,
       profileImage: profileImageUrl,
     };
 
-    await Mentors.updateMentor(isMentorExists.id, mentorData, userId);
-
+    await Mentors.updateMentor(isUserExist.id, data, userId);
     return res.status(200).json({
       message: "Mentor updated successfully",
     });
@@ -111,17 +107,17 @@ async function updateMentor(req, res) {
 }
 
 async function deleteMentor(req, res) {
-  const { id: mentorId } = req.params;
-  const { id: userId } = req.user;
   try {
-    const isMentorExists = await Mentors.getMentorById(mentorId);
-    if (isMentorExists === undefined) {
+    const { id: userId } = req.user;
+    const { id: mentorId } = req.params;
+
+    const isUserExist = await Mentors.getMentorById(mentorId);
+    if (isUserExist === undefined) {
       return res.status(404).json({ message: "Mentor not found" });
     }
 
-    await Mentors.softDeleteMentor(isMentorExists.id, userId);
-    await Enrollments.unEnrollByMentor(isMentorExists.id, userId);
-
+    await Mentors.softDeleteMentor(isUserExist.id, userId);
+    await Enrollments.unEnrollByMentor(isUserExist.id, userId);
     return res.status(200).json({
       message: "Mentor deleted successfully",
     });
@@ -136,7 +132,7 @@ async function deleteMentor(req, res) {
 async function getAllMentors(req, res) {
   try {
     const mentors = await Mentors.getAllMentors();
-    if (!mentors || mentors.length === 0) {
+    if (mentors.length === 0) {
       return res.status(404).json({ message: "Mentors not found" });
     }
     return res.status(200).json({
@@ -151,8 +147,9 @@ async function getAllMentors(req, res) {
 }
 
 async function getMentorBySubCategory(req, res) {
-  const { id: subCategoryId } = req.params;
   try {
+    const { id: subCategoryId } = req.params;
+
     const isSubCategoryExist = await Mentors.getMentorsBySubCategory(
       subCategoryId
     );
@@ -170,14 +167,15 @@ async function getMentorBySubCategory(req, res) {
   }
 }
 
-async function getMentorById(req, res) {
-  const { id: mentorId } = req.params;
+async function getMentorDetail(req, res) {
   try {
-    const isMentorExist = await Mentors.getMentorDetails(mentorId);
-    if (isMentorExist === undefined) {
+    const { id: mentorId } = req.params;
+
+    const isUserExist = await Mentors.getMentorDetails(mentorId);
+    if (isUserExist === undefined) {
       return res.status(404).json({ message: "Mentor not found" });
     }
-    const { password, ...mentorDetails } = isMentorExist;
+    const { password, ...mentorDetails } = isUserExist;
     return res.status(200).json({
       data: mentorDetails,
     });
@@ -195,5 +193,5 @@ module.exports = {
   deleteMentor,
   getAllMentors,
   getMentorBySubCategory,
-  getMentorById,
+  getMentorDetail,
 };

@@ -5,13 +5,12 @@ const Quizzes = require("../models/quizzes");
 const { err } = require("../utils/custom_error");
 const Mentees = require("../models/mentees");
 
-async function evaluateQuiz(req, res) {
+async function evaluation(req, res) {
   const { id: userId } = req.user;
   const { quizId } = req.body;
   try {
     const answers = await Answers.getByQuizAndUser(quizId, userId);
     const totalQuestions = answers.length;
-    console.log("totalQuestions", totalQuestions);
     let correctAnswers = 0;
     for (let i = 0; i < answers.length; i++) {
       const { questionId, question_option } = answers[i];
@@ -92,7 +91,7 @@ async function getScoreByQuizAndUser(req, res) {
   }
 }
 module.exports = {
-  evaluateQuiz,
+  evaluation,
   getScoreById,
   getScoreByQuizAndUser,
 };

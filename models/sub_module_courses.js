@@ -148,6 +148,34 @@ const subModules = {
       throw error;
     }
   },
+  getQuizSubModulesByCourseId: async (courseId, typeId) => {
+  try {
+    const result = await dbLms(
+      `SELECT 
+        sm.id, 
+        sm.title, 
+        sm.module_course_id,
+        mc.title AS moduleCourse,
+        ct.name AS contentType,
+        q.due_date AS deadline
+      FROM sub_modules sm
+      LEFT JOIN module_courses mc ON sm.module_course_id = mc.id
+      LEFT JOIN content_types ct ON sm.content_type_id = ct.id
+      LEFT JOIN quizzes q ON q.sub_modules_id = sm.id
+      WHERE mc.course_id = ? AND sm.content_type_id = ?
+      ORDER BY sm.created_at ASC`,
+      [courseId, typeId]
+    );
+    console.log(result)
+    return result;
+  } catch (error) {
+    if (error.code && error.sqlMessage) {
+      const message = mapMySQLError(error);
+      throw new Error(message);
+    }
+    throw error;
+  }
+},
 };
 
 module.exports = subModules;

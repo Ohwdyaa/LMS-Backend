@@ -2,9 +2,10 @@ const { err } = require("../utils/custom_error");
 const Category = require("../models/categories");
 
 async function createCategory(req, res) {
-  const data = req.body;
-  const { id: userId } = req.user;
   try {
+    const { id: userId } = req.user;
+    const data = req.body;
+
     await Category.createCategory(data, userId);
     return res.status(201).json({
       message: "Category course created successfully",
@@ -16,12 +17,12 @@ async function createCategory(req, res) {
     });
   }
 }
-
 async function updateCategory(req, res) {
-  const { id: categoryId } = req.params;
-  const { id: userId } = req.user;
-  const data = req.body;
   try {
+    const { id: userId } = req.user;
+    const { id: categoryId } = req.params;
+    const data = req.body;
+
     const isCategoryExist = await Category.getCategoryById(categoryId);
     if (isCategoryExist === undefined) {
       return res.status(404).json({ message: "Course not found" });
@@ -38,10 +39,10 @@ async function updateCategory(req, res) {
     });
   }
 }
-
 async function deleteCategory(req, res) {
-  const { id: categoryId } = req.params;
   try {
+    const { id: categoryId } = req.params;
+    
     const isCategoryExist = await Category.getCategoryById(categoryId);
     if (isCategoryExist === undefined) {
       return res.status(404).json({ message: "Category not found" });
@@ -58,7 +59,6 @@ async function deleteCategory(req, res) {
     });
   }
 }
-
 async function getAllCategories(req, res) {
   try {
     const categories = await Category.getAllCategories();

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const upload = require("./upload");
+// const upload = require("./upload");
 
 const teams = require("./teams");
 const roleTeams = require("./role_teams");
@@ -39,7 +39,7 @@ const Mentee = require("./mentees");
 const Evaluation = require("./evaluation");
 const Statistics = require("./statistics");
 
-router.use(upload);
+// router.use(upload);
 
 router.use(teams);
 router.use(roleTeams);

@@ -5,25 +5,34 @@ const { err } = require("../utils/custom_error");
 async function createMentee(req, res) {
   try {
     const { id: userId } = req.user;
-    const data = req.body;
-    const password = "112233";
+    const { profileImage } = req.files;
+    const { email } = req.body;
 
-    const isUserExist = await Mentees.getMenteeByEmail(data.email);
+    const isUserExist = await Mentees.getMenteeByEmail(email);
     if (isUserExist) {
       let message;
-      if (isUserExist.email.toLowerCase() === data.email.toLowerCase()) {
+      if (isUserExist.email.toLowerCase() === email.toLowerCase()) {
         message = "Email already registered";
       }
       return res.status(400).json({
         message,
       });
     }
+
+    const profileImageUrl = profileImage
+      ? `${req.protocol}://${req.get("host")}/uploads/profile-mentees/${
+          profileImage[0].filename
+        }`
+      : "";
+
+    const password = "112233";
     const hash = await hashPassword(password);
-    const userData = {
-      ...data,
-      password: hash
+    const menteeData = {
+      ...req.body,
+      password: hash,
+      profileImage: profileImageUrl,
     };
-    await Mentees.createMentee(userData, userId);
+    await Mentees.createMentee(menteeData, userId);
     return res.status(201).json({
       message: "User created successfully",
     });
@@ -34,11 +43,31 @@ async function createMentee(req, res) {
     });
   }
 }
+async function updateMentee(req, res) {
+  try {
+    const { id: userId } = req.user;
+    const { id: menteeId } = req.params;
+
+    const isUserExists = await Mentees.getMenteeById(menteeId);
+    if (isUserExists === undefined) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await Mentees.updateMentee(isUserExists.id, req.body, userId);
+    return res.status(200).json({
+      message: "User updated successfully",
+    });
+  } catch (error) {
+    return res.status(err.errorUpdate.statusCode).json({
+      message: error.message,
+      error: err.errorUpdate.message,
+    });
+  }
+}
 async function getAllMentees(req, res) {
   try {
     const mentees = await Mentees.getAllMentee();
-    if (!mentees || mentees.length === 0) {
-      return res.status(404).json({ message: "Users not found" });
+    if (mentees.length === 0) {
+      return res.status(404).json({ message: "Mentees not found" });
     }
     return res.status(200).json({
       data: mentees,
@@ -50,7 +79,27 @@ async function getAllMentees(req, res) {
     });
   }
 }
+async function getMenteeDetail(req, res) {
+  const { id: menteeId } = req.params;
+  try {
+    const isUserExists = await Mentees.getMenteeDetail(menteeId);
+    if (isUserExists === undefined) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { password, ...menteeDetails } = isUserExists;
+    return res.status(200).json({
+      data: menteeDetails,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
 module.exports = {
   createMentee,
-  getAllMentees
+  updateMentee,
+  getAllMentees,
+  getMenteeDetail,
 };

@@ -9,8 +9,9 @@ const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function login(req, res) {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
+
     const verifiedUser = await verifyUser(email, password);
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
@@ -57,17 +58,15 @@ async function login(req, res) {
   }
 }
 async function loginMentee(req, res) {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
+
     const verifiedUser = await verifyUser(email, password);
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
 
-    const token = await generateJWTMentee(
-      verifiedUser.data,
-      verifiedUser.type
-    );
+    const token = await generateJWTMentee(verifiedUser.data, verifiedUser.type);
     await verifyJWT(token);
     return res.status(200).json({
       message: "Login successful",
@@ -75,7 +74,7 @@ async function loginMentee(req, res) {
         token,
         user: {
           name: verifiedUser.data.fullname,
-          type: verifiedUser.type
+          type: verifiedUser.type,
         },
       },
     });
@@ -97,9 +96,9 @@ async function verifyUser(email, password) {
         type = "mentee";
         isUserExists = await Mentees.getMenteeByEmail(email);
         if (isUserExists === undefined) {
-            throw new Error("no user with registered email");
+          throw new Error("no user with registered email");
         }
-      } 
+      }
     }
     const isValid = await verifyPassword(password, isUserExists.password);
     return isValid ? { data: isUserExists, type } : undefined;
@@ -109,9 +108,10 @@ async function verifyUser(email, password) {
 }
 
 async function forgetPassword(req, res) {
-  const { id: userId } = req.params;
-  const { newPassword } = req.body;
   try {
+    const { id: userId } = req.params;
+    const { newPassword } = req.body;
+
     const hashedPassword = await hashPassword(newPassword);
     await Users.forgetUserPassword(hashedPassword, userId);
 
@@ -127,11 +127,12 @@ async function forgetPassword(req, res) {
 }
 
 async function logout(req, res) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (token === undefined) {
-    return res.status(400).json({ message: "No token provided" });
-  }
   try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token === undefined) {
+      return res.status(400).json({ message: "No token provided" });
+    }
+    
     const result = await Users.logoutUser(token);
     if (result) {
       return res.status(200).json({

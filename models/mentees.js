@@ -16,13 +16,14 @@ const Mentees = {
             university,
             major,
             DPP,
+            photo_profile,
             created_by,
             categories_id,
             sub_categories_id,
             mentors_id,
             class_id,
             session_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           id,
           data.fullname,
@@ -32,12 +33,13 @@ const Mentees = {
           data.university,
           data.major,
           data.DPP,
+          data.profileImage,
           userId,
           data.categoriesId,
           data.subCategoriesId,
           data.mentorsId,
           data.classId,
-          data.sessionId
+          data.sessionId,
         ]
       );
       return result.insertId;
@@ -49,7 +51,7 @@ const Mentees = {
       throw error;
     }
   },
-  updateMentee: async (data, userId, id) => {
+  updateMentee: async (id, data, userId) => {
     try {
       const result = await dbMentee(
         `UPDATE 
@@ -62,7 +64,7 @@ const Mentees = {
           major = ?,
           DPP = ?,
           updated_at = NOW(),
-          updated_BY = ?,
+          updated_by = ?,
           categories_id = ?,
           sub_categories_id = ?,
           mentors_id = ?,
@@ -71,7 +73,6 @@ const Mentees = {
         WHERE id = ?`,
         [
           data.fullname,
-          data.username,
           data.email,
           data.phoneNumber,
           data.university,
@@ -80,7 +81,7 @@ const Mentees = {
           userId,
           data.categoriesId,
           data.subCategoriesId,
-          data.mentorId,
+          data.mentorsId,
           data.classId,
           data.sessionId,
           id,
@@ -118,10 +119,7 @@ const Mentees = {
   },
   deleteMentee: async (id) => {
     try {
-      const result = await dbMentee(
-        `DELETE FROM mentees where id = ?`,
-        [id]
-      );
+      const result = await dbMentee(`DELETE FROM mentees where id = ?`, [id]);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -205,37 +203,78 @@ const Mentees = {
       throw error;
     }
   },
-  // getMenteeByEmail: async (username, email, id) => {
-  //   try {
-  //     if (id) {
-  //       const [result] = await dbLms(
-  //         `SELECT 
-  //           id,
-  //           email,
-  //           username
-  //         FROM mentees
-  //         WHERE email = ? AND is_deleted = 0`,
-  //         [email, id]
-  //       );
-  //       return result;
-  //     }
-  //     const [result] = await dbLms(
-  //       `SELECT 
-  //         id,
-  //         email,
-  //         username
-  //       FROM mentee
-  //       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
-  //       [username + "%", email + "%"]
-  //     );
-  //     return result;
-  //   } catch (error) {
-  //     if (error.code && error.sqlMessage) {
-  //       const message = mapMySQLError(error);
-  //       throw new Error(message);
-  //     }
-  //     throw error;
-  //   }
-  // },
+  getMenteeDetail: async (id) => {
+    try {
+      const [result] = await dbMentee(
+        `SELECT 
+          m.id,
+          m.fullname,
+          m.email, 
+          m.password,
+          m.phone_number,
+          m.university,
+          m.major,
+          m.DPP,
+          m.categories_id,
+          lc.name as categories,
+          m.sub_categories_id,
+          sc.name as subCategories,
+          m.mentors_id,
+          mt.fullname as mentor,
+          m.class_id,
+          c.name as class,
+          m.session_id,
+          s.name as session 
+        FROM mentees m
+        LEFT JOIN learning_management_system.categories lc ON m.categories_id = lc.id
+        LEFT JOIN learning_management_system.sub_categories sc ON m.sub_categories_id = sc.id
+        LEFT JOIN learning_management_system.mentors mt ON m.mentors_id = mt.id
+        LEFT JOIN class c ON m.class_id = c.id
+        LEFT JOIN session s ON m.session_id = s.id
+        WHERE m.id = ? AND m.is_deleted = 0`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
 };
 module.exports = Mentees;
+
+// getMenteeByEmail: async (username, email, id) => {
+//   try {
+//     if (id) {
+//       const [result] = await dbLms(
+//         `SELECT
+//           id,
+//           email,
+//           username
+//         FROM mentees
+//         WHERE email = ? AND is_deleted = 0`,
+//         [email, id]
+//       );
+//       return result;
+//     }
+//     const [result] = await dbLms(
+//       `SELECT
+//         id,
+//         email,
+//         username
+//       FROM mentee
+//       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+//       [username + "%", email + "%"]
+//     );
+//     return result;
+//   } catch (error) {
+//     if (error.code && error.sqlMessage) {
+//       const message = mapMySQLError(error);
+//       throw new Error(message);
+//     }
+//     throw error;
+//   }
+// },

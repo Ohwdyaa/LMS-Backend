@@ -7,7 +7,7 @@ async function createSubModule(req, res) {
   try {
     await subModules.createSubModule(data, userId);
     return res.status(201).json({
-      message: "Module course created successfully",
+      message: "Sub Modules created successfully",
     });
   } catch (error) {
     return res.status(error.statusCode || err.errorCreate.statusCode).json({
@@ -44,7 +44,7 @@ async function deleteSubModule(req, res) {
   try {
     const isSubModuleExist = await subModules.getSubModulesById(subModuleId);
     if (isSubModuleExist === undefined) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "sub module not found" });
     }
 
     await subModules.deleteSubModule(isSubModuleExist.id);
@@ -84,7 +84,7 @@ async function getSubModuleByModuleCourse(req, res) {
       moduleId
     );
     if (isSubModuleExist.length === 0) {
-      return res.status(404).json({ message: "Sub module not found" });
+      return res.status(404).json({ message: "Sub Module not found" });
     }
     return res.status(200).json({
       data: isSubModuleExist,
@@ -96,11 +96,54 @@ async function getSubModuleByModuleCourse(req, res) {
     });
   }
 }
+async function getSubModuleByContentType(req, res) {
+  const { id: typeId } = req.params;
+  try {
+    const isSubModuleExist = await subModules.getSubModulesByContentType(
+      typeId
+    );
+    if (isSubModuleExist === 0) {
+      return res.status(404).json({ message: "Sub Module not found" });
+    }
+    return res.status(200).json({
+      data: isSubModuleExist,
+    });
+  } catch (error) {
+    return res.status(err.errorSelect.statusCode).json({
+      message: error.message,
+      error: err.errorSelect.message,
+    });
+  }
+}
+async function getQuizSubModulesByCourse(req, res) {
+  const { courseId, typeId } = req.params;
+  try {
+    const quizSubModules = await subModules.getQuizSubModulesByCourseId(
+      courseId,
+      typeId
+    );
 
+    if (quizSubModules.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No quiz submodules found for this course" });
+    }
+
+    return res.status(200).json({
+      data: quizSubModules,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Failed to get quiz submodules",
+    });
+  }
+}
 module.exports = {
   createSubModule,
   updateSubModule,
   deleteSubModule,
   getSubModuleById,
   getSubModuleByModuleCourse,
+  getSubModuleByContentType,
+  getQuizSubModulesByCourse,
 };

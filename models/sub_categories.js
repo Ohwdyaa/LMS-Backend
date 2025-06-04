@@ -87,7 +87,7 @@ const subCategory = {
           SELECT 
             sc.id, 
             sc.name, 
-            sc.categories_id, 
+            sc.categories_id as categoriesId, 
             c.name as categories 
           FROM sub_categories sc
           LEFT JOIN categories c ON sc.categories_id = c.id

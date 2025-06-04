@@ -1,8 +1,11 @@
 const express = require("express");
-const { createMentee } = require("../../../controllers/mentees");
-const router = express.Router;
-const {} = require("../../../middlewares/validate");
+const { createMentee, getAllMentees, updateMentee, getMenteeDetail } = require("../../../controllers/mentees");
+const { uploadMenteeDocs } = require("../../../middlewares/upload_mentee_images");
+const router = express.Router();
 
-router.post("/mentee", createMentee);
+router.post("/mentee", uploadMenteeDocs, createMentee);
+router.put("/mentee/:id", updateMentee);
+router.get("/mentee", getAllMentees);
+router.get("/mentee/:id", getMenteeDetail);
 
 module.exports = router;

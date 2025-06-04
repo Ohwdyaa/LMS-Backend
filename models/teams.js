@@ -112,10 +112,7 @@ const Teams = {
   },
   deleteTeam: async (id) => {
     try {
-      const result = await dbLms(
-        `DELETE FROM teams where id = ?`,
-        [id]
-      );
+      const result = await dbLms(`DELETE FROM teams where id = ?`, [id]);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -125,27 +122,7 @@ const Teams = {
       throw error;
     }
   },
-  // softDeleteTeam: async (id, userId) => {
-  //   try {
-  //     const result = await dbLms(
-  //       `UPDATE 
-  //         teams 
-  //       SET 
-  //         is_deleted = 1, 
-  //         updated_at = NOW(),
-  //         updated_by = ? 
-  //       WHERE id = ?`,
-  //       [userId, id]
-  //     );
-  //     return result;
-  //   } catch (error) {
-  //     if (error.code && error.sqlMessage) {
-  //       const message = mapMySQLError(error);
-  //       throw new Error(message);
-  //     }
-  //     throw error;
-  //   }
-  // },
+
   getAllTeams: async () => {
     try {
       const result = await dbLms(
@@ -174,8 +151,8 @@ const Teams = {
         `SELECT 
           t.id, 
           t.email, 
+          t.fullname,
           t.password,
-          t.fullname, 
           t.role_id, 
           rt.name as role
           FROM teams t
@@ -246,38 +223,7 @@ const Teams = {
       throw error;
     }
   },
-  // getTeamByUsernameAndEmail: async (username, email, id) => {
-  //   try {
-  //     if (id) {
-  //       const [result] = await dbLms(
-  //         `SELECT 
-  //           id,
-  //           email,
-  //           username
-  //         FROM teams
-  //         WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
-  //         [username + "%", email + "%", id]
-  //       );
-  //       return result;
-  //     }
-  //     const [result] = await dbLms(
-  //       `SELECT 
-  //         id,
-  //         email,
-  //         username
-  //       FROM teams
-  //       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
-  //       [username + "%", email + "%"]
-  //     );
-  //     return result;
-  //   } catch (error) {
-  //     if (error.code && error.sqlMessage) {
-  //       const message = mapMySQLError(error);
-  //       throw new Error(message);
-  //     }
-  //     throw error;
-  //   }
-  // },
+
   logoutTeam: async (token) => {
     try {
       const result = await dbLms(
@@ -311,3 +257,58 @@ const Teams = {
 };
 
 module.exports = Teams;
+
+// softDeleteTeam: async (id, userId) => {
+//   try {
+//     const result = await dbLms(
+//       `UPDATE
+//         teams
+//       SET
+//         is_deleted = 1,
+//         updated_at = NOW(),
+//         updated_by = ?
+//       WHERE id = ?`,
+//       [userId, id]
+//     );
+//     return result;
+//   } catch (error) {
+//     if (error.code && error.sqlMessage) {
+//       const message = mapMySQLError(error);
+//       throw new Error(message);
+//     }
+//     throw error;
+//   }
+// },
+
+// getTeamByUsernameAndEmail: async (username, email, id) => {
+//   try {
+//     if (id) {
+//       const [result] = await dbLms(
+//         `SELECT
+//           id,
+//           email,
+//           username
+//         FROM teams
+//         WHERE (username LIKE ? OR email LIKE ?) AND NOT id = ? AND is_deleted = 0`,
+//         [username + "%", email + "%", id]
+//       );
+//       return result;
+//     }
+//     const [result] = await dbLms(
+//       `SELECT
+//         id,
+//         email,
+//         username
+//       FROM teams
+//       WHERE (username LIKE ? OR email LIKE ?) AND is_deleted = 0`,
+//       [username + "%", email + "%"]
+//     );
+//     return result;
+//   } catch (error) {
+//     if (error.code && error.sqlMessage) {
+//       const message = mapMySQLError(error);
+//       throw new Error(message);
+//     }
+//     throw error;
+//   }
+// },

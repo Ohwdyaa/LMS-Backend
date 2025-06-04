@@ -17,10 +17,27 @@ async function generateJWT(user, type, permission) {
   const payload = {
     u: user.id,
     fullname: user.fullname,
-    username: user.username,
     roleId: user.role_id,
     type,
     permission: permission,
+  };
+
+  var signOptions = {
+    issuer: config.issuer,
+    subject: user.email,
+    audience: config.audience,
+    expiresIn: "1day",
+    algorithm: "RS256",
+  };
+
+  const token = await jwt.sign(payload, privateKey, signOptions);
+  return token;
+}
+async function generateJWTMentee(user, type) {
+  const payload = {
+    u: user.id,
+    fullname: user.fullname,
+    type,
   };
 
   var signOptions = {
@@ -67,6 +84,7 @@ async function generateTokenPassword(user) {
 
 module.exports = {
   generateJWT,
+  generateJWTMentee,
   verifyJWT,
   generateTokenPassword,
 };

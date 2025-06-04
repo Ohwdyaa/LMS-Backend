@@ -1,15 +1,17 @@
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
+const Mentees = require("../models/mentees");
 const permissionTeams = require("./permission_teams");
 const permissionMentors = require("./permission_mentors");
-const { generateJWT, verifyJWT } = require("../utils/jwt");
+const { generateJWT, verifyJWT, generateJWTMentee } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
 const { verifyPassword, hashPassword } = require("../utils/bcrypt");
 const { err } = require("../utils/custom_error");
 
 async function login(req, res) {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
+
     const verifiedUser = await verifyUser(email, password);
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
@@ -44,7 +46,7 @@ async function login(req, res) {
       data: {
         token,
         user: {
-          username: verifiedUser.data.username,
+          name: verifiedUser.data.fullname,
         },
       },
     });
@@ -55,7 +57,34 @@ async function login(req, res) {
     });
   }
 }
+async function loginMentee(req, res) {
+  try {
+    const { email, password } = req.body;
 
+    const verifiedUser = await verifyUser(email, password);
+    if (verifiedUser === undefined) {
+      return res.status(400).json({ message: "Incorrect email or password!" });
+    }
+
+    const token = await generateJWTMentee(verifiedUser.data, verifiedUser.type);
+    await verifyJWT(token);
+    return res.status(200).json({
+      message: "Login successful",
+      data: {
+        token,
+        user: {
+          name: verifiedUser.data.fullname,
+          type: verifiedUser.type,
+        },
+      },
+    });
+  } catch (error) {
+    return res.status(err.errorLogin.statusCode).json({
+      message: error.message,
+      error: err.errorLogin.message,
+    });
+  }
+}
 async function verifyUser(email, password) {
   try {
     let type = "team";
@@ -64,7 +93,11 @@ async function verifyUser(email, password) {
       type = "mentor";
       isUserExists = await Mentors.getMentorByEmail(email);
       if (isUserExists === undefined) {
-        throw new Error("no user with registered email");
+        type = "mentee";
+        isUserExists = await Mentees.getMenteeByEmail(email);
+        if (isUserExists === undefined) {
+          throw new Error("no user with registered email");
+        }
       }
     }
     const isValid = await verifyPassword(password, isUserExists.password);
@@ -75,9 +108,10 @@ async function verifyUser(email, password) {
 }
 
 async function forgetPassword(req, res) {
-  const { id: userId } = req.params;
-  const { newPassword } = req.body;
   try {
+    const { id: userId } = req.params;
+    const { newPassword } = req.body;
+
     const hashedPassword = await hashPassword(newPassword);
     await Users.forgetUserPassword(hashedPassword, userId);
 
@@ -93,11 +127,12 @@ async function forgetPassword(req, res) {
 }
 
 async function logout(req, res) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (token === undefined) {
-    return res.status(400).json({ message: "No token provided" });
-  }
   try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token === undefined) {
+      return res.status(400).json({ message: "No token provided" });
+    }
+    
     const result = await Users.logoutUser(token);
     if (result) {
       return res.status(200).json({
@@ -115,6 +150,7 @@ async function logout(req, res) {
 
 module.exports = {
   login,
+  loginMentee,
   forgetPassword,
   logout,
 };

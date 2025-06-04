@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const upload = require("./upload");
+// const upload = require("./upload");
 
 const teams = require("./teams");
 const roleTeams = require("./role_teams");
@@ -25,13 +25,21 @@ const moduleCourses = require("./module_courses");
 const subModuleCourses = require("./sub_module_courses");
 const contentTypes = require("./content_types");
 const materials = require("./materials");
-const quizzes = require("./quiz");
+const quizzes = require("./quizzes");
 const levels = require("./levels");
 const questions = require("./questions");
-const questionOptions = require("./question_opsions");
+const questionOptions = require("./question_options");
 const answers = require("./answers");
+const project = require("./projects");
+const submission = require("./project_submissions");
 
-router.use(upload);
+const Class = require("./class");
+const Session = require("./session");
+const Mentee = require("./mentees");
+const Evaluation = require("./evaluation");
+const Statistics = require("./statistics");
+
+// router.use(upload);
 
 router.use(teams);
 router.use(roleTeams);
@@ -60,5 +68,13 @@ router.use(levels);
 router.use(questions);
 router.use(questionOptions);
 router.use(answers);
+router.use(project);
+router.use(submission);
+
+router.use(Class);
+router.use(Session);
+router.use(Mentee);
+router.use(Evaluation);
+router.use(Statistics);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const express = require("express");
-const { updateQuiz, getQuizBySubModule } = require("../../../controllers/quiz");
+const { updateQuiz, getQuizBySubModule } = require("../../../controllers/quizzes");
 const router = express.Router();
 
 router.put("/quiz/:id", updateQuiz);

@@ -22,7 +22,7 @@ async function updateRoleTeam(req, res) {
   const { id: userId } = req.user;
   const { id: roleId } = req.params;
   const data = req.body;
-  
+
   try {
     const isRoleExists = await roleTeams.getRoleTeamById(roleId);
     if (isRoleExists === undefined) {

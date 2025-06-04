@@ -1,8 +1,13 @@
 const express = require("express");
-const { createQuestion, getQuestionByQuiz } = require("../../../controllers/questions");
+const {
+  getQuestionByQuiz,
+  createQuestion,
+  getAllQuestionByQuiz,
+} = require("../../../controllers/questions");
 const router = express.Router();
 
 router.post("/question", createQuestion);
-router.get("/quizzes/:id/questions", getQuestionByQuiz);
+router.get("/quiz/:id/question", getQuestionByQuiz);
+router.get("/quiz/:id/all-question", getAllQuestionByQuiz);
 
 module.exports = router;

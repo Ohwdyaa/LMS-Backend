@@ -4,7 +4,7 @@ const {
   updateTeam,
   deleteTeam,
   getAllTeams,
-  getTeamById,
+  getTeamDetail,
 } = require("../../../controllers/teams");
 const router = express.Router();
 const {
@@ -17,6 +17,6 @@ router.post("/team", validateMiddleware(userSchema), createTeam);
 router.put("/team/:id", validateMiddleware(updateUserSchema), updateTeam);
 router.delete("/team/:id", deleteTeam);
 router.get("/team", getAllTeams);
-router.get("/team/:id", getTeamById);
+router.get("/team/:id", getTeamDetail);
 
 module.exports = router;

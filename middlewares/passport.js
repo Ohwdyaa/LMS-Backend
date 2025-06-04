@@ -7,21 +7,25 @@ const publicKey = fs.readFileSync(
 );
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
+const Mentees = require("../models/mentees");
 
 passport.use(
-  "internal-rule",
+  "user",
   new Strategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: publicKey,
-    },
+    }, 
     async function (jwtPayload, cb) {
       try {
         let isUserExists = await Teams.getTeamById(jwtPayload.u);
         if (isUserExists === undefined) {
           isUserExists = await Mentors.getMentorById(jwtPayload.u);
           if (isUserExists === undefined) {
-            return cb(null, false, { message: "User not found" });
+            isUserExists = await Mentees.getMenteeById(jwtPayload.u);
+            if (isUserExists === undefined) {
+              return cb(null, false, { message: "User not found" });
+            }
           }
         }
         return cb(null, isUserExists);

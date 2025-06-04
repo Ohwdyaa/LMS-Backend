@@ -5,7 +5,7 @@ const {
   deleteMentor,
   getAllMentors,
   getMentorBySubCategory,
-  getMentorById,
+  getMentorDetail,
 } = require("../../../controllers/mentors");
 const router = express.Router();
 const {
@@ -34,7 +34,7 @@ router.put(
   deleteMentor
 );
 router.get("/mentor", getAllMentors);
-router.get("/mentor/:id", getMentorById);
 router.get("/sub-category/:id/mentor", getMentorBySubCategory);
+router.get("/mentor/:id", getMentorDetail);
 
 module.exports = router;

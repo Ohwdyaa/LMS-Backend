@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Questions = {
-  createQuestion: async (question, quizzesId, levelsId, userId) => {
+  createQuestion: async (question, quizId, levelsId, userId) => {
     try {
       const id = uuid();
       await dbLms(
@@ -15,7 +15,7 @@ const Questions = {
             quizzes_id,
             levels_id)
         VALUES (?, ?, ?, ?, ?)`,
-        [id, question, userId, quizzesId, levelsId]
+        [id, question, userId, quizId, levelsId]
       );
       return id;
     } catch (error) {
@@ -25,6 +25,25 @@ const Questions = {
       }
       throw error;
     }
+  },
+  updateQuestion: async (id, data, userId) => {
+    try {
+      const result = await dbLms(
+        `UPDATE 
+          questions 
+        SET 
+          question = ?, 
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [
+          data.question,
+          userId,
+          id,
+        ]
+      );
+      return result;
+    } catch (error) {}
   },
   getQuestionById: async (id) => {
     try {
@@ -47,8 +66,7 @@ const Questions = {
         `SELECT 
           q.id, 
           q.question,
-          q.levels_id as level,
-          l.name as level_name
+          l.name as levelName
         FROM questions q
         LEFT JOIN levels l ON q.levels_id = l.id
         WHERE quizzes_id = ?`,

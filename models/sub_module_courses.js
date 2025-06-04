@@ -42,11 +42,11 @@ const subModules = {
           title = ?, 
           description = ?, 
           updated_at = NOW(),
-          updated_by = ?
+          updated_by = ?,
+          content_type_id = ?
         WHERE id = ?`,
-        [data.title, data.description, userId, id]
+        [data.title, data.description, userId, data.contentTypeId, id]
       );
-      console.log(result);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -58,7 +58,7 @@ const subModules = {
   },
   deleteSubModule: async (id) => {
     try {
-      const result = await dbLms(`DELETE FROM sub_modules WHERE id=?`, id);
+      const result = await dbLms(`DELETE FROM sub_modules WHERE id = ?`, [id]);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -99,9 +99,12 @@ const subModules = {
     try {
       const result = await dbLms(
         `SELECT 
-          id, 
-          title
-        FROM sub_modules
+          sm.id, 
+          sm.title,
+          sm.content_type_id as contentTypeId,
+          ct.name as contentType
+        FROM sub_modules sm
+        LEFT JOIN content_types ct ON sm.content_type_id = ct.id
         WHERE module_course_id = ?
         ORDER BY created_at ASC`,
         [id]
@@ -130,6 +133,49 @@ const subModules = {
       throw error;
     }
   },
+  getSubModulesByContentType: async (id) => {
+    try {
+      const result = await dbLms(
+        `SELECT id, title, module_course_id FROM sub_modules where content_type_id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getQuizSubModulesByCourseId: async (courseId, typeId) => {
+  try {
+    const result = await dbLms(
+      `SELECT 
+        sm.id, 
+        sm.title, 
+        sm.module_course_id,
+        mc.title AS moduleCourse,
+        ct.name AS contentType,
+        q.due_date AS deadline
+      FROM sub_modules sm
+      LEFT JOIN module_courses mc ON sm.module_course_id = mc.id
+      LEFT JOIN content_types ct ON sm.content_type_id = ct.id
+      LEFT JOIN quizzes q ON q.sub_modules_id = sm.id
+      WHERE mc.course_id = ? AND sm.content_type_id = ?
+      ORDER BY sm.created_at ASC`,
+      [courseId, typeId]
+    );
+    console.log(result)
+    return result;
+  } catch (error) {
+    if (error.code && error.sqlMessage) {
+      const message = mapMySQLError(error);
+      throw new Error(message);
+    }
+    throw error;
+  }
+},
 };
 
 module.exports = subModules;

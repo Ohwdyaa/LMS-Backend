@@ -5,6 +5,8 @@ const {
   deleteSubModule,
   getSubModuleById,
   getSubModuleByModuleCourse,
+  getSubModuleByContentType,
+  getQuizSubModulesByCourse,
 } = require("../../../controllers/sub_module_courses");
 const {
   validateMiddleware,
@@ -26,5 +28,10 @@ router.put(
 router.delete("/sub-module/:id", deleteSubModule);
 router.get("/sub-module/:id", getSubModuleById);
 router.get("/module/:id/sub-module", getSubModuleByModuleCourse);
+router.get("/content-type/:id/sub-module", getSubModuleByContentType);
+router.get(
+  "/course/:courseId/type/:typeId/submodules",
+  getQuizSubModulesByCourse
+);
 
 module.exports = router;

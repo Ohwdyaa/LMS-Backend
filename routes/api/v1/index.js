@@ -37,6 +37,7 @@ const Class = require("./class");
 const Session = require("./session");
 const Mentee = require("./mentees");
 const Evaluation = require("./evaluation");
+const TypesEvaluation = require("./evaluation_types");
 const Statistics = require("./statistics");
 
 // router.use(upload);
@@ -75,6 +76,7 @@ router.use(Class);
 router.use(Session);
 router.use(Mentee);
 router.use(Evaluation);
+router.use(TypesEvaluation);
 router.use(Statistics);
 
 module.exports = router;

@@ -39,7 +39,7 @@ const ProjectSubmissions = {
       const [submission] = await dbLms(
         `SELECT id, file_url, submitted_at 
          FROM project_submissions 
-         WHERE mentees_id = ? AND projects_id = ?`,
+         WHERE mentees_id = ? AND project_id = ?`,
         [userId, projectId]
       );
       return submission;

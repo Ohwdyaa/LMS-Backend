@@ -133,8 +133,8 @@ const Courses = {
           c.id, 
           c.title
         FROM learning_management_system.courses c
-        INNER JOIN mentee_management.mentee_enrollments e ON c.id = e.course_id
-        INNER JOIN mentee_management.mentees m ON e.mentee_id = m.id
+        INNER JOIN mentee_management.mentee_enrollments e ON c.id = e.courses_id
+        INNER JOIN mentee_management.mentees m ON e.mentees_id = m.id
         WHERE m.id = ? AND c.is_deleted = 0`,
         [id]
       );

@@ -33,7 +33,7 @@ const Answers = {
       throw error;
     }
   },
-  getByQuizAndUser: async (quizId, userId) => {
+  getByQuizAndUser: async (quizzesId, userId) => {
     try {
       const result = await dbLms(
         `SELECT 
@@ -46,7 +46,7 @@ const Answers = {
         LEFT JOIN questions q ON a.questions_id = q.id
         LEFT JOIN question_options qo ON a.question_options_id = qo.id
         WHERE a.quizzes_id = ? AND a.mentees_id = ?`,
-        [quizId, userId]
+        [quizzesId, userId]
       );
       return result;
     } catch (error) {

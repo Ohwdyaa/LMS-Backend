@@ -2,11 +2,11 @@ const express = require("express");
 const {
   getScoreById,
   getScoreByQuizAndUser,
-  evaluation,
+  createEvaluation,
 } = require("../../../controllers/evaluation");
 const router = express.Router();
 
-router.post("/evaluation", evaluation);
+router.post("/evaluation", createEvaluation);
 router.get("/evaluation/:id", getScoreById);
 router.get("/score/:quizId/:menteeId", getScoreByQuizAndUser);
 

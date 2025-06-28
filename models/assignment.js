@@ -2,19 +2,19 @@ const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
-const Projects = {
-  createProject: async (data, userId, subModulesId) => {
+const Assignment = {
+  createAssignment: async (data, userId, subModulesId) => {
     try {
       const id = uuid();
       await dbLms(
-        `INSERT INTO projects (
-          id,
-          title,
-          description,
-          deadline,
-          created_by,
-          sub_modules_id
-        ) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO assignments (
+            id,
+            title,
+            description,
+            deadline,
+            created_by,
+            sub_modules_id
+            ) VALUES (?, ?, ?, ?, ?, ?)`,
         [id, data.title, data.description, data.deadline, userId, subModulesId]
       );
       return id;
@@ -27,17 +27,12 @@ const Projects = {
     }
   },
 
-  updateProject: async (id, data, userId) => {
+  updateAssignment: async (id, data, userId) => {
     try {
       const result = await dbLms(
-        `UPDATE projects 
-         SET 
-          title = ?, 
-          description = ?, 
-          deadline = ?, 
-          updated_by = ?, 
-          updated_at = NOW()
-         WHERE id = ?`,
+        `UPDATE assignments 
+            SET title = ?, description = ?, deadline = ?, updated_by = ?, updated_at = NOW()
+            WHERE id = ?`,
         [data.title, data.description, data.deadline, userId, id]
       );
       return result;
@@ -46,17 +41,17 @@ const Projects = {
     }
   },
 
-  getProjectBySubModule: async (id) => {
+  getAssignmentBySubModule: async (id) => {
     try {
       const [result] = await dbLms(
         `SELECT 
-           p.id,
-           p.title,
-           p.description,
-           p.deadline
-         FROM projects p
-         LEFT JOIN sub_modules sm ON p.sub_modules_id = sm.id
-         WHERE p.sub_modules_id = ?`,
+            a.id,
+            a.title,
+            a.description,
+            a.deadline
+            FROM assignments a
+            LEFT JOIN sub_modules sm ON a.sub_modules_id = sm.id
+            WHERE a.sub_modules_id = ?`,
         [id]
       );
       return result;
@@ -66,4 +61,4 @@ const Projects = {
   },
 };
 
-module.exports = Projects;
+module.exports = Assignment;

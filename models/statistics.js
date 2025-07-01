@@ -2,77 +2,6 @@ const { dbLms, dbMentee } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const Statistics = {
-  getAllModulesStatistics: async () => {
-    try {
-      const results = await dbLms(
-        `
-        SELECT 
-            ans.is_correct
-        FROM answers ans
-        LEFT JOIN questions qs ON ans.questions_id = qs.id
-        LEFT JOIN quizzes qz ON qs.quizzes_id = qz.id
-        LEFT JOIN sub_modules sm ON qz.sub_modules_id = sm.id
-        LEFT JOIN module_courses m ON sm.module_course_id = m.id
-        WHERE m.id = ?
-        AND ans.is_deleted = 0
-        `,
-        [id]
-      );
-    } catch (error) {}
-  },
-  getScoresByModule: async (id) => {
-    try {
-      const results = await dbLms(
-        `
-        SELECT 
-            ans.is_correct
-        FROM answers ans
-        LEFT JOIN questions qs ON ans.questions_id = qs.id
-        LEFT JOIN quizzes qz ON qs.quizzes_id = qz.id
-        LEFT JOIN sub_modules sm ON qz.sub_modules_id = sm.id
-        LEFT JOIN module_courses m ON sm.module_course_id = m.id
-        WHERE m.id = ?
-        AND ans.is_deleted = 0
-        `,
-        [id]
-      );
-
-      var scores = [];
-      for (var i = 0; i < results.length; i++) {
-        scores.push(Number(results[i].is_correct));
-      }
-      return scores;
-    } catch (error) {
-      if (error.code && error.sqlMessage) {
-        const message = mapMySQLError(error);
-        throw new Error(message);
-      }
-      throw error;
-    }
-  },
-  getMenteeErrorsByModule: async (id) => {
-    const results = await dbLms(
-      `
-    SELECT 
-      mnt.id AS mentee_id,
-      mnt.fullname,
-      COUNT(ans.id) AS total_questions,
-      SUM(CASE WHEN ans.is_correct = 0 THEN 1 ELSE 0 END) AS wrong_answers
-    FROM answers ans
-    LEFT JOIN questions qs ON ans.questions_id = qs.id
-    LEFT JOIN quizzes qz ON qs.quizzes_id = qz.id
-    LEFT JOIN sub_modules sm ON qz.sub_modules_id = sm.id
-    LEFT JOIN module_courses mc ON sm.module_course_id = mc.id
-    LEFT JOIN mentee_management.mentees mnt ON ans.mentees_id = mnt.id
-    WHERE mc.id = ?
-      AND ans.is_deleted = 0
-    GROUP BY mnt.id
-    `,
-      [id]
-    );
-    return results;
-  },
-
   // Metrik 1: Menghitung total mentee di satu kursus
   getTotalMentees: async (id) => {
     try {
@@ -160,13 +89,13 @@ const Statistics = {
       const result = await dbLms(
         `SELECT 
           sm.module_course_id AS moduleId, 
-          mc.name AS moduleName,
+          mc.title AS moduleName,
           e.score, 
           e.mentees_id
-        FROM evaluation e
+        FROM mentee_management.evaluation e
         JOIN assignment_submissions asub ON e.assign_submission_id = asub.id
-        JOIN assignments a ON asub.assignment_id = a.id
-        JOIN sub_modules sm ON a.sub_module_id = sm.id
+        JOIN assignments a ON asub.assignments_id = a.id
+        JOIN sub_modules sm ON a.sub_modules_id = sm.id
         JOIN module_courses mc ON sm.module_course_id = mc.id
         WHERE mc.course_id = ? AND e.assign_submission_id IS NOT NULL;`,
         [courseId]
@@ -185,14 +114,61 @@ const Statistics = {
       const result = await dbLms(
         `SELECT 
           sm.module_course_id AS moduleId, 
-          mc.name AS moduleName,
+          mc.title AS moduleName,
           e.score, 
           e.mentees_id
-        FROM evaluation e
+        FROM mentee_management.evaluation e
         JOIN quizzes q ON e.quizzes_id = q.id
-        JOIN sub_modules sm ON q.sub_module_id = sm.id
+        JOIN sub_modules sm ON q.sub_modules_id = sm.id
         JOIN module_courses mc ON sm.module_course_id = mc.id
         WHERE mc.course_id = ? AND e.quizzes_id IS NOT NULL;`,
+        [courseId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  // Fungsi untuk mengambil SEMUA data skor untuk satu kursus
+  getAllStudentScores: async (courseId) => {
+    try {
+      const result = await dbMentee(
+        // Menggunakan dbMentee karena terkait data mentee
+        `SELECT
+                me.mentees_id,
+                m.fullname as menteeName,
+                e.score
+            FROM evaluation e
+            JOIN mentee_enrollments me ON e.mentees_id = me.mentees_id
+            JOIN mentees m ON me.mentees_id = m.id
+            WHERE me.courses_id = ?;`,
+        [courseId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+
+  // Fungsi untuk mengambil SEMUA data engagement (durasi)
+  getAllStudentEngagements: async (courseId) => {
+    try {
+      const result = await dbMentee(
+        // Menggunakan dbMentee karena terkait data mentee
+        `SELECT
+                me.mentees_id,
+                TIMESTAMPDIFF(MINUTE, cal.start_time, cal.end_time) AS duration
+            FROM course_sessions cal
+            JOIN mentee_enrollments me ON cal.mentees_id = me.mentees_id
+            WHERE me.courses_id = ?;`,
         [courseId]
       );
       return result;

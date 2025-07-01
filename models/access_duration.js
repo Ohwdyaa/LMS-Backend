@@ -74,7 +74,6 @@ const Session = {
   },
   endSession: async (id, totalMinutes, menteesId, endTime) => {
     try {
-      console.log(endTime)
       await dbMentee(
         `UPDATE course_sessions 
         SET end_time = ?, 

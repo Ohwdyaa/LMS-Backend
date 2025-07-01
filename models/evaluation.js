@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Evaluation = {
-  createEvaluationQuiz: async (data, typesId, userId) => {
+  createEvaluationQuiz: async (score, typesId, userId, quizzesId) => {
     try {
       const id = uuid();
       await dbMentee(
@@ -16,7 +16,7 @@ const Evaluation = {
               quizzes_id,
               mentees_id)
           VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, data.score, userId, typesId, data.submitId, userId]
+        [id, score, userId, typesId, quizzesId, userId]
       );
       return id;
     } catch (error) {
@@ -52,7 +52,7 @@ const Evaluation = {
       throw error;
     }
   },
-  createEvaluationProject: async (score, typesId, userId, submitId) => {
+  createEvaluationProject: async (score, data, typesId, userId) => {
     try {
       const id = uuid();
       await dbMentee(
@@ -60,12 +60,13 @@ const Evaluation = {
           INSERT INTO evaluation (
               id, 
               score,
+              feedback,
               created_by,
               type_id,
               project_submission_id,
               mentees_id)
-          VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, score, userId, typesId, submitId, userId]
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [id, score, data.feedback, userId, typesId, data.projectSubmitId, data.menteesId]
       );
       return id;
     } catch (error) {
@@ -102,8 +103,7 @@ const Evaluation = {
     try {
       const [result] = await dbMentee(
         `SELECT 
-          score, 
-          total_question
+          score
         FROM evaluation 
           WHERE id = ?`,
         [id]
@@ -146,6 +146,26 @@ const Evaluation = {
           score
         FROM evaluation 
         WHERE assign_submission_id = ? 
+          AND mentees_id = ?`,
+        [id, menteesId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getScoreByProjectAndUser: async (id, menteesId) => {
+    try {
+      const [result] = await dbMentee(
+        `SELECT 
+          id,
+          score
+        FROM evaluation 
+        WHERE project_submission_id = ? 
           AND mentees_id = ?`,
         [id, menteesId]
       );

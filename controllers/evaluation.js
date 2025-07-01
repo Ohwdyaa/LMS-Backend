@@ -1,23 +1,25 @@
 const Evaluation = require("../models/evaluation");
 const Answers = require("../models/answers");
 const submitAssign = require("../models/assignment_submissions");
+const submitProject = require("../models/project_submissions");
 const questionOptions = require("../models/question_options");
 const { err } = require("../utils/custom_error");
 const typesEvaluation = require("../models/evaluation_types");
+const { Types } = require("mysql2");
 
 async function createEvaluation(req, res) {
-  const { id: userId } = req.user;
-  const data = req.body;
-
   try {
+    const { id: userId } = req.user;
+    const data = req.body;
     let score = 0;
     let result;
 
+    //Quizzes
     if (data.quizzesId) {
       score = await scoreQuizzes(data.quizzesId, userId);
       result = await handleEvaluation(score, data, userId);
     }
-
+    //Assignment
     if (data.assignSubmitId) {
       const submissions = await submitAssign.getSubmissionById(
         data.assignSubmitId
@@ -27,11 +29,16 @@ async function createEvaluation(req, res) {
       }
       result = await handleEvaluation(data.score, data, userId);
     }
-
-    // if (project_submit_id) {
-    //   score = await scoreProject(project_submit_id, userId);
-    //   evaluateResult = await handleEvaluation(project_submit_id, userId, score, 'project');
-    // }
+    //Project
+    if (data.projectSubmitId) {
+      const submissions = await submitProject.getSubmissionById(
+        data.projectSubmitId
+      );
+      if (submissions === undefined) {
+        return res.status(404).json({ message: "project mentee not found" });
+      }
+      result = await handleEvaluation(data.score, data, userId);
+    }
 
     return res.status(200).json({
       message: "Evaluation completed",
@@ -62,17 +69,17 @@ async function scoreQuizzes(id, userId) {
       correctAnswers++;
     }
   }
-  return (correctAnswers / totalQuestions) * 100;
+  const result = (correctAnswers / totalQuestions) * 100;
+  return result;
 }
 
 async function handleEvaluation(score, data, userId) {
   let existingEvaluation;
-
   const types = await typesEvaluation.getEvalutionTypesById(data.typeId);
   if (types === undefined) {
     return res.status(404).json({ message: "Types not found" });
   }
-  
+
   //quizzes
   if (types.name === "Quizzes") {
     existingEvaluation = await Evaluation.getScoreByQuizAndUser(
@@ -87,7 +94,7 @@ async function handleEvaluation(score, data, userId) {
         data.quizzesId
       );
     }
-    if (existingEvaluation) {
+    if (existingEvaluation !== undefined) {
       return await Evaluation.updateEvaluation(
         score,
         userId,
@@ -109,7 +116,7 @@ async function handleEvaluation(score, data, userId) {
         userId
       );
     }
-    if (existingEvaluation) {
+    if (existingEvaluation !== undefined) {
       return await Evaluation.updateEvaluation(
         score,
         userId,
@@ -118,24 +125,27 @@ async function handleEvaluation(score, data, userId) {
     }
   }
   //project
-  // if (types.name === "project") {
-  //   existingEvaluation = await Evaluation.getByProjectAndUser(id, userId);
-  //   if (existingEvaluation === undefined) {
-  //     return await Evaluation.createEvaluationProject(
-  //       score,
-  //       types.id,
-  //       userId,
-  //       id
-  //     );
-  //   }
-  //   if (existingEvaluation) {
-  //     return await Evaluation.updateEvaluation(
-  //       score,
-  //       userId,
-  //       existingEvaluation.id
-  //     );
-  //   }
-  // }
+  if (types.name === "Project") {
+    existingEvaluation = await Evaluation.getScoreByProjectAndUser(
+      data.projectSubmitId,
+      userId
+    );
+    if (existingEvaluation === undefined) {
+      return await Evaluation.createEvaluationProject(
+        score,
+        data,
+        types.id,
+        userId
+      );
+    }
+    if (existingEvaluation !== undefined) {
+      return await Evaluation.updateEvaluation(
+        score,
+        userId,
+        existingEvaluation.id
+      );
+    }
+  }
 }
 async function getScoreById(req, res) {
   const { id: evaluationId } = req.params;
@@ -157,7 +167,7 @@ async function getScoreById(req, res) {
 async function getScoreByQuizAndUser(req, res) {
   const { quizId, menteeId } = req.params;
   try {
-    const isScoreExist = await Evaluation.getByQuizAndUser(quizId, menteeId);
+    const isScoreExist = await Evaluation.getScoreByQuizAndUser(quizId, menteeId);
     if (isScoreExist === undefined) {
       return res.status(404).json({ message: "Score not found" });
     }

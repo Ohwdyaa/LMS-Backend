@@ -5,7 +5,6 @@ const { uuid } = require("../utils/tools");
 const AssignmentSubmissions = {
   createSubmission: async (data, userId) => {
     try {
-      console.log(data) 
       const id = uuid();
       await dbLms(
         `INSERT INTO assignment_submissions (
@@ -44,7 +43,7 @@ const AssignmentSubmissions = {
       throw error;
     }
   },
-  getSubmissionById: async ( id) => {
+  getSubmissionById: async (id) => {
     try {
       const [result] = await dbLms(
         `SELECT 
@@ -70,10 +69,12 @@ const AssignmentSubmissions = {
           asub.assignments_id,
           a.title as assignment,
           asub.mentees_id,
-          m.fullname as mentee
+          m.fullname as mentee,
+          e.score
         FROM assignment_submissions as asub
           LEFT JOIN assignments a on a.id = asub.assignments_id
           LEFT JOIN mentee_management.mentees m on m.id = asub.mentees_id
+          LEFT JOIN mentee_management.evaluation e on e.assign_submission_id = asub.id
         WHERE asub.is_deleted = 0`
       );
       return submission;

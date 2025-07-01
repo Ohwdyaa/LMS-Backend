@@ -5,12 +5,12 @@ const submitProject = require("../models/project_submissions");
 const questionOptions = require("../models/question_options");
 const { err } = require("../utils/custom_error");
 const typesEvaluation = require("../models/evaluation_types");
+const { Types } = require("mysql2");
 
 async function createEvaluation(req, res) {
-  const { id: userId } = req.user;
-  const data = req.body;
-
   try {
+    const { id: userId } = req.user;
+    const data = req.body;
     let score = 0;
     let result;
 
@@ -69,17 +69,17 @@ async function scoreQuizzes(id, userId) {
       correctAnswers++;
     }
   }
-  return (correctAnswers / totalQuestions) * 100;
+  const result = (correctAnswers / totalQuestions) * 100;
+  return result;
 }
 
 async function handleEvaluation(score, data, userId) {
   let existingEvaluation;
-
   const types = await typesEvaluation.getEvalutionTypesById(data.typeId);
   if (types === undefined) {
     return res.status(404).json({ message: "Types not found" });
   }
-  
+
   //quizzes
   if (types.name === "Quizzes") {
     existingEvaluation = await Evaluation.getScoreByQuizAndUser(
@@ -126,7 +126,10 @@ async function handleEvaluation(score, data, userId) {
   }
   //project
   if (types.name === "Project") {
-    existingEvaluation = await Evaluation.getScoreByProjectAndUser(data.projectSubmitId, userId);
+    existingEvaluation = await Evaluation.getScoreByProjectAndUser(
+      data.projectSubmitId,
+      userId
+    );
     if (existingEvaluation === undefined) {
       return await Evaluation.createEvaluationProject(
         score,
@@ -164,7 +167,7 @@ async function getScoreById(req, res) {
 async function getScoreByQuizAndUser(req, res) {
   const { quizId, menteeId } = req.params;
   try {
-    const isScoreExist = await Evaluation.getByQuizAndUser(quizId, menteeId);
+    const isScoreExist = await Evaluation.getScoreByQuizAndUser(quizId, menteeId);
     if (isScoreExist === undefined) {
       return res.status(404).json({ message: "Score not found" });
     }

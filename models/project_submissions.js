@@ -69,11 +69,13 @@ const ProjectSubmissions = {
           ps.project_id,
           p.title as project,
           ps.mentees_id,
-          m.fullname as mentee
+          m.fullname as mentee,
+          e.score
         FROM project_submissions as ps
           LEFT JOIN projects p on p.id = ps.project_id
           LEFT JOIN mentee_management.mentees m on m.id = ps.mentees_id
-        WHERE ps.is_deleted = 0`
+          LEFT JOIN mentee_management.evaluation e on e.project_submission_id = ps.id
+        WHERE ps.is_deleted = 0` 
       );
       return result;
     } catch (error) {

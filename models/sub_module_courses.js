@@ -166,7 +166,6 @@ const subModules = {
       ORDER BY sm.created_at ASC`,
       [courseId, typeId]
     );
-    console.log(result)
     return result;
   } catch (error) {
     if (error.code && error.sqlMessage) {

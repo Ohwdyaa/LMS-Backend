@@ -64,7 +64,6 @@ async function endSession(req, res) {
     }
 
     const endTime = new Date();
-    console.log(endTime)
     const startTime = new Date(sessionAccessExist.start_time);
     const totalMinutes = Math.max(1, Math.round((endTime - startTime) / (1000 * 60)));
 

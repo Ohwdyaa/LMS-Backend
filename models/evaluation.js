@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Evaluation = {
-  createEvaluationQuiz: async (data, typesId, userId) => {
+  createEvaluationQuiz: async (score, typesId, userId, quizzesId) => {
     try {
       const id = uuid();
       await dbMentee(
@@ -16,7 +16,7 @@ const Evaluation = {
               quizzes_id,
               mentees_id)
           VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, data.score, userId, typesId, data.submitId, userId]
+        [id, score, userId, typesId, quizzesId, userId]
       );
       return id;
     } catch (error) {
@@ -103,8 +103,7 @@ const Evaluation = {
     try {
       const [result] = await dbMentee(
         `SELECT 
-          score, 
-          total_question
+          score
         FROM evaluation 
           WHERE id = ?`,
         [id]

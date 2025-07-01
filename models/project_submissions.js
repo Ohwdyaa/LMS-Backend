@@ -43,6 +43,22 @@ const ProjectSubmissions = {
       throw error;
     }
   },
+  getSubmissionById: async (id) => {
+    try {
+      const [result] = await dbLms(
+        `SELECT 
+          id,
+          file_url,
+          submitted_at
+        FROM project_submissions 
+         WHERE id = ?`,
+        [id]
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
   getAllSubmissions: async () => {
     try {
       const result = await dbLms(

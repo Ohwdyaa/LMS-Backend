@@ -4,56 +4,114 @@ const questionOptions = require("../models/question_options");
 const Quizzes = require("../models/quizzes");
 const { err } = require("../utils/custom_error");
 const Mentees = require("../models/mentees");
+const typesEvaluation = require("../models/evaluation_types");
 
-async function evaluation(req, res) {
+async function createEvaluation(req, res) {
   const { id: userId } = req.user;
-  const { quizId } = req.body;
+  const data = req.body;
+
   try {
-    const answers = await Answers.getByQuizAndUser(quizId, userId);
-    const totalQuestions = answers.length;
-    let correctAnswers = 0;
-    for (let i = 0; i < answers.length; i++) {
-      const { questionId, question_option } = answers[i];
+    let score = 0;
+    let result;
 
-      const correctOption = await questionOptions.getOptionByQuestionAndCorrect(
-        questionId,
-        1
-      );
-      if (correctOption && question_option === correctOption.description) {
-        correctAnswers++;
-      }
+    if (data.quizzesId) {
+      score = await scoreQuizzes(data.quizzesId, userId);
+      result = await handleEvaluation(data.quizzesId, userId, score, data.typeId);
     }
-    const score = (correctAnswers / totalQuestions) * 100;
-    const evaluateIsExist = await Evaluation.getByQuizAndUser(quizId, userId);
-    if (evaluateIsExist === undefined) {
-      const result = await Evaluation.createEvaluation(
-        { score, totalQuestions, quizId },
-        userId
-        //      correct_answers: correctAnswers,
-      );
-      return res.status(200).json({
-        message: "Evaluation completed",
-        result,
-      });
-    }
-    if (evaluateIsExist !== undefined) {
-      const result = await Evaluation.updateEvaluation(
-        { score, totalQuestions },
-        userId,
-        evaluateIsExist.id
-      );
 
-      return res.status(200).json({
-        message: "Evaluation complated [updated]",
-        result,
-      });
-    }
+    // if (assign_submison_id) {
+    //   score = await scoreAssignment(assign_submit_id, userId);
+    //   evaluateResult = await handleEvaluation(assign_submit_id, userId, score, 'assignment');
+    // }
+
+    // if (project_submit_id) {
+    //   score = await scoreProject(project_submit_id, userId);
+    //   evaluateResult = await handleEvaluation(project_submit_id, userId, score, 'project');
+    // }
+
+    return res.status(200).json({
+      message: "Evaluation completed",
+      result: result,
+    });
   } catch (error) {
-    return res.status(error.statusCode || err.errorCreate.statusCode).json({
+    console.error(error);
+    return res.status(error.statusCode || 500).json({
       message: error.message,
-      error: err.errorCreate.message,
     });
   }
+}
+async function handleEvaluation(quizzesId, userId, score, typeId) {
+  let existingEvaluation;
+  const types = await typesEvaluation.getEvalutionTypesById(typeId);
+  if(types === undefined){
+      return res.status(404).json({ message: "Types not found" });
+  }
+
+  if (types.name === "Quizzes") {
+    existingEvaluation = await Evaluation.getByQuizAndUser(quizzesId, userId);
+  }
+  if (types.name === "assignment") {
+    existingEvaluation = await Evaluation.getByAssignmentAndUser(id, userId);
+  }
+  if (types.name === "project") {
+    existingEvaluation = await Evaluation.getByProjectAndUser(id, userId);
+  }
+
+  if (existingEvaluation === undefined) {
+    return await Evaluation.createEvaluation(
+      score,
+      types.id,
+      userId,
+      quizzesId
+    );
+  }
+  if (existingEvaluation) {
+    return await Evaluation.updateEvaluation(
+      score,
+      userId,
+      existingEvaluation.id
+    );
+  }
+}
+async function scoreQuizzes(quizzesId, userId) {
+  const answers = await Answers.getByQuizAndUser(quizzesId, userId);
+  if (answers === undefined) {
+    return res.status(404).json({ message: "Answers not found" });
+  }
+  const totalQuestions = answers.length;
+  let correctAnswers = 0;
+
+  for (let i = 0; i < answers.length; i++) {
+    const { questionId, question_option } = answers[i];
+    const correctOption = await questionOptions.getOptionByQuestionAndCorrect(
+      questionId,
+      1
+    );
+    if (correctOption && question_option === correctOption.description) {
+      correctAnswers++;
+    }
+  }
+  return (correctAnswers / totalQuestions) * 100;
+}
+async function scoreAssignment(quizzesId, userId) {
+  const answers = await Answers.getByQuizAndUser(quizzesId, userId);
+  if (answers === undefined) {
+    return res.status(404).json({ message: "Answers not found" });
+  }
+  const totalQuestions = answers.length;
+  let correctAnswers = 0;
+
+  for (let i = 0; i < answers.length; i++) {
+    const { questionId, question_option } = answers[i];
+    const correctOption = await questionOptions.getOptionByQuestionAndCorrect(
+      questionId,
+      1
+    );
+    if (correctOption && question_option === correctOption.description) {
+      correctAnswers++;
+    }
+  }
+  return (correctAnswers / totalQuestions) * 100;
 }
 
 async function getScoreById(req, res) {
@@ -91,7 +149,7 @@ async function getScoreByQuizAndUser(req, res) {
   }
 }
 module.exports = {
-  evaluation,
+  createEvaluation,
   getScoreById,
   getScoreByQuizAndUser,
 };

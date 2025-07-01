@@ -3,7 +3,7 @@ const multer = require("multer");
 // Setup penyimpanan file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/files/"); // hanya path folder, bukan MIME type
+    cb(null, "uploads/files/"); 
   },
   filename: (req, file, cb) => {
     cb(null, `user-${req.user.id}-${file.originalname}`);

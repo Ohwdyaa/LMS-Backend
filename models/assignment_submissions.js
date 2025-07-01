@@ -2,20 +2,21 @@ const { dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
-const ProjectSubmissions = {
+const AssignmentSubmissions = {
   createSubmission: async (data, userId) => {
     try {
+      console.log(data) 
       const id = uuid();
       await dbLms(
-        `INSERT INTO project_submissions (
-          id, 
-          description,
+        `INSERT INTO assignment_submissions (
+          id,
+          description, 
           file_url,
           mentees_id, 
-          project_id,
+          assignments_id,
           created_by) 
         VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, data.description, data.fileUrl, userId, data.projectId, userId]
+        [id, data.description, data.fileUrl, userId, data.assignmentId, userId]
       );
       return id;
     } catch (error) {
@@ -26,16 +27,16 @@ const ProjectSubmissions = {
       throw error;
     }
   },
-  getSubmissionByMenteeAndProject: async (userId, id) => {
+  getSubmissionByMenteeAndAssign: async (userId, id) => {
     try {
       const [result] = await dbLms(
         `SELECT 
           id,
           file_url,
           submitted_at
-        FROM project_submissions 
+        FROM assignment_submissions 
          WHERE mentees_id = ? 
-          AND project_id = ?`,
+          AND assignments_id = ?`,
         [userId, id]
       );
       return result;
@@ -45,25 +46,25 @@ const ProjectSubmissions = {
   },
   getAllSubmissions: async () => {
     try {
-      const result = await dbLms(
+      const submission = await dbLms(
         `SELECT 
-          ps.id, 
-          ps.file_url, 
-          ps.submitted_at,
-          ps.project_id,
-          p.title as project,
-          ps.mentees_id,
+          asub.id, 
+          asub.file_url, 
+          asub.submitted_at,
+          asub.assignments_id,
+          a.title as assignment,
+          asub.mentees_id,
           m.fullname as mentee
-        FROM project_submissions as ps
-          LEFT JOIN projects p on p.id = ps.project_id
-          LEFT JOIN mentee_management.mentees m on m.id = ps.mentees_id
-        WHERE ps.is_deleted = 0`
+        FROM assignment_submissions as asub
+          LEFT JOIN assignments a on a.id = asub.assignments_id
+          LEFT JOIN mentee_management.mentees m on m.id = asub.mentees_id
+        WHERE asub.is_deleted = 0`
       );
-      return result;
+      return submission;
     } catch (error) {
       throw error;
     }
   },
 };
 
-module.exports = ProjectSubmissions;
+module.exports = AssignmentSubmissions;

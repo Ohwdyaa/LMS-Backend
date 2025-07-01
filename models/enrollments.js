@@ -31,8 +31,8 @@ const Enrollments = {
         `INSERT INTO mentee_enrollments(
           id, 
           created_by,
-          course_id,
-          mentee_id) 
+          courses_id,
+          mentees_id) 
         VALUES (?,?,?,?)`,
         [id, userId, courseId, menteeId]
       );
@@ -111,7 +111,7 @@ const Enrollments = {
         `SELECT 
           id
         FROM mentee_enrollments
-        WHERE course_id = ? AND mentee_id = ?`,
+        WHERE courses_id = ? AND mentees_id = ?`,
         [courseId, menteeId]
       );
       return result;
@@ -175,9 +175,9 @@ const Enrollments = {
           m.id as menteeId,
           m.fullname as name
         FROM mentee_management.mentee_enrollments e
-        LEFT JOIN mentee_management.mentees m ON e.mentee_id = m.id
-        LEFT JOIN learning_management_system.courses c ON e.course_id = c.id 
-        WHERE e.course_id = ? AND e.is_deleted = 0`,
+        LEFT JOIN mentee_management.mentees m ON e.mentees_id = m.id
+        LEFT JOIN learning_management_system.courses c ON e.courses_id = c.id 
+        WHERE e.courses_id = ? AND e.is_deleted = 0`,
         [courseId]
       );
       return result;

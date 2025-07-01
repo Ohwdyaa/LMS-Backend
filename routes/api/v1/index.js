@@ -30,13 +30,17 @@ const levels = require("./levels");
 const questions = require("./questions");
 const questionOptions = require("./question_options");
 const answers = require("./answers");
+const assign = require("./assignment");
+const assignSubmit = require("./assignment_submissions");
 const project = require("./projects");
-const submission = require("./project_submissions");
+const projectSubmit = require("./project_submissions");
 
 const Class = require("./class");
 const Session = require("./session");
 const Mentee = require("./mentees");
 const Evaluation = require("./evaluation");
+const TypesEvaluation = require("./evaluation_types");
+const accessSession = require("./access_duration")
 const Statistics = require("./statistics");
 
 // router.use(upload);
@@ -68,13 +72,17 @@ router.use(levels);
 router.use(questions);
 router.use(questionOptions);
 router.use(answers);
+router.use(assign);
+router.use(assignSubmit);
 router.use(project);
-router.use(submission);
+router.use(projectSubmit);
 
 router.use(Class);
 router.use(Session);
 router.use(Mentee);
 router.use(Evaluation);
+router.use(TypesEvaluation);
+router.use(accessSession);
 router.use(Statistics);
 
 module.exports = router;

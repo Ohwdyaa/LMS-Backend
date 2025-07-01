@@ -1,10 +1,9 @@
 const { dbMentee } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
-const { getByQuizAndUser } = require("./answers");
 
 const Evaluation = {
-  createEvaluation: async (data, userId) => {
+  createEvaluation: async (score, typesId, userId, quizzesId) => {
     try {
       const id = uuid();
       await dbMentee(
@@ -12,12 +11,12 @@ const Evaluation = {
           INSERT INTO evaluation (
               id, 
               score,
-              total_question,
               created_by,
-              quiz_id,
-              mentee_id)
+              type_id,
+              quizzes_id,
+              mentees_id)
           VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, data.score, data.totalQuestions, userId, data.quizId, userId]
+        [id, score, userId, typesId, quizzesId, userId]
       );
       return id;
     } catch (error) {
@@ -28,7 +27,7 @@ const Evaluation = {
       throw error;
     }
   },
-  updateEvaluation: async (data, userId, id) => {
+  updateEvaluation: async (score, userId, id) => {
     try {
       await dbMentee(
         `
@@ -36,11 +35,10 @@ const Evaluation = {
             evaluation 
           SET 
             score = ?,
-            total_question = ?,
             updated_at = NOW(),
             updated_by = ? 
           WHERE id = ?`,
-        [data.score, data.totalQuestions, userId, id]
+        [score, userId, id]
       );
       return id;
     } catch (error) {
@@ -71,7 +69,7 @@ const Evaluation = {
       throw error;
     }
   },
-  getByQuizAndUser: async (quizId, menteeId) => {
+  getByQuizAndUser: async (quizId, menteesId) => {
     try {
       const [result] = await dbMentee(
         `
@@ -79,9 +77,9 @@ const Evaluation = {
             id,
             score
           FROM evaluation 
-          WHERE quiz_id = ? 
-          AND mentee_id = ?`,
-        [quizId, menteeId]
+          WHERE quizzes_id = ? 
+          AND mentees_id = ?`,
+        [quizId, menteesId]
       );
       return result;
     } catch (error) {

@@ -3,7 +3,7 @@ const { mapMySQLError } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
 const Evaluation = {
-  createEvaluation: async (score, typesId, userId, quizzesId) => {
+  createEvaluationQuiz: async (data, typesId, userId) => {
     try {
       const id = uuid();
       await dbMentee(
@@ -16,7 +16,56 @@ const Evaluation = {
               quizzes_id,
               mentees_id)
           VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, score, userId, typesId, quizzesId, userId]
+        [id, data.score, userId, typesId, data.submitId, userId]
+      );
+      return id;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  createEvaluationAssign: async (score, data, typesId, userId) => {
+    try {
+      const id = uuid();
+      await dbMentee(
+        `
+          INSERT INTO evaluation (
+              id, 
+              score,
+              feedback,
+              created_by,
+              type_id,
+              assign_submission_id,
+              mentees_id)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [id, score, data.feedback, userId, typesId, data.assignSubmitId, data.menteesId]
+      );
+      return id;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  createEvaluationProject: async (score, typesId, userId, submitId) => {
+    try {
+      const id = uuid();
+      await dbMentee(
+        `
+          INSERT INTO evaluation (
+              id, 
+              score,
+              created_by,
+              type_id,
+              project_submission_id,
+              mentees_id)
+          VALUES (?, ?, ?, ?, ?, ?)`,
+        [id, score, userId, typesId, submitId, userId]
       );
       return id;
     } catch (error) {
@@ -52,11 +101,10 @@ const Evaluation = {
   getScoreById: async (id) => {
     try {
       const [result] = await dbMentee(
-        `
-          SELECT 
-            score, 
-            total_question
-          FROM evaluation 
+        `SELECT 
+          score, 
+          total_question
+        FROM evaluation 
           WHERE id = ?`,
         [id]
       );
@@ -69,7 +117,7 @@ const Evaluation = {
       throw error;
     }
   },
-  getByQuizAndUser: async (quizId, menteesId) => {
+  getScoreByQuizAndUser: async (quizId, menteesId) => {
     try {
       const [result] = await dbMentee(
         `
@@ -80,6 +128,26 @@ const Evaluation = {
           WHERE quizzes_id = ? 
           AND mentees_id = ?`,
         [quizId, menteesId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  getScoreByAssignAndUser: async (id, menteesId) => {
+    try {
+      const [result] = await dbMentee(
+        `SELECT 
+          id,
+          score
+        FROM evaluation 
+        WHERE assign_submission_id = ? 
+          AND mentees_id = ?`,
+        [id, menteesId]
       );
       return result;
     } catch (error) {

@@ -31,6 +31,21 @@ async function submitAssignment(req, res) {
     });
   }
 }
+async function getAllSubmissions(req, res) {
+  try {
+    const submissions = await AssignSubmission.getAllSubmissions();
+    if(submissions.length === 0){
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+    return res.status(200).json(submissions);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      error: err.errorCreate.message,
+    });
+  }
+}
 module.exports = {
   submitAssignment,
+  getAllSubmissions
 };

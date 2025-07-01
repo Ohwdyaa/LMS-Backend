@@ -31,6 +31,21 @@ async function submitProject(req, res) {
     });
   }
 }
+async function getAllSubmissions(req, res) {
+  try {
+    const projects = await ProjectSubmission.getAllSubmissions();
+    if(projects.length === 0){
+      return res.status(404).json({ message: "Projects not found" });
+    }
+    return res.status(200).json(projects);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      error: err.errorCreate.message,
+    });
+  }
+}
 module.exports = {
   submitProject,
+  getAllSubmissions
 };

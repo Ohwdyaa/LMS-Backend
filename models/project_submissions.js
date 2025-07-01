@@ -43,18 +43,21 @@ const ProjectSubmissions = {
       throw error;
     }
   },
-  getSubmissionStatus: async (userId, id) => {
+  getAllSubmissions: async () => {
     try {
-      const [result] = await dbLms(
+      const result = await dbLms(
         `SELECT 
-          id, 
-          file_url, 
-          submitted_at 
-         FROM project_submissions 
-         WHERE 
-          mentees_id = ? 
-            AND project_id = ?`,
-        [userId, id]
+          ps.id, 
+          ps.file_url, 
+          ps.submitted_at,
+          ps.project_id,
+          p.title as project,
+          ps.mentees_id,
+          m.fullname as mentee
+        FROM project_submissions as ps
+          LEFT JOIN projects p on p.id = ps.project_id
+          LEFT JOIN mentee_management.mentees m on m.id = ps.mentees_id
+        WHERE ps.is_deleted = 0`
       );
       return result;
     } catch (error) {

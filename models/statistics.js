@@ -24,10 +24,15 @@ const Statistics = {
   getAllScoresByCourse: async (courseId) => {
     try {
       const result = await dbMentee(
-        `SELECT e.score 
+        `SELECT 
+          e.score, 
+          e.type_id,
+          te.name as type
          FROM evaluation e
-         JOIN mentee_enrollments en ON e.mentees_id = en.mentees_id
-         WHERE en.courses_id = ?`,
+         LEFT JOIN mentee_enrollments en ON e.mentees_id = en.mentees_id
+         LEFT JOIN types_evaluation te ON e.type_id = te.id
+         WHERE en.courses_id = ?
+           AND (te.name = 'Quizzes' OR te.name = 'Assignment')`,
         [courseId]
       );
       // Mengembalikan array of scores, contoh: [80, 90, 75, ...]
@@ -48,8 +53,8 @@ const Statistics = {
       const result = await dbMentee(
         `SELECT COUNT(mentees_id) as atRiskCount FROM (
           SELECT e.mentees_id
-          FROM evaluation e
-          JOIN mentee_enrollments en ON e.mentees_id = en.mentees_id
+        FROM evaluation e
+        JOIN mentee_enrollments en ON e.mentees_id = en.mentees_id
           WHERE en.courses_id = ?
           GROUP BY e.mentees_id
           HAVING AVG(e.score) < 65
@@ -70,9 +75,11 @@ const Statistics = {
   countActiveMentees: async (courseId) => {
     try {
       const result = await dbMentee(
-        `SELECT COUNT(DISTINCT mentees_id) AS activeCount 
-         FROM course_sessions
-         WHERE courses_id = ? AND start_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)`,
+        `SELECT 
+          COUNT(DISTINCT mentees_id) AS activeCount 
+        FROM course_sessions
+        WHERE courses_id = ? 
+          AND start_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)`,
         [courseId]
       );
       return result[0];
@@ -137,17 +144,36 @@ const Statistics = {
   getAllStudentScores: async (courseId) => {
     try {
       const result = await dbMentee(
-        // Menggunakan dbMentee karena terkait data mentee
-        `SELECT
-                me.mentees_id,
-                m.fullname as menteeName,
-                e.score
+        `SELECT 
+          e.mentees_id, 
+          m.fullname AS menteeName,
+          e.score, 
+          te.name AS type
+        FROM evaluation e
+        INNER JOIN types_evaluation te ON te.id = e.type_id
+        INNER JOIN learning_management_system.assignment_submissions asub ON e.assign_submission_id = asub.id
+        INNER JOIN learning_management_system.assignments a ON asub.assignments_id = a.id
+        INNER JOIN learning_management_system.sub_modules sm ON a.sub_modules_id = sm.id
+        INNER JOIN learning_management_system.module_courses mc ON sm.module_course_id = mc.id
+        INNER JOIN mentees m ON e.mentees_id = m.id
+            WHERE mc.course_id = ? AND e.assign_submission_id IS NOT NULL
+
+            UNION ALL
+
+            -- Ambil semua skor dari KUIS dan beri label 'quiz'
+            SELECT 
+                e.mentees_id, 
+                m.fullname AS menteeName,
+                e.score, 
+                te.name AS type
             FROM evaluation e
-            JOIN mentee_enrollments me ON e.mentees_id = me.mentees_id
-            JOIN mentees m ON me.mentees_id = m.id
-            WHERE me.courses_id = ?;`,
-        [courseId]
-      );
+            INNER JOIN types_evaluation te ON te.id = e.type_id
+            INNER JOIN learning_management_system.quizzes q ON e.quizzes_id = q.id
+            INNER JOIN learning_management_system.sub_modules sm ON q.sub_modules_id = sm.id
+            INNER JOIN learning_management_system.module_courses mc ON sm.module_course_id = mc.id
+            INNER JOIN mentees m ON e.mentees_id = m.id
+            WHERE mc.course_id = ? AND e.quizzes_id IS NOT NULL;
+        `, [courseId, courseId]);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -162,13 +188,12 @@ const Statistics = {
   getAllStudentEngagements: async (courseId) => {
     try {
       const result = await dbMentee(
-        // Menggunakan dbMentee karena terkait data mentee
         `SELECT
-                me.mentees_id,
-                TIMESTAMPDIFF(MINUTE, cal.start_time, cal.end_time) AS duration
-            FROM course_sessions cal
-            JOIN mentee_enrollments me ON cal.mentees_id = me.mentees_id
-            WHERE me.courses_id = ?;`,
+          me.mentees_id,
+          TIMESTAMPDIFF(SECOND, cal.start_time, cal.end_time) AS duration
+        FROM course_sessions cal
+        JOIN mentee_enrollments me ON cal.mentees_id = me.mentees_id
+        WHERE me.courses_id = ?;`,
         [courseId]
       );
       return result;

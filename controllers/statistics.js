@@ -1,8 +1,6 @@
 const { err } = require("../utils/custom_error");
 const Statistics = require("../models/statistics");
-const Modules = require("../models/module_courses");
 const { calculateStats } = require("../utils/statistics");
-
 
 async function getOverviewMetrics(req, res) {
   try {
@@ -32,8 +30,8 @@ async function getOverviewMetrics(req, res) {
     const classStats = calculateStats(scoreValues);
 
     //At-Risk Students
-    const atRiskResult = await Statistics.countAtRiskStudents(courseId);
-    const atRiskCount = atRiskResult ? atRiskResult.atRiskCount : 0;
+    const atRiskList = await getAtRiskStudentsList(courseId);
+    const atRiskCount = atRiskList.length;
     const atRiskPercentage = (atRiskCount / totalMentees) * 100;
 
     //Engagement Rate
@@ -161,121 +159,33 @@ const getModulesStatisticByCourse = async (req, res) => {
 async function getAtRiskStudents(req, res) {
   try {
     const { id: courseId } = req.params;
-    if (!courseId) {
+    if (courseId === undefined) {
       return res.status(400).json({ message: "courseId is required" });
     }
+    // Gunakan helper agar tidak duplikat kode
+    let atRiskStudents = await getAtRiskStudentsList(courseId);
 
-    // 1. Panggil kedua fungsi model secara berurutan
-    const allScores = await Statistics.getAllStudentScores(courseId);
-    const allEngagements = await Statistics.getAllStudentEngagements(courseId);
-
-    if (allScores.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No score data found to analyze." });
-    }
-
-    // 2. Agregasi data: Gabungkan skor dan durasi untuk setiap mahasiswa
-    const studentData = {};
-
-    // Loop pertama: proses semua skor
-    for (let i = 0; i < allScores.length; i++) {
-      const scoreRecord = allScores[i];
-      const { mentees_id, menteeName, score } = scoreRecord;
-
-      // Jika mentee ini belum ada di 'studentData', buatkan "wadah"-nya
-      if (!studentData[mentees_id]) {
-        studentData[mentees_id] = {
-          menteeName: menteeName,
-          scores: [],
-          totalEngagementMinutes: 0,
-        };
-      }
-      studentData[mentees_id].scores.push(parseFloat(score));
-    }
-
-    // Loop kedua: proses semua data engagement
-    for (let i = 0; i < allEngagements.length; i++) {
-      const engagementRecord = allEngagements[i];
-      const { mentees_id, duration } = engagementRecord;
-
-      // Tambahkan durasi hanya jika mahasiswa tersebut ada (memiliki skor)
-      if (studentData[mentees_id]) {
-        studentData[mentees_id].totalEngagementMinutes += parseFloat(
-          duration || 0
-        );
-      }
-    }
-
-    // 3. Hitung rata-rata kelas sebagai pembanding
-    let totalAllScores = 0;
-    let totalScoreCount = 0;
-    const studentIds = Object.keys(studentData);
-
-    for (let i = 0; i < studentIds.length; i++) {
-      const id = studentIds[i];
-      const student = studentData[id];
-      for (let j = 0; j < student.scores.length; j++) {
-        totalAllScores += student.scores[j];
-      }
-      totalScoreCount += student.scores.length;
-    }
-    const classAverage =
-      totalScoreCount > 0 ? totalAllScores / totalScoreCount : 0;
-
-    // 4. Analisis & Filter Mahasiswa yang Berisiko
-    const atRiskStudents = [];
-    for (let i = 0; i < studentIds.length; i++) {
-      const id = studentIds[i];
-      const student = studentData[id];
-
-      let studentTotalScore = 0;
-      for (let j = 0; j < student.scores.length; j++) {
-        studentTotalScore += student.scores[j];
-      }
-      const studentAverage =
-        student.scores.length > 0
-          ? studentTotalScore / student.scores.length
-          : 0;
-
-      // HANYA PROSES mahasiswa yang nilainya di bawah rata-rata kelas
-      if (studentAverage < classAverage) {
-        const riskFactors = [];
-        // Logika untuk menentukan faktor risiko (bisa Anda kembangkan)
-        if (studentAverage < 65) {
-          riskFactors.push("Low Quiz Scores");
-        }
-        if (student.totalEngagementMinutes < 300) {
-          // Asumsi total < 5 jam
-          riskFactors.push("Poor Engagement");
-        }
-
-        // Logika untuk menentukan prioritas
-        let priority = "MEDIUM";
-        if (classAverage - studentAverage > 15) {
-          // Jika selisih nilai > 15
-          priority = "HIGH";
-        }
-
-        atRiskStudents.push({
-          studentId: id,
-          studentName: student.menteeName,
-          performance: {
-            studentAverage: parseFloat(studentAverage.toFixed(2)),
-            classAverage: parseFloat(classAverage.toFixed(2)),
-            gap: parseFloat((studentAverage - classAverage).toFixed(2)),
-          },
-          engagement: `${Math.round(
-            student.totalEngagementMinutes / 4
-          )} min/week`, // Asumsi kursus 4 minggu
-          riskFactors:
-            riskFactors.length > 0 ? riskFactors : ["Inconsistent Performance"],
-          priority: priority,
-        });
-      }
-    }
-
-    // Urutkan hasilnya agar prioritas 'HIGH' di atas
+    // (Opsional) Tambahkan logika prioritas dan riskFactors jika ingin response lebih detail
+    // Contoh: urutkan prioritas HIGH di atas
+    atRiskStudents = atRiskStudents.map((student) => {
+      // Tambahkan riskFactors dan priority jika ingin response sama seperti sebelumnya
+      const riskFactors = [];
+      if (student.studentAverage < 65) riskFactors.push("Low Quiz Scores");
+      if (student.totalEngagementMinutes < 300) riskFactors.push("Poor Engagement");
+      let priority = "MEDIUM";
+      if (student.classAverage - student.studentAverage > 15) priority = "HIGH";
+      return {
+        ...student,
+        riskFactors: riskFactors.length > 0 ? riskFactors : ["Inconsistent Performance"],
+        priority,
+        engagement: `${Math.round(student.totalEngagementMinutes / 4)} min/week`,
+        performance: {
+          studentAverage: student.studentAverage,
+          classAverage: student.classAverage,
+          gap: parseFloat((student.studentAverage - student.classAverage).toFixed(2)),
+        },
+      };
+    });
     atRiskStudents.sort((a, b) => {
       if (a.priority === "HIGH" && b.priority !== "HIGH") return -1;
       if (a.priority !== "HIGH" && b.priority === "HIGH") return 1;
@@ -290,9 +200,78 @@ async function getAtRiskStudents(req, res) {
       .json({ message: "An error occurred on the server." });
   }
 }
+
+// Helper untuk mengambil array mentee at-risk (tanpa response Express)
+async function getAtRiskStudentsList(courseId) {
+  const allScores = await Statistics.getAllStudentScores(courseId);
+  const allEngagements = await Statistics.getAllStudentEngagements(courseId);
+  if (!allScores || allScores.length === 0) return [];
+
+  const studentData = {};
+  for (let i = 0; i < allScores.length; i++) {
+    const scoreRecord = allScores[i];
+    const { mentees_id, menteeName, score } = scoreRecord;
+    if (!studentData[mentees_id]) {
+      studentData[mentees_id] = {
+        menteeName: menteeName,
+        scores: [],
+        totalEngagementMinutes: 0,
+      };
+    }
+    studentData[mentees_id].scores.push(parseFloat(score));
+  }
+  for (let i = 0; i < allEngagements.length; i++) {
+    const engagementRecord = allEngagements[i];
+    const { mentees_id, duration } = engagementRecord;
+    if (studentData[mentees_id]) {
+      studentData[mentees_id].totalEngagementMinutes += parseFloat(
+        duration || 0
+      );
+    }
+  }
+  // Hitung rata-rata kelas
+  let totalAllScores = 0;
+  let totalScoreCount = 0;
+  const studentIds = Object.keys(studentData);
+  for (let i = 0; i < studentIds.length; i++) {
+    const id = studentIds[i];
+    const student = studentData[id];
+    for (let j = 0; j < student.scores.length; j++) {
+      totalAllScores += student.scores[j];
+    }
+    totalScoreCount += student.scores.length;
+  }
+  const classAverage =
+    totalScoreCount > 0 ? totalAllScores / totalScoreCount : 0;
+
+  // Filter mentee at-risk
+  const atRiskStudents = [];
+  for (let i = 0; i < studentIds.length; i++) {
+    const id = studentIds[i];
+    const student = studentData[id];
+    let studentTotalScore = 0;
+    for (let j = 0; j < student.scores.length; j++) {
+      studentTotalScore += student.scores[j];
+    }
+    const studentAverage =
+      student.scores.length > 0 ? studentTotalScore / student.scores.length : 0;
+    if (studentAverage < classAverage) {
+      atRiskStudents.push({
+        studentId: id,
+        studentName: student.menteeName,
+        studentAverage: parseFloat(studentAverage.toFixed(2)),
+        classAverage: parseFloat(classAverage.toFixed(2)),
+        totalEngagementMinutes: student.totalEngagementMinutes,
+      });
+    }
+  }
+  return atRiskStudents;
+}
+
 module.exports = {
   getOverviewMetrics,
   getStatisticCourse,
   getModulesStatisticByCourse,
-  getAtRiskStudents
+  getAtRiskStudents,
+  getAtRiskStudentsList,
 };

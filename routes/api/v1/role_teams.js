@@ -4,6 +4,8 @@ const {
   getAllRoleTeams,
   deleteRoleTeam,
   updateRoleTeam,
+  setParentRoleTeam,
+  getEffectivePermissions,
 } = require("../../../controllers/role_teams");
 const router = express.Router();
 const {
@@ -20,5 +22,12 @@ router.put(
   validateMiddleware(updateRoleSchema),
   updateRoleTeam
 );
+router.post("/role-team/inherit", setParentRoleTeam);
+router.get("/effective-permissions/:id", getEffectivePermissions);
+
+// router.get("/role-team/hierarchy", getRoleTeamHierarchy);
+// router.get("/role-team/:id/parents", getParentRoles);
+// router.get("/role-team/:id/children", getChildRolesTeam);
+// router.get("/role-team/:id/analyze", analyzeRoleHierarchy);
 
 module.exports = router;

@@ -52,6 +52,7 @@ async function endSession(req, res) {
   try {
     const { id: sessionId } = req.params;
     const { id: userId } = req.user;
+    // const { totalMinutes } = req.body;
 
     if (sessionId === undefined) {
       return res

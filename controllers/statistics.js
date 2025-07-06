@@ -159,10 +159,9 @@ const getModulesStatisticByCourse = async (req, res) => {
 async function getAtRiskStudents(req, res) {
   try {
     const { id: courseId } = req.params;
-    if (!courseId) {
+    if (courseId === undefined) {
       return res.status(400).json({ message: "courseId is required" });
     }
-
     // Gunakan helper agar tidak duplikat kode
     let atRiskStudents = await getAtRiskStudentsList(courseId);
 

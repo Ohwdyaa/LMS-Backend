@@ -1,6 +1,5 @@
 const { formatBulkQuery1, dbLms } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
-const { uuid } = require("../utils/tools");
 
 const permissionTeams = {
   getPermissionTeamByRole: async (roleId) => {
@@ -10,8 +9,7 @@ const permissionTeams = {
           tp.can_create AS canCreate, 
           tp.can_read AS canRead, 
           tp.can_edit AS canEdit, 
-          tp.can_delete AS canDelete,
-          tp.is_inherit AS isInherited, 
+          tp.can_delete AS canDelete, 
           m.id AS moduleId,
           m.name AS moduleName,
           cm.name AS categoryName

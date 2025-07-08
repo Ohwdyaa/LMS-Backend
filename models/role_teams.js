@@ -133,37 +133,60 @@ const roleTeams = {
       throw error;
     }
   },
-  // Ambil edge inheritance + selective rule (permissions_inherited)
-  getInheritanceEdgesByChild: async (childRoleId) => {
-    const result = await dbLms(`
-      SELECT * FROM role_team_inheritance
-      WHERE role_id = ? AND is_deleted = 0
-    `, [childRoleId]);
-    return result;
+  getParentEdge: async (roleId) => {
+    try {
+      const result = await dbLms(
+        `SELECT 
+          parent_role_id, 
+          permissions_inherited
+        FROM role_team_inheritance
+        WHERE role_id = ? AND is_deleted = 0`,
+        [roleId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
   },
+  // // Ambil edge inheritance + selective rule (permissions_inherited)
+  // getInheritanceEdgesByChild: async (childRoleId) => {
+  //   const result = await dbLms(
+  //     `
+  //     SELECT * FROM role_team_inheritance
+  //     WHERE role_id = ? AND is_deleted = 0
+  //   `,
+  //     [childRoleId]
+  //   );
+  //   return result;
+  // },
   // Ambil parent untuk traverse (bisa lebih dari satu kalau multi parent)
   getParents: async (roleId) => {
-    const result = await dbLms(`
+    const result = await dbLms(
+      `
       SELECT parent_role_id, permissions_inherited
       FROM role_team_inheritance
       WHERE role_id = ? AND is_deleted = 0
-    `, [roleId]);
+    `,
+      [roleId]
+    );
     return result;
   },
 
   // Ambil permission manual/eksplisit dari sebuah role
   getManualPermissions: async (roleId) => {
-    const result = await dbLms(`
+    const result = await dbLms(
+      `
       SELECT * FROM team_permissions
       WHERE role_id = ? AND is_deleted = 0
-    `, [roleId]);
+    `,
+      [roleId]
+    );
     return result;
   },
-
-
-
-
-  
 
   getInheritanceEdge: async (roleId, parentRoleId) => {
     try {

@@ -207,7 +207,7 @@ const Teams = {
           t.fullname,
           t.email, 
           t.password,
-          t.role_id,
+          t.role_id as roleId,
           rt.name as role
         FROM teams t
         LEFT JOIN role_teams rt ON t.role_id = rt.id

@@ -33,11 +33,27 @@ async function submitAssignment(req, res) {
 }
 async function getAllSubmissions(req, res) {
   try {
-    const submissions = await AssignSubmission.getAllSubmissions();
-    if(submissions.length === 0){
+    const results = await AssignSubmission.getAllSubmissions();
+    if(results.length === 0){
       return res.status(404).json({ message: "Assignment not found" });
     }
-    return res.status(200).json(submissions);
+    return res.status(200).json(results);
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      error: err.errorCreate.message,
+    });
+  }
+}
+async function getSubmissionByModule(req, res) {
+  try {
+    const {id: moduleId} = req.params;
+
+    const isSubmissionExist = await AssignSubmission.getSubmissionByModule(moduleId);
+    if(isSubmissionExist.length === 0){
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+    return res.status(200).json(isSubmissionExist);
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -47,5 +63,6 @@ async function getAllSubmissions(req, res) {
 }
 module.exports = {
   submitAssignment,
-  getAllSubmissions
+  getAllSubmissions,
+  getSubmissionByModule
 };

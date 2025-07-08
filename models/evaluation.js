@@ -178,5 +178,32 @@ const Evaluation = {
       throw error;
     }
   },
+  getScoreQuizByModule: async (id) => {
+    try {
+      const results = await dbMentee(
+        `SELECT 
+          e.id, 
+          e.score,
+          e.mentees_id,
+          m.fullname as mentee,
+          sm.title as sub_module,
+          mc.title as module_course
+        FROM evaluation e
+          LEFT JOIN learning_management_system.quizzes q on q.id = e.quizzes_id
+          LEFT JOIN learning_management_system.sub_modules sm on sm.id = q.sub_modules_id
+          LEFT JOIN learning_management_system.module_courses mc on mc.id = sm.module_course_id
+          LEFT JOIN mentees m on m.id = e.mentees_id
+        WHERE mc.id = ? AND e.is_deleted = 0`,
+        [id]
+      );
+      return results;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
 };
 module.exports = Evaluation;

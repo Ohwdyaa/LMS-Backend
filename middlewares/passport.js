@@ -15,6 +15,7 @@ passport.use(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: publicKey,
+      algorithms: ['RS256']
     }, 
     async function (jwtPayload, cb) {
       try {

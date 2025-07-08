@@ -99,7 +99,7 @@ async function getStatisticCourse(req, res) {
 const getModulesStatisticByCourse = async (req, res) => {
   try {
     const { id: courseId } = req.params;
-    if (!courseId) {
+    if (courseId) {
       return res.status(400).json({ message: "courseId is required" });
     }
 

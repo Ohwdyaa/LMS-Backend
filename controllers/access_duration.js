@@ -52,7 +52,7 @@ async function endSession(req, res) {
   try {
     const { id: sessionId } = req.params;
     const { id: userId } = req.user;
-    // const { totalMinutes } = req.body;
+    const { totalMinutes } = req.body;
 
     if (sessionId === undefined) {
       return res
@@ -66,7 +66,7 @@ async function endSession(req, res) {
 
     const endTime = new Date();
     const startTime = new Date(sessionAccessExist.start_time);
-    const totalMinutes = Math.max(1, Math.round((endTime - startTime) / (1000 * 60)));
+    // const totalMinutes = Math.max(1, Math.round((endTime - startTime) / (1000 * 60)));
 
     const result = await Session.endSession(sessionId, totalMinutes, userId, endTime);
     return res.status(200).json({

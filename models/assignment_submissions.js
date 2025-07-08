@@ -82,6 +82,33 @@ const AssignmentSubmissions = {
       throw error;
     }
   },
+  getSubmissionByModule: async () => {
+    try {
+      const results = await dbLms(
+        `SELECT 
+          asub.id, 
+          asub.file_url, 
+          asub.submitted_at,
+          asub.assignments_id,
+          a.title as assignment,
+          asub.mentees_id,
+          m.fullname as mentee,
+          e.score,
+          sm.title as sub_module,
+          mc.title as module_course
+        FROM assignment_submissions as asub
+          LEFT JOIN assignments a on a.id = asub.assignments_id
+          LEFT JOIN sub_modules sm on sm.id = a.sub_modules_id
+          LEFT JOIN module_courses mc on mc.id = sm.module_course_id
+          LEFT JOIN mentee_management.mentees m on m.id = asub.mentees_id
+          LEFT JOIN mentee_management.evaluation e on e.assign_submission_id = asub.id
+        WHERE asub.is_deleted = 0`
+      );
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = AssignmentSubmissions;

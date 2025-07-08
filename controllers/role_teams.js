@@ -9,9 +9,11 @@ async function createRoleTeam(req, res) {
     const data = req.body;
 
     const result = await roleTeams.createRoleTeam(data, userId);
-    return res
-      .status(201)
-      .json({ id: result, message: "Role created successfully" });
+
+    return res.status(201).json({
+      id: result,
+      message: "Role created successfully",
+    });
   } catch (error) {
     return res.status(err.errorCreate.statusCode).json({
       message: error.message,
@@ -124,7 +126,7 @@ async function setParentRoleTeam(req, res) {
       userId,
       permissionsInherited ? JSON.stringify(permissionsInherited) : null
     );
-
+    
     return res.status(200).json({
       message: "Role inheritance set successfully",
     });
@@ -135,6 +137,7 @@ async function setParentRoleTeam(req, res) {
     });
   }
 }
+
 async function getEffectivePermissions(req, res) {
   try {
     const { id: roleId } = req.params;
@@ -478,7 +481,6 @@ module.exports = {
   updateRoleTeam,
   setParentRoleTeam,
   getEffectivePermissions,
-
 
   getRoleTeamHierarchy,
   getParentRolesTeam,

@@ -61,7 +61,6 @@ async function updatePermissionTeam(req, res) {
     });
   }
 }
-
 async function getPermissionTeamByRole(req, res) {
   const { id: roleId } = req.params;
   try {
@@ -98,11 +97,10 @@ async function getPermissionTeamByRole(req, res) {
     });
   }
 }
-
 async function getPermissionTeams(user) {
   try {
     const isRolePermissionsExist = await Permissions.getPermissionTeamByRoleJwt(
-      user.role_id
+      user.roleId
     );
     if (isRolePermissionsExist === undefined) {
       return res
@@ -117,9 +115,84 @@ async function getPermissionTeams(user) {
     });
   }
 }
+async function getEffectivePermissionsDFS(roleId) {
+  // Untuk mencegah infinite loop/circular
+  const visited = new Set();
+  if (visited.has(roleId)) return [];
+  visited.add(roleId);
+  //permission langsung
+  const directPerms = await Permissions.getPermissionTeamByRoleJwt(roleId);
+  // 2. permission dari parent
+  const parentEdges = await roleTeams.getParentEdge(roleId);
+  let inheritedPerms = [];
+
+  for (let i = 0; i < parentEdges.length; i++) {
+    const parentEdge = parentEdges[i];
+
+    let allowed = null;
+    if (parentEdge.permissions_inherited) {
+      if (typeof parentEdge.permissions_inherited === "string") {
+        try {
+          allowed = JSON.parse(parentEdge.permissions_inherited);
+        } catch (e) {
+          allowed = null;
+        }
+      } else {
+        allowed = parentEdge.permissions_inherited;
+      }
+    }
+    // DFS ke parent
+    const parentPerms = await getEffectivePermissionsDFS(
+      parentEdge.parent_role_id,
+      visited
+    );
+    // Filter permission sesuai selective
+    let selectedPerms = [];
+    if (!allowed) {
+      selectedPerms = parentPerms; // Wariskan semua
+    } else {
+      // Hanya module yang diizinkan
+      for (let j = 0; j < parentPerms.length; j++) {
+        const perm = parentPerms[j];
+        const found = allowed.find(
+          (a) =>
+            (a.module_id == perm.moduleId || a.module_id == perm.module_id) &&
+            ((a.can_create && perm.canCreate) ||
+              (a.can_read && perm.canRead) ||
+              (a.can_edit && perm.canEdit) ||
+              (a.can_delete && perm.canDelete))
+        );
+        if (found) {
+          // Hanya property yang boleh diwariskan
+          selectedPerms.push({
+            moduleId: perm.moduleId,
+            moduleName: perm.moduleName,
+            canCreate: found.can_create ? perm.canCreate : 0,
+            canRead: found.can_read ? perm.canRead : 0,
+            canEdit: found.can_edit ? perm.canEdit : 0,
+            canDelete: found.can_delete ? perm.canDelete : 0,
+          });
+        }
+      }
+    }
+    inheritedPerms.push(...selectedPerms);
+  }
+
+  let permissionMap = {};
+
+  for (let perm of inheritedPerms) {
+    permissionMap[perm.moduleId] = perm;
+  }
+  for (let perm of directPerms) {
+    permissionMap[perm.moduleId] = perm;
+  }
+
+  return Object.values(permissionMap);
+}
+
 async function inheritAllPermissions(childId, parentId, userId) {
-  const inheritanceEdge = await roleTeams.getInheritanceEdge(childId, parentId); 
-  
+  const inheritanceEdge = await roleTeams.getInheritanceEdge(childId, parentId);
+
   let selective = null;
   if (inheritanceEdge && inheritanceEdge.permissions_inherited) {
     try {
@@ -139,7 +212,7 @@ async function inheritAllPermissions(childId, parentId, userId) {
     if (selective === null || selective === undefined) {
       inheritance = true;
     } else {
-      const rule = selective.find(r => r.module_id === perm.moduleId);
+      const rule = selective.find((r) => r.module_id === perm.moduleId);
       if (rule) {
         if (
           (rule.can_create && perm.canCreate) ||
@@ -153,9 +226,17 @@ async function inheritAllPermissions(childId, parentId, userId) {
     }
 
     if (inheritance === false) {
-      const childPerm = await Permissions.getPermissionTeamByRoleAndModule(childId, perm.moduleId);
+      const childPerm = await Permissions.getPermissionTeamByRoleAndModule(
+        childId,
+        perm.moduleId
+      );
       if (childPerm === undefined) {
-        await Permissions.createPermissionInherit(userId, childId, perm, parentId);
+        await Permissions.createPermissionInherit(
+          userId,
+          childId,
+          perm,
+          parentId
+        );
       }
     }
     // (Opsional: kalau mau update permission warisan yang sudah ada, lakukan di sini)
@@ -206,27 +287,35 @@ async function setPermissionInheritance(req, res) {
     // Validate role and module
     const [role, module] = await Promise.all([
       roleTeams.getRoleTeamById(roleId),
-      Module.getModuleById(moduleId)
+      Module.getModuleById(moduleId),
     ]);
 
     if (!role || !module) {
       return res.status(404).json({
-        message: "Role or module not found"
+        message: "Role or module not found",
       });
     }
 
     // Check if permission exists
-    const permission = await Permissions.getPermissionTeamByRoleAndModule(roleId, moduleId);
+    const permission = await Permissions.getPermissionTeamByRoleAndModule(
+      roleId,
+      moduleId
+    );
     if (!permission) {
       return res.status(404).json({
-        message: "Permission not found for this role and module"
+        message: "Permission not found for this role and module",
       });
     }
 
-    await Permissions.setPermissionInheritance(roleId, moduleId, inheritFlag, userId);
+    await Permissions.setPermissionInheritance(
+      roleId,
+      moduleId,
+      inheritFlag,
+      userId
+    );
 
     return res.status(200).json({
-      message: "Permission inheritance updated successfully"
+      message: "Permission inheritance updated successfully",
     });
   } catch (error) {
     return res.status(err.errorUpdate.statusCode).json({
@@ -235,94 +324,14 @@ async function setPermissionInheritance(req, res) {
     });
   }
 }
-// async function updatePermissionTeam(req, res) {
-//   const { id: userId } = req.user;
-//   const { id: roleId } = req.params;
-//   const { listModules } = req.body;
-//   let newValue = [];
-
-//   try {
-//     const role = await roleTeams.getRoleTeamById(roleId);
-//     if (!role) {
-//       return res.status(404).json({ message: "Role not found" });
-//     }
-
-//     // Get parent roles to check permission conflicts
-//     const parentRoles = await roleTeams.getParentRoles(roleId);
-    
-//     for (let i = 0; i < listModules.length; i++) {
-//       const module = listModules[i];
-      
-//       // Check permission conflicts with parent roles
-//       for (let j = 0; j < parentRoles.length; j++) {
-//         const conflicts = await Permissions.checkPermissionConflicts(
-//           roleId, 
-//           parentRoles[j].id
-//         );
-        
-//         if (conflicts) {
-//           return res.status(400).json({
-//             message: "Permission conflict detected with parent role",
-//             conflicts: conflicts
-//           });
-//         }
-//       }
-
-//       // Update or create permission
-//       const existing = await Permissions.getPermissionTeamByRoleAndModule(
-//         roleId,
-//         module.moduleId
-//       );
-
-//       if (existing) {
-//         await Permissions.updatePermissionTeam(
-//           roleId,
-//           module.moduleId,
-//           module,
-//           userId
-//         );
-//       } else {
-//         newValue.push([
-//           uuid(),
-//           module.canCreate,
-//           module.canRead,
-//           module.canEdit,
-//           module.canDelete,
-//           roleId,
-//           module.moduleId,
-//           userId
-//         ]);
-//       }
-//     }
-
-//     // Bulk create new permissions
-//     if (newValue.length > 0) {
-//       await Permissions.createBulkPermissionTeam(
-//         `INSERT INTO team_permissions (
-//           id, can_create, can_read, can_edit, can_delete, 
-//           role_id, module_id, created_by
-//         ) VALUES ?`,
-//         [newValue]
-//       );
-//     }
-
-//     return res.status(200).json({
-//       message: "Permissions updated successfully",
-//     });
-//   } catch (error) {
-//     return res.status(err.errorUpdate.statusCode).json({
-//       message: error.message,
-//       error: err.errorUpdate.message,
-//     });
-//   }
-// }
 
 module.exports = {
   updatePermissionTeam,
   getPermissionTeamByRole,
   getPermissionTeams,
+  getEffectivePermissionsDFS,
+
   getEffectivePermissions,
   setPermissionInheritance,
   inheritAllPermissions,
-  // updatePermissionTeam, 
 };

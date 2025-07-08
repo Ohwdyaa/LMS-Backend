@@ -16,7 +16,7 @@ async function login(req, res) {
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
-    let getAccess = await permissionTeams.getPermissionTeams(verifiedUser.data);
+    let getAccess = await permissionTeams.getEffectivePermissionsDFS(verifiedUser.data.roleId);
     if (getAccess === undefined || getAccess.length === 0) {
       getAccess = await permissionMentors.getPermissionMentor(
         verifiedUser.data

@@ -20,3 +20,4 @@ router.get("/team", getAllTeams);
 router.get("/team/:id", getTeamDetail);
 
 module.exports = router;
+ 

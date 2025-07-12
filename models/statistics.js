@@ -2,7 +2,6 @@ const { dbLms, dbMentee } = require("../config/db/db");
 const { mapMySQLError } = require("../utils/custom_error");
 
 const Statistics = {
-  // Metrik 1: Menghitung total mentee di satu kursus
   getTotalMentees: async (id) => {
     try {
       const result = await dbMentee(
@@ -18,9 +17,6 @@ const Statistics = {
       throw error;
     }
   },
-
-  // Metrik 2: Mengambil semua skor di satu kursus untuk diolah
-  // Kita akan pakai utils/statistics.js Anda di sini!
   getAllScoresByCourse: async (courseId) => {
     try {
       const result = await dbMentee(
@@ -35,7 +31,6 @@ const Statistics = {
            AND (te.name = 'Quizzes' OR te.name = 'Assignment')`,
         [courseId]
       );
-      // Mengembalikan array of scores, contoh: [80, 90, 75, ...]
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -45,9 +40,6 @@ const Statistics = {
       throw error;
     }
   },
-
-  // Metrik 3: Menghitung jumlah mentee yang dianggap 'at-risk'
-  // ASUMSI: at-risk jika rata-rata skor < 65
   countAtRiskStudents: async (courseId) => {
     try {
       const result = await dbMentee(
@@ -70,16 +62,25 @@ const Statistics = {
       throw error;
     }
   },
-
-  // Metrik 4: Menghitung mentee yang aktif (login) dalam 7 hari terakhir
   countActiveMentees: async (courseId) => {
     try {
       const result = await dbMentee(
         `SELECT 
-          COUNT(DISTINCT mentees_id) AS activeCount 
-        FROM course_sessions
-        WHERE courses_id = ? 
-          AND start_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)`,
+          COUNT(*) AS engagedCount
+        FROM (
+          SELECT
+            mentees_id,
+            SUM(duration_minutes) AS total_duration
+          FROM
+            course_sessions
+          WHERE
+              courses_id = ?
+            AND session_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+          GROUP BY
+              mentees_id
+          ) AS mentee_durations
+          WHERE
+            total_duration >= 180;`,
         [courseId]
       );
       return result[0];
@@ -140,7 +141,6 @@ const Statistics = {
       throw error;
     }
   },
-  // Fungsi untuk mengambil SEMUA data skor untuk satu kursus
   getAllStudentScores: async (courseId) => {
     try {
       const result = await dbMentee(
@@ -173,7 +173,9 @@ const Statistics = {
             INNER JOIN learning_management_system.module_courses mc ON sm.module_course_id = mc.id
             INNER JOIN mentees m ON e.mentees_id = m.id
             WHERE mc.course_id = ? AND e.quizzes_id IS NOT NULL;
-        `, [courseId, courseId]);
+        `,
+        [courseId, courseId]
+      );
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {
@@ -189,11 +191,17 @@ const Statistics = {
     try {
       const result = await dbMentee(
         `SELECT
-          me.mentees_id,
-          TIMESTAMPDIFF(SECOND, cal.start_time, cal.end_time) AS duration
-        FROM course_sessions cal
-        JOIN mentee_enrollments me ON cal.mentees_id = me.mentees_id
-        WHERE me.courses_id = ?;`,
+            me.mentees_id,
+            SUM(cal.duration_minutes) AS duration
+        FROM
+            course_sessions AS cal
+        JOIN
+            mentee_enrollments AS me ON cal.mentees_id = me.mentees_id
+        WHERE
+            me.courses_id = ? 
+            AND cal.session_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        GROUP BY
+            me.mentees_id`,
         [courseId]
       );
       return result;

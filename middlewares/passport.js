@@ -36,7 +36,6 @@ passport.use(
     }
   )
 );
-
 async function validatePermission(token) {
   const permission = token.permission;
   let access = false;
@@ -58,7 +57,6 @@ async function validatePermission(token) {
   }
   return "Access granted";
 }
-
 module.exports = {
   passport,
   validatePermission,

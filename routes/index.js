@@ -5,7 +5,7 @@ const { passport } = require("../middlewares/passport");
 const authV1 = require("./api/v1/auth");
 const apiV1 = require("./api/v1");
 
-// auth route
+// auth route 
 router.use(authV1);
 
 router.use(

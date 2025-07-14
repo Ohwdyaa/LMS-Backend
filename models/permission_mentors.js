@@ -13,6 +13,7 @@ const permissionMentors = {
           mp.can_read AS canRead, 
           mp.can_edit AS canEdit, 
           mp.can_delete AS canDelete,  
+          mp.inherit_flag AS inheritFlag,
           m.id AS moduleId,
           m.name AS moduleName,
           cm.name AS categoryName
@@ -39,7 +40,9 @@ const permissionMentors = {
           mp.can_read AS canRead, 
           mp.can_edit AS canEdit, 
           mp.can_delete AS canDelete, 
-          m.uuid AS moduleId,
+          mp.inherit_flag AS inheritFlag,
+          m.id AS moduleId,
+          m.uuid AS moduleUuid,
           m.name AS moduleName,
           cm.name AS categoryName
         FROM learning_management_system.mentor_permissions mp
@@ -64,7 +67,8 @@ const permissionMentors = {
           can_create AS canCreate, 
           can_read AS canRead, 
           can_edit AS canEdit, 
-          can_delete AS canDelete
+          can_delete AS canDelete,
+          inherit_flag AS inheritFlag
         FROM learning_management_system.mentor_permissions 
         WHERE role_id = ? AND module_id = ?`,
         [roleId, moduleId]
@@ -86,13 +90,16 @@ const permissionMentors = {
             can_read = ?, 
             can_edit = ?, 
             can_delete = ?,
-            updated_by = ?
+            inherit_flag = ?,
+            updated_by = ?,
+            updated_at = NOW()
         WHERE role_id = ? AND module_id = ?`,
         [
           data.canCreate,
           data.canRead,
           data.canEdit,
           data.canDelete,
+          data.inheritFlag,
           userId,
           roleId,
           moduleId,

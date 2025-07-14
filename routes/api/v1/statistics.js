@@ -7,10 +7,9 @@ const {
 } = require("../../../controllers/statistics");
 const router = express.Router();
 
-// URL: GET http://localhost:PORT/api/dashboard/overview?courseId=123
 router.get("/overview/:id", getOverviewMetrics);
 router.get("/statistic/:id", getStatisticCourse);
 router.get("/course/:id/statistics", getModulesStatisticByCourse);
 router.get("/at-risk-students/:id", getAtRiskStudents);
-
+ 
 module.exports = router;

@@ -320,23 +320,12 @@ const updateCourseSchema = z.object({
   params: z.object({
     id: z.string().uuid("Invalid UUID format"),
   }),
+  files: z.object({
+    thumbnail: z.array(fileSchema).optional(),
+  }),
   body: z.object({
-    title: z
-      .string()
-      .min(1, "Course name cannot be empty")
-      .max(200, "Course name cannot exceed 200 characters")
-      .regex(
-        /^[\w\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/,
-        "Title contains invalid characters"
-      )
-      .optional(),
-    description: z
-      .string()
-      .max(
-        65535,
-        "Description cannot exceed the TEXT limit of 65535 characters"
-      )
-      .optional(),
+    title: z.string().min(1, "Title cannot be empty"),
+    description: z.string().min(1, "Description cannot be empty"),
   }),
 });
 

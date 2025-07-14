@@ -14,7 +14,6 @@ router.put(
   validateMiddleware(permissionSchema),
   updatePermissionTeam
 );
-
 router.get("/permission-team/:id", getPermissionTeamByRole);
 
-module.exports = router;
+module.exports = router; 

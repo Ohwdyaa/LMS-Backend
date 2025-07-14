@@ -64,7 +64,13 @@ const Courses = {
         ]
       );
       return result;
-    } catch (error) {}
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
   },
   deleteCourse: async (id) => {
     try {
@@ -117,6 +123,7 @@ const Courses = {
         WHERE id = ? AND is_deleted = 0`,
         [id]
       );
+      console.log("Course Data:", result);
       return result;
     } catch (error) {
       if (error.code && error.sqlMessage) {

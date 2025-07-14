@@ -40,13 +40,26 @@ async function updateCourse(req, res) {
     const { id: userId } = req.user;
     const { id: courseId } = req.params;
     const data = req.body;
+    const { thumbnail } = req.files;
+
+    
+    let thumbnailUrl = "";
+    if (thumbnail) {
+      thumbnailUrl = `${req.protocol}://${req.get("host")}/uploads/thumbnail/${
+        thumbnail[0].filename
+      }`;
+    }
 
     const isCourseExist = await Courses.getCourseById(courseId);
     if (isCourseExist === undefined) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    await Courses.updateCourse(isCourseExist.id, data, userId);
+    const courseData = {
+      ...data,
+      thumbnail: thumbnailUrl,
+    };
+    await Courses.updateCourse(isCourseExist.id, courseData, userId);
     return res.status(201).json({
       message: "Course updated successfully",
     });
@@ -106,6 +119,7 @@ async function getAllCourses(req, res) {
       courseObj.endDate = course.end_date;
       courseList.push(courseObj);
     }
+    console.log(courseList);
     return res.status(200).json({
       data: courseList,
     });

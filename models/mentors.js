@@ -258,7 +258,7 @@ const Mentors = {
           m.fullname,
           m.email, 
           m.password,
-          m.role_id,
+          m.role_id as roleId,
           rm.name as role
         FROM mentors m
         LEFT JOIN role_mentors rm ON m.role_id = rm.id

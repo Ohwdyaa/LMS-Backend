@@ -1,7 +1,8 @@
 const Teams = require("../models/teams");
 const Mentors = require("../models/mentors");
 const Mentees = require("../models/mentees");
-const permissionTeams = require("./permission_teams");
+const permServiceTeams = require("./../services/permission_teams");
+const permServiceMentors = require("./../services/permission_mentors");
 const permissionMentors = require("./permission_mentors");
 const { generateJWT, verifyJWT, generateJWTMentee } = require("../utils/jwt");
 const { validatePermission } = require("../middlewares/passport");
@@ -16,13 +17,23 @@ async function login(req, res) {
     if (verifiedUser === undefined) {
       return res.status(400).json({ message: "Incorrect email or password!" });
     }
-    let getAccess = await permissionTeams.getEffectivePermissionsDFS(verifiedUser.data.roleId);
-    if (getAccess === undefined || getAccess.length === 0) {
-      getAccess = await permissionMentors.getPermissionMentor(
-        verifiedUser.data
-      );
+
+    let effectivePermissions;
+    if (verifiedUser.type === "team") {
+      effectivePermissions =
+        await permServiceTeams.getEffectivePermissionsForRole(
+          verifiedUser.data.roleId
+        );
+    } else if (verifiedUser.type === "mentor") {
+      effectivePermissions =
+        await permServiceMentors.getEffectivePermissionsForRole(
+          verifiedUser.data.roleId
+        );
     }
-    if (getAccess === undefined || getAccess.length === 0) {
+    if (
+      effectivePermissions === undefined ||
+      effectivePermissions.length === 0
+    ) {
       return res
         .status(400)
         .json({ message: "No access rights found for user." });
@@ -31,7 +42,7 @@ async function login(req, res) {
     const token = await generateJWT(
       verifiedUser.data,
       verifiedUser.type,
-      getAccess
+      effectivePermissions
     );
     const verifyToken = await verifyJWT(token);
     const validateAccess = await validatePermission(verifyToken);
@@ -51,6 +62,7 @@ async function login(req, res) {
       },
     });
   } catch (error) {
+    console.error("Login error:", error);
     return res.status(err.errorLogin.statusCode).json({
       message: error.message,
       error: err.errorLogin.message,
@@ -132,7 +144,7 @@ async function logout(req, res) {
     if (token === undefined) {
       return res.status(400).json({ message: "No token provided" });
     }
-    
+
     const result = await Users.logoutUser(token);
     if (result) {
       return res.status(200).json({

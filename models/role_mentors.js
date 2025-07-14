@@ -10,9 +10,31 @@ const roleMentors = {
         `INSERT INTO role_mentors 
           (id,
           name,
+          parent_id,
           created_by) 
-        VALUES (?,?,?)`,
-        [id, data.name, userId]
+        VALUES (?,?,?,?)`,
+        [id, data.name, data.parentId, userId]
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+  updateRoleMentor: async (roleId, data, userId) => {
+    try {
+      const result = await dbLms(
+        `UPDATE role_mentors 
+        SET 
+          name = ?, 
+          parent_id = ?,
+          updated_at = NOW(),
+          updated_by = ?
+        WHERE id = ?`,
+        [data.name, data.parentId, userId, roleId]
       );
       return result;
     } catch (error) {
@@ -28,7 +50,8 @@ const roleMentors = {
       const [result] = await dbLms(
         `SELECT 
             id, 
-            name 
+            name,
+            parent_id
         FROM role_mentors 
         WHERE id = ? AND is_deleted = 0`,
         [id]
@@ -48,6 +71,25 @@ const roleMentors = {
         `SELECT 
             id, 
             name 
+        FROM role_mentors 
+        WHERE is_deleted = 0`
+      );
+      return result;
+    } catch (error) {
+      if (error.code && error.sqlMessage) {
+        const message = mapMySQLError(error);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+    getAllRolesForHierarchy: async () => {
+    try {
+      const result = await dbLms(
+        `SELECT 
+          id, 
+          name, 
+          parent_id as parent
         FROM role_mentors 
         WHERE is_deleted = 0`
       );
@@ -96,26 +138,7 @@ const roleMentors = {
       throw error;
     }
   },
-  updateRoleMentor: async (roleId, data, userId) => {
-    try {
-      const result = await dbLms(
-        `UPDATE role_mentors 
-        SET 
-          name = ?, 
-          updated_at = NOW(),
-          updated_by = ?
-        WHERE id = ?`,
-        [data.name, userId, roleId]
-      );
-      return result;
-    } catch (error) {
-      if (error.code && error.sqlMessage) {
-        const message = mapMySQLError(error);
-        throw new Error(message);
-      }
-      throw error;
-    }
-  },
+  
 };
 
 module.exports = roleMentors;

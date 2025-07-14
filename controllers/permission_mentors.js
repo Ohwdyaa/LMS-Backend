@@ -1,6 +1,6 @@
 const Permissions = require("../models/permission_mentors");
 const roleMentor = require("../models/role_mentors");
-const Module = require("../models/module_permissions");
+const permService = require("../services/permission_mentors");
 const { err } = require("../utils/custom_error");
 const { uuid } = require("../utils/tools");
 
@@ -16,7 +16,7 @@ async function updatePermissionMentor(req, res) {
     }
     const moduleLength = listModules.length;
     for (let i = 0; i < moduleLength; i++) {
-      const { moduleId, canRead, canCreate, canEdit, canDelete } =
+      const { moduleId, canRead, canCreate, canEdit, canDelete, inheritFlag } =
         listModules[i];
       const isExists = await Permissions.getPermissionMentorByRoleAndModule(
         roleId,
@@ -28,6 +28,7 @@ async function updatePermissionMentor(req, res) {
           canCreate,
           canEdit,
           canDelete,
+          inheritFlag
         };
         await Permissions.updatePermissionMentor(
           roleId,
@@ -43,6 +44,7 @@ async function updatePermissionMentor(req, res) {
           canRead,
           canEdit,
           canDelete,
+          inheritFlag,
           userId,
           roleId,
           moduleId,
@@ -52,7 +54,7 @@ async function updatePermissionMentor(req, res) {
     if (newValue.length > 0) {
       await Permissions.createBulkPermissionMentor(
         `INSERT INTO mentor_permissions ( 
-          id, can_create, can_read, can_edit, can_delete, created_by, role_id,  module_id
+          id, can_create, can_read, can_edit, can_delete, inherit_flag, created_by, role_id,  module_id
         ) VALUES ?`,
         [newValue]
       );
@@ -69,33 +71,13 @@ async function updatePermissionMentor(req, res) {
 }
 
 async function getPermissionMentorByRole(req, res) {
-  const { id: roleId } = req.params;
   try {
-    const permission = await Permissions.getPermissionMentorByRole(roleId);
-    if (permission.length === 0) {
-      const permissionList = [];
-      const modules = await Module.getAllModule();
-
-      for (let i = 0; i < modules.length; i++) {
-        const element = modules[i];
-
-        permissionList.push({
-          canCreate: 0,
-          canRead: 0,
-          canEdit: 0,
-          canDelete: 0,
-          moduleId: element.id,
-          moduleName: element.name,
-          categoryName: element.categoryModule,
-        });
-      }
-
-      return res.status(200).json({
-        permission: permissionList,
-      });
-    }
+    const { id: roleId } = req.params;
+    const permissions = await permService.getEffectivePermissionsForRole(
+      roleId
+    );
     return res.status(200).json({
-      permission,
+      permissions,
     });
   } catch (error) {
     return res.status(err.errorSelect.statusCode).json({
